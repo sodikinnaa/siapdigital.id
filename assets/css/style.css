@@ -168,6 +168,12 @@ h3 { font-size: 1.2rem; margin: 0 0 .5rem; }
 }
 .app-mark.lg { width: 7rem; height: 7rem; border-radius: 26px; font-size: 2.3rem; }
 .app-mark.muted { background: var(--paper-2); color: var(--navy-600); border: 1px dashed var(--navy-600); box-shadow: none; }
+/* Ikon aplikasi asli (identitas aplikasi, bukan logo Siap Digital) */
+.app-icon {
+  flex: none; width: 4rem; height: 4rem; border-radius: 16px; object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(15, 27, 51, .08), 0 6px 14px -8px rgba(15, 27, 51, .45);
+}
+.app-icon.lg { width: 7rem; height: 7rem; border-radius: 26px; }
 
 .badge {
   display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .02em;
@@ -215,6 +221,12 @@ caption { text-align: left; }
 
 /* Halaman aplikasi */
 .app-hero { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.feature-graphic { margin: 1.75rem 0; }
+.feature-graphic img {
+  width: 100%; aspect-ratio: 1024 / 500; object-fit: cover;
+  border-radius: var(--radius); border: 1px solid var(--line); background: var(--paper-2);
+}
+.feature-graphic figcaption { margin-top: .5rem; color: var(--muted); font-size: .9rem; }
 .facts { display: grid; grid-template-columns: max-content 1fr; gap: .4rem 1.25rem; margin: 1.5rem 0; }
 .facts dt { font-weight: 700; color: var(--navy-900); }
 .facts dd { margin: 0; color: var(--muted); min-width: 0; }
@@ -241,7 +253,7 @@ caption { text-align: left; }
   .doc h2 { font-size: 15pt; margin-top: 1.5rem; }
   h2, h3 { break-after: avoid; page-break-after: avoid; }
   p, li { orphans: 3; widows: 3; }
-  tr, .callout, .card { break-inside: avoid; page-break-inside: avoid; }
+  tr, .callout, .card, .feature-graphic { break-inside: avoid; page-break-inside: avoid; }
   .callout, .callout.warn { background: none; border: 1px solid #000; border-left-width: 4px; border-radius: 0; }
   .placeholder, .badge { background: none !important; color: #000 !important; border: 1px solid #000; }
   table, th { background: none; }

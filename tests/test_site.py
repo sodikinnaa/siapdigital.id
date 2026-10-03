@@ -1,6 +1,7 @@
 """Validasi tautan dan struktur situs statis (hanya pustaka standar)."""
 
 import posixpath
+import struct
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
@@ -33,6 +34,9 @@ ALLOWED_EXTERNAL = {
 
 FORBIDDEN_SUBSTRINGS = ["play.google.com", "mailto:", "<iframe", "@siapdigital", "apps.apple.com"]
 
+APP_ICON = "assets/img/jelajah-nusantara-icon-512.png"
+FEATURE_GRAPHIC = "assets/img/jelajah-nusantara-feature-graphic.jpg"
+
 
 class PageParser(HTMLParser):
     def __init__(self):
@@ -44,6 +48,8 @@ class PageParser(HTMLParser):
         self.html_lang = None
         self.imgs_without_alt = 0
         self.scripts = []
+        self.imgs = []  # dict atribut per <img>
+        self.icons = []  # href <link rel="icon">
         self._in_nav_list = False
 
     def handle_starttag(self, tag, attrs):
@@ -54,8 +60,12 @@ class PageParser(HTMLParser):
             self.html_lang = a.get("lang")
         if tag == "h1":
             self.h1_count += 1
-        if tag == "img" and "alt" not in a:
-            self.imgs_without_alt += 1
+        if tag == "img":
+            self.imgs.append(a)
+            if "alt" not in a:
+                self.imgs_without_alt += 1
+        if tag == "link" and a.get("rel") == "icon":
+            self.icons.append(a.get("href"))
         if tag == "script" and "src" in a:
             self.scripts.append(a["src"])
         if tag == "ul" and a.get("id") == "nav-links":
@@ -91,6 +101,22 @@ def resolve(page_rel, href):
     if parts.path.endswith("/") or target == "" or (ROOT / target).is_dir():
         target = posixpath.join(target, "index.html") if target else "index.html"
     return target, parts.fragment
+
+
+def image_size(path):
+    """Dimensi intrinsik (lebar, tinggi) PNG/JPEG tanpa dependensi."""
+    data = path.read_bytes()
+    if data.startswith(b"\x89PNG\r\n\x1a\n"):
+        return struct.unpack(">II", data[16:24])
+    if data.startswith(b"\xff\xd8"):
+        i = 2
+        while i < len(data):
+            marker, length = data[i + 1], struct.unpack(">H", data[i + 2:i + 4])[0]
+            if 0xC0 <= marker <= 0xCF and marker not in (0xC4, 0xC8, 0xCC):
+                h, w = struct.unpack(">HH", data[i + 5:i + 9])
+                return w, h
+            i += 2 + length
+    raise ValueError(f"format gambar tidak dikenal: {path}")
 
 
 class SiteTests(unittest.TestCase):
@@ -161,6 +187,41 @@ class SiteTests(unittest.TestCase):
         p = self.parsed["apps/jelajah-nusantara/index.html"]
         hrefs = [h for _, _, h in p.links]
         self.assertIn("https://github.com/sodikinnaa/jelajahnusantara/releases/tag/v0.1.1", hrefs)
+
+    def test_images_have_dimensions_matching_aspect_and_alt(self):
+        for rel, p in self.parsed.items():
+            for img in p.imgs:
+                with self.subTest(page=rel, src=img.get("src")):
+                    self.assertTrue(img.get("alt", "").strip(), "alt kosong")
+                    w, h = int(img["width"]), int(img["height"])
+                    iw, ih = image_size(ROOT / resolve(rel, img["src"])[0])
+                    self.assertAlmostEqual(w / h, iw / ih, places=2)
+
+    def test_jelajah_nusantara_uses_released_app_icon(self):
+        for rel in ("index.html", "apps/index.html", "apps/jelajah-nusantara/index.html"):
+            with self.subTest(page=rel):
+                p = self.parsed[rel]
+                srcs = [resolve(rel, i["src"])[0] for i in p.imgs]
+                self.assertIn(APP_ICON, srcs)
+                self.assertNotIn(">JN<", (ROOT / rel).read_text(encoding="utf-8"))
+        self.assertEqual(image_size(ROOT / APP_ICON), (512, 512))
+
+    def test_detail_page_shows_feature_graphic_and_app_favicon(self):
+        rel = "apps/jelajah-nusantara/index.html"
+        p = self.parsed[rel]
+        self.assertIn(FEATURE_GRAPHIC, [resolve(rel, i["src"])[0] for i in p.imgs])
+        self.assertEqual([resolve(rel, h)[0] for h in p.icons], [APP_ICON])
+
+    def test_studio_branding_stays_distinct(self):
+        # Ikon aplikasi tidak menggantikan identitas Siap Digital di halaman lain.
+        for rel in PAGES:
+            if rel == "apps/jelajah-nusantara/index.html":
+                continue
+            with self.subTest(page=rel):
+                self.assertEqual([resolve(rel, h)[0] for h in self.parsed[rel].icons], ["assets/img/favicon.svg"])
+        for rel in PAGES:
+            with self.subTest(page=rel):
+                self.assertIn('<span class="brand-mark" aria-hidden="true">S</span>Siap Digital', (ROOT / rel).read_text(encoding="utf-8"))
 
     def test_legal_pages_marked_draft_and_contact_unresolved(self):
         for rel in ("privacy/index.html", "terms/index.html"):
