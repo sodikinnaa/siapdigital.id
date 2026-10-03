@@ -232,6 +232,29 @@ caption { text-align: left; }
 .facts dd { margin: 0; color: var(--muted); min-width: 0; }
 @media (max-width: 520px) { .facts { grid-template-columns: 1fr; } .facts dd { margin-bottom: .5rem; } }
 
+/* Formulir tester: atribut hidden harus menang atas display milik komponen */
+[hidden] { display: none !important; }
+.tester { margin-top: 2.5rem; padding-top: .5rem; border-top: 1px solid var(--line); }
+.steps li { margin: .5rem 0; }
+.tester-form {
+  display: grid; gap: 1.25rem; margin: 1.5rem 0; padding: 1.5rem;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+}
+.field { display: grid; gap: .35rem; }
+.field label { font-weight: 700; color: var(--navy-900); }
+.field .req, .field .opt { font-weight: 500; color: var(--muted); }
+.field input, .field textarea {
+  width: 100%; min-height: 44px; padding: .65rem .8rem; font: inherit; color: var(--ink);
+  background: #fff; border: 1px solid var(--navy-600); border-radius: 10px;
+}
+.field textarea { resize: vertical; min-height: 7rem; }
+.field input[aria-invalid="true"] { border: 2px solid #a12a1f; }
+.field-help, .form-note { margin: 0; color: var(--muted); font-size: .93rem; }
+.field-error { margin: 0; color: #a12a1f; font-weight: 600; font-size: .93rem; }
+.tester-form .btn { justify-self: start; cursor: pointer; font: inherit; font-weight: 600; }
+.form-status p { margin: 0; }
+@media (max-width: 520px) { .tester-form { padding: 1.1rem; } .tester-form .btn { justify-self: stretch; } }
+
 /* Footer */
 .site-footer { background: var(--navy-900); color: #c9d1e2; padding: 2.5rem 0; font-size: .95rem; }
 .site-footer a { color: #fff; }
@@ -245,7 +268,7 @@ caption { text-align: left; }
   @page { margin: 2cm; }
   html { scroll-padding-top: 0; }
   body { background: #fff; color: #000; font-size: 11pt; line-height: 1.5; }
-  .skip-link, .site-header, .nav-toggle, .site-footer, .toc, .btn-row { display: none !important; }
+  .skip-link, .site-header, .nav-toggle, .site-footer, .toc, .btn-row, .tester-form { display: none !important; }
   .doc { padding: 0; }
   .narrow, .container { width: auto; }
   h1, h2, h3, .eyebrow, .meta, .lead, .card p, .facts dt, .facts dd, th, a { color: #000 !important; }

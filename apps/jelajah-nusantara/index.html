@@ -4,11 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jelajah Nusantara — Siap Digital</title>
-  <meta name="description" content="Jelajah Nusantara: kuis sejarah Indonesia, offline dan tanpa iklan. Status: demo pra-rilis v0.1.1, belum tersedia di Google Play.">
+  <meta name="description" content="Jelajah Nusantara: kuis sejarah Indonesia tanpa iklan. Versi web dapat dimainkan di browser; versi Android sedang diuji tertutup di Google Play untuk tester terdaftar.">
   <meta name="theme-color" content="#0f1b33">
   <link rel="icon" href="../../assets/img/jelajah-nusantara-icon-512.png" type="image/png" sizes="512x512">
   <link rel="stylesheet" href="../../assets/css/style.css">
   <script src="../../assets/js/main.js" defer></script>
+  <script src="../../assets/js/tester.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#konten">Lewati ke konten</a>
@@ -46,20 +47,21 @@
       </figure>
 
       <div class="callout warn">
-        <p><strong>Belum tersedia di Google Play Store.</strong> Build demo v0.1.1 dipublikasikan sebagai rilis pra-rilis di GitHub. Repositori aplikasi saat ini bersifat privat, sehingga tautan rilis hanya dapat dibuka oleh akun yang diberi akses.</p>
+        <p><strong>Versi web bisa dimainkan sekarang.</strong> Versi Android masih dalam <strong>pengujian tertutup di Google Play</strong> dan belum dirilis untuk umum. Tautan Google Play di bawah hanya berfungsi untuk akun Google yang sudah ditambahkan admin ke daftar tester. Belum terdaftar? <a href="#daftar-tester">Ajukan diri sebagai tester</a>.</p>
       </div>
 
       <div class="btn-row">
-        <a class="btn btn-primary" href="https://github.com/sodikinnaa/jelajahnusantara/releases/tag/v0.1.1">Rilis v0.1.1 di GitHub (akses terbatas)</a>
-        <a class="btn btn-secondary" href="#fitur">Pelajari fiturnya</a>
+        <a class="btn btn-primary" href="https://eduquest.siapdigital.id/">Main versi web</a>
+        <a class="btn btn-secondary" href="https://play.google.com/apps/testing/id.siapdigital.jelajahnusantara">Google Play (khusus tester terdaftar)</a>
+        <a class="btn btn-secondary" href="#daftar-tester">Daftar jadi tester</a>
       </div>
 
       <h2>Ringkasan</h2>
       <dl class="facts">
         <dt>Status</dt><dd>Demo pra-rilis (v0.1.1)</dd>
-        <dt>Platform build</dt><dd>Android (APK/AAB) dan web, sebagai aset rilis GitHub</dd>
+        <dt>Platform</dt><dd>Web (dimainkan di browser) dan Android (pengujian tertutup di Google Play, khusus tester terdaftar)</dd>
         <dt>Bahasa</dt><dd>Indonesia</dd>
-        <dt>Koneksi</dt><dd>Aplikasi Android berjalan offline; materi dan soal ada di dalam aplikasi. Build web perlu disajikan dari server.</dd>
+        <dt>Koneksi</dt><dd>Aplikasi Android berjalan offline; materi dan soal ada di dalam aplikasi. Versi web perlu koneksi internet untuk dimuat.</dd>
         <dt>Iklan</dt><dd>Tidak ada pada versi 1</dd>
         <dt>Akun</dt><dd>Tidak diperlukan</dd>
         <dt>Pembelian</dt><dd>Tidak ada pembelian dengan uang sungguhan</dd>
@@ -81,6 +83,39 @@
         <li><strong>Konten belum ditinjau ahli.</strong> Materi dan soal disusun dengan bantuan AI dan berstatus menunggu tinjauan manusia. Jangan jadikan satu-satunya rujukan akademik.</li>
         <li><strong>Progres disimpan di perangkat.</strong> Kami tidak menyimpan cadangan progres Anda. Menghapus aplikasi atau data browser dapat menghapus progres, kecuali dipulihkan dari cadangan bawaan Android di akun Google Anda (jika aktif).</li>
       </ul>
+
+      <section class="tester" id="daftar-tester" aria-labelledby="tester-heading">
+        <h2 id="tester-heading">Daftar jadi tester Android</h2>
+        <p>Versi Android sedang diuji tertutup di Google Play. Akses tester <strong>diberikan secara manual</strong> oleh admin, tidak otomatis, dan permintaan <strong>belum tentu disetujui</strong>.</p>
+        <ol class="steps">
+          <li>Isi email akun Google yang Anda pakai di Google Play pada perangkat Android (Gmail atau akun Google lain).</li>
+          <li>Tekan <strong>Kirim permintaan lewat WhatsApp</strong>. WhatsApp terbuka dengan pesan yang sudah terisi untuk admin di nomor <strong>088275426716</strong>. Pesan baru terkirim setelah Anda sendiri menekan Kirim di WhatsApp.</li>
+          <li>Admin menambahkan email Anda secara manual ke daftar tester Google Play jika permintaan disetujui.</li>
+          <li>Setelah email ditambahkan, masuk dengan akun Google yang sama, buka <a href="https://play.google.com/apps/testing/id.siapdigital.jelajahnusantara">tautan pengujian Google Play</a>, ikut serta sebagai tester, lalu instal aplikasi dari Google Play.</li>
+        </ol>
+
+        <form class="tester-form" id="form-tester" data-wa-phone="088275426716" data-app="Jelajah Nusantara" hidden>
+          <div class="field">
+            <label for="tester-email">Email akun Google <span class="req">(wajib)</span></label>
+            <input id="tester-email" name="email" type="email" required maxlength="254" autocomplete="email" inputmode="email" spellcheck="false" placeholder="nama@gmail.com" aria-describedby="tester-email-help tester-email-error">
+            <p class="field-help" id="tester-email-help">Gmail atau akun Google lain yang dipakai untuk masuk ke Google Play di perangkat Android Anda.</p>
+            <p class="field-error" id="tester-email-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="tester-pesan">Pesan <span class="opt">(opsional)</span></label>
+            <textarea id="tester-pesan" name="pesan" rows="4" maxlength="500" aria-describedby="tester-pesan-help"></textarea>
+            <p class="field-help" id="tester-pesan-help">Maksimal 500 karakter, misalnya jenis perangkat Android Anda. Jangan tuliskan kata sandi atau data sensitif.</p>
+          </div>
+          <p class="form-note">Situs ini tidak mengirim atau menyimpan isian formulir. Email dan pesan Anda hanya dimasukkan ke tautan WhatsApp (wa.me) sebagai draf pesan; WhatsApp menerima draf itu saat tautan dibuka, dan pesan baru sampai ke admin setelah Anda sendiri menekan Kirim. Rinciannya ada di <a href="../../privacy/#tester">Kebijakan Privasi</a>.</p>
+          <button class="btn btn-primary" type="submit">Kirim permintaan lewat WhatsApp</button>
+          <div class="form-status" id="tester-status" role="status" aria-live="polite"></div>
+        </form>
+
+        <div class="callout" id="tester-fallback">
+          <noscript><p><strong>JavaScript nonaktif, jadi formulir tidak ditampilkan.</strong></p></noscript>
+          <p>Jika formulir tidak muncul, Anda tetap bisa mendaftar: buka <a href="https://wa.me/6288275426716?text=Halo%20Admin%20Siap%20Digital%2C%20saya%20ingin%20mendaftar%20sebagai%20tester%20Android%20aplikasi%20Jelajah%20Nusantara%20di%20Google%20Play.%20Email%20akun%20Google%20saya%3A%20">WhatsApp ke admin (088275426716)</a>, tuliskan email akun Google Anda di akhir pesan (boleh ditambah pesan singkat), lalu tekan Kirim sendiri di WhatsApp. Jangan tuliskan kata sandi atau data sensitif. Langkah dan batasannya sama seperti dijelaskan di atas.</p>
+        </div>
+      </section>
 
       <h2>Privasi</h2>
       <p>Versi 1 tidak memuat SDK iklan atau analitik pihak ketiga dan tidak mengirim progres Anda ke server kami. Rincian ada di <a href="../../privacy/">Kebijakan Privasi</a>. Penggunaan aplikasi tunduk pada <a href="../../terms/">Ketentuan Layanan</a>.</p>
