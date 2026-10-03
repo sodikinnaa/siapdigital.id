@@ -67,3 +67,9 @@ GitHub (`aapt2 dump badging` di `signing-verification.txt`: APK v0.1.1 tidak mem
       mendapat 404 sampai repo/rilis dibuat publik. Tidak ada tautan Google Play karena aplikasi belum
       diunggah ke Play.
 - [ ] **Tinjauan konten sejarah** oleh ahli — masih tertunda (ditandai di situs).
+- [ ] **Cadangan otomatis Android** — manifest aplikasi tidak menyetel `android:allowBackup`, jadi
+      Auto Backup bawaan Android aktif. Halaman privasi menyebutkannya. Jika pemilik ingin "progres
+      tidak pernah meninggalkan perangkat", ubah aplikasi (`allowBackup="false"`) lalu perbarui teks.
+- [ ] **Build web & CDN Google** — build web dibuat tanpa `--no-web-resources-cdn`, sehingga
+      kemungkinan memuat CanvasKit/font dari server Google (belum diverifikasi di browser). Halaman
+      privasi menyebutkannya sebagai kemungkinan.
