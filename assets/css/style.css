@@ -282,6 +282,37 @@ code {
 }
 @media (max-width: 860px) { .guide-step { grid-template-columns: 1fr; } }
 
+/* Sampul panduan */
+.guide-cover { margin-top: clamp(2rem, 5vw, 3rem); margin-bottom: 0; }
+.guide-cover img {
+  width: 100%; border-radius: 20px; border: 1px solid var(--line); background: var(--paper-2);
+  box-shadow: 0 24px 40px -28px rgba(15, 27, 51, .6);
+}
+
+/* Iklan */
+.btn-wa { background: #0e7a3b; color: #fff; }
+.btn-wa:hover { background: var(--navy-800); color: #fff; }
+.promo-card {
+  display: grid; gap: .75rem; justify-items: start; max-width: 44rem; margin-inline: auto;
+  padding: clamp(1.25rem, 4vw, 2rem); background: #fff;
+  border: 1px solid var(--line); border-top: 4px solid #0e7a3b; border-radius: var(--radius);
+}
+.promo-card h2, .promo-card p, .promo-dialog h2, .promo-dialog p { margin: 0; }
+.promo-note { color: var(--muted); font-size: .88rem; }
+.promo-dialog {
+  width: min(100% - 2rem, 26rem); padding: 1.75rem 1.5rem 1.5rem; border: 0; border-radius: 18px;
+  background: var(--paper); color: var(--ink); box-shadow: 0 30px 60px -20px rgba(15, 27, 51, .55);
+}
+.promo-dialog[open] { display: grid; gap: .8rem; justify-items: start; }
+.promo-dialog::backdrop { background: rgba(15, 27, 51, .55); }
+.promo-dialog .btn { justify-self: stretch; }
+.promo-close-form { position: absolute; top: .5rem; right: .5rem; margin: 0; }
+.promo-close {
+  width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent;
+  font-size: 1.75rem; line-height: 1; color: var(--navy-800); cursor: pointer;
+}
+.promo-close:hover { background: var(--paper-2); }
+
 /* Footer */
 .site-footer { background: var(--navy-900); color: #c9d1e2; padding: 2.5rem 0; font-size: .95rem; }
 .site-footer a { color: #fff; }
@@ -295,7 +326,7 @@ code {
   @page { margin: 2cm; }
   html { scroll-padding-top: 0; }
   body { background: #fff; color: #000; font-size: 11pt; line-height: 1.5; }
-  .skip-link, .site-header, .nav-toggle, .site-footer, .toc, .btn-row, .tester-form { display: none !important; }
+  .skip-link, .site-header, .nav-toggle, .site-footer, .toc, .btn-row, .tester-form, .promo-dialog, #gemini-pro { display: none !important; }
   .doc { padding: 0; }
   .narrow, .container { width: auto; }
   h1, h2, h3, .eyebrow, .meta, .lead, .card p, .facts dt, .facts dd, th, a { color: #000 !important; }
