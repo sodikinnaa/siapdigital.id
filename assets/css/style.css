@@ -255,6 +255,33 @@ caption { text-align: left; }
 .form-status p { margin: 0; }
 @media (max-width: 520px) { .tester-form { padding: 1.1rem; } .tester-form .btn { justify-self: stretch; } }
 
+/* Panduan bergambar */
+.guide-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(2.5rem, 6vw, 4rem); }
+.guide-step {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: clamp(1.25rem, 4vw, 2.5rem); align-items: start;
+}
+.guide-text { min-width: 0; }
+.guide-text p { margin: 0 0 .75rem; }
+.step-no {
+  display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; margin-bottom: .75rem;
+  border-radius: 50%; background: var(--teal-700); color: #fff; font-weight: 700;
+}
+.step-note { color: var(--muted); font-size: .95rem; }
+.guide-shot { margin: 0; min-width: 0; }
+.guide-shot a { display: block; border-radius: var(--radius); }
+.guide-shot img {
+  width: 100%; border-radius: var(--radius); border: 1px solid var(--line); background: #fff;
+  box-shadow: 0 14px 28px -20px rgba(15, 27, 51, .55);
+}
+.guide-shot figcaption { margin-top: .5rem; color: var(--muted); font-size: .9rem; }
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em;
+  background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: .05rem .35rem;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 860px) { .guide-step { grid-template-columns: 1fr; } }
+
 /* Footer */
 .site-footer { background: var(--navy-900); color: #c9d1e2; padding: 2.5rem 0; font-size: .95rem; }
 .site-footer a { color: #fff; }
@@ -276,7 +303,7 @@ caption { text-align: left; }
   .doc h2 { font-size: 15pt; margin-top: 1.5rem; }
   h2, h3 { break-after: avoid; page-break-after: avoid; }
   p, li { orphans: 3; widows: 3; }
-  tr, .callout, .card, .feature-graphic { break-inside: avoid; page-break-inside: avoid; }
+  tr, .callout, .card, .feature-graphic, .guide-step { break-inside: avoid; page-break-inside: avoid; }
   .callout, .callout.warn { background: none; border: 1px solid #000; border-left-width: 4px; border-radius: 0; }
   .placeholder, .badge { background: none !important; color: #000 !important; border: 1px solid #000; }
   table, th { background: none; }
