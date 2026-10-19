@@ -19,6 +19,7 @@ PAGES = [
     "apps/jelajah-nusantara/index.html",
     "privacy/index.html",
     "terms/index.html",
+    "panduan/transfer-konten-google/index.html",
 ]
 
 # Target navigasi utama (relatif terhadap root) dan halaman yang seharusnya aria-current.
@@ -29,6 +30,8 @@ NAV_CURRENT = {
     "apps/jelajah-nusantara/index.html": "apps/index.html",
     "privacy/index.html": "privacy/index.html",
     "terms/index.html": "terms/index.html",
+    # Halaman panduan berdiri sendiri: tidak ada item navigasi utama yang aktif.
+    "panduan/transfer-konten-google/index.html": None,
 }
 
 WEB_URL = "https://eduquest.siapdigital.id/"
@@ -52,8 +55,13 @@ def wa_url(text):
 
 NOSCRIPT_WA_URL = wa_url(NOSCRIPT_WA_TEXT)
 
+GUIDE_PAGE = "panduan/transfer-konten-google/index.html"
+GUIDE_IMG_DIR = "assets/img/panduan/transfer-konten-google"
+GOOGLE_TRANSFER_URL = "https://takeout.google.com/transfer"
+
 ALLOWED_EXTERNAL = {
     "https://github.com/sodikinnaa/siapdigital.id/issues",
+    GOOGLE_TRANSFER_URL,
     WEB_URL,
     PLAY_TESTING_URL,
     NOSCRIPT_WA_URL,
@@ -209,7 +217,7 @@ class SiteTests(unittest.TestCase):
                 targets = [resolve(rel, href)[0] for href, _ in p.nav_links]
                 self.assertEqual(targets, NAV_TARGETS)
                 current = [resolve(rel, href)[0] for href, cur in p.nav_links if cur == "page"]
-                self.assertEqual(current, [NAV_CURRENT[rel]])
+                self.assertEqual(current, [NAV_CURRENT[rel]] if NAV_CURRENT[rel] else [])
 
     def test_document_basics(self):
         for rel, p in self.parsed.items():
@@ -299,6 +307,51 @@ class SiteTests(unittest.TestCase):
             with self.subTest(page=rel):
                 self.assertIn("Status: draf", text)
                 self.assertIn("belum tersedia", text)
+
+
+class GuidePageTests(unittest.TestCase):
+    def setUp(self):
+        self.page = parse(GUIDE_PAGE)
+        self.html = (ROOT / GUIDE_PAGE).read_text(encoding="utf-8")
+
+    def test_every_page_links_to_guide_in_footer(self):
+        for rel in PAGES:
+            with self.subTest(page=rel):
+                targets = [resolve(rel, h)[0] for _, _, h in parse(rel).links]
+                self.assertIn(GUIDE_PAGE, targets)
+
+    def test_nine_numbered_steps_each_with_screenshot(self):
+        for n in range(1, 10):
+            with self.subTest(step=n):
+                self.assertIn(f"langkah-{n}", self.page.ids)
+        srcs = sorted(resolve(GUIDE_PAGE, i["src"])[0] for i in self.page.imgs)
+        files = sorted(f"{GUIDE_IMG_DIR}/{f.name}" for f in (ROOT / GUIDE_IMG_DIR).glob("*.png"))
+        self.assertEqual(len(srcs), 9)
+        self.assertEqual(srcs, files, "setiap tangkapan layar dipakai tepat sekali")
+
+    def test_no_personal_data_in_markup(self):
+        # Panduan tidak boleh memuat alamat email asli atau token apa pun.
+        self.assertEqual(re.findall(r"[\w.+-]+@[\w-]+\.[\w.]+", self.html), [])
+        self.assertNotRegex(self.html, r"get-code/|pwd\?TL=|#inbox/")
+
+    def test_screenshots_carry_no_metadata_chunks(self):
+        # Hanya chunk gambar inti; tanpa EXIF, teks, atau profil ICC dari sumber.
+        allowed = {b"IHDR", b"IDAT", b"IEND"}
+        for f in (ROOT / GUIDE_IMG_DIR).glob("*.png"):
+            data, i, chunks = f.read_bytes(), 8, set()
+            while i < len(data):
+                length = struct.unpack(">I", data[i:i + 4])[0]
+                chunks.add(data[i + 4:i + 8])
+                i += 12 + length
+            with self.subTest(image=f.name):
+                self.assertLessEqual(chunks, allowed)
+
+    def test_states_independence_and_safety(self):
+        for phrase in ("tidak berafiliasi dengan Google", "Jangan bagikan kode",
+                       "accounts.google.com", "sudah kami buramkan"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, self.html)
+        self.assertIn(GOOGLE_TRANSFER_URL, [h for _, _, h in self.page.links])
 
 
 def to_whatsapp_number(local):

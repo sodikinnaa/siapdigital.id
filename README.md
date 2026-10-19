@@ -9,5 +9,6 @@ Situs resmi Siap Digital: katalog aplikasi, informasi produk, Kebijakan Privasi,
 - Jelajah Nusantara: `apps/jelajah-nusantara/`
 - Kebijakan Privasi: `privacy/`
 - Ketentuan Layanan: `terms/`
+- Panduan transfer akun kampus ke Gmail: `panduan/transfer-konten-google/`
 
 Website: https://sodikinnaa.github.io/siapdigital.id/
