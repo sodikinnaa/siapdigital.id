@@ -58,10 +58,15 @@ NOSCRIPT_WA_URL = wa_url(NOSCRIPT_WA_TEXT)
 GUIDE_PAGE = "panduan/transfer-konten-google/index.html"
 GUIDE_IMG_DIR = "assets/img/panduan/transfer-konten-google"
 GOOGLE_TRANSFER_URL = "https://takeout.google.com/transfer"
+SITE_URL = "https://siapdigital.id/"
+GUIDE_COVER = GUIDE_IMG_DIR + "/sampul-transfer-konten-google.jpg"
+GEMINI_WA_TEXT = "Halo, saya ingin minta informasi terkait akun Gemini Pro selama 18 bulan."
+GEMINI_WA_URL = "https://wa.me/62895353557327?text=" + encode_uri_component(GEMINI_WA_TEXT)
 
 ALLOWED_EXTERNAL = {
     "https://github.com/sodikinnaa/siapdigital.id/issues",
     GOOGLE_TRANSFER_URL,
+    GEMINI_WA_URL,
     WEB_URL,
     PLAY_TESTING_URL,
     NOSCRIPT_WA_URL,
@@ -235,10 +240,16 @@ class SiteTests(unittest.TestCase):
                 for url in re.findall(r'https?://[^\s"<>]*play\.google\.com[^\s"<>]*', text):
                     self.assertEqual(url, PLAY_TESTING_URL)
                 for url in re.findall(r'https?://[^\s"<>]*wa\.me[^\s"<>]*', text):
-                    self.assertEqual(url, NOSCRIPT_WA_URL)
+                    self.assertIn(url, (NOSCRIPT_WA_URL, GEMINI_WA_URL))
                 for url in re.findall(r'https?://[^\s"<>]+', text):
                     if urlsplit(url).netloc.endswith("siapdigital.id"):
-                        self.assertEqual(url, WEB_URL)
+                        if url.startswith(SITE_URL):
+                            # URL absolut situs sendiri (og:url/og:image) harus menunjuk berkas yang ada.
+                            local = url[len(SITE_URL):]
+                            self.assertTrue((ROOT / local).is_file()
+                                            or (ROOT / local / "index.html").is_file(), url)
+                        else:
+                            self.assertEqual(url, WEB_URL)
                 self.assertNotIn("market://", text)
 
     def test_primary_ctas_play_web_and_tester_signup(self):
@@ -320,13 +331,14 @@ class GuidePageTests(unittest.TestCase):
                 targets = [resolve(rel, h)[0] for _, _, h in parse(rel).links]
                 self.assertIn(GUIDE_PAGE, targets)
 
-    def test_nine_numbered_steps_each_with_screenshot(self):
-        for n in range(1, 10):
+    def test_ten_numbered_steps_each_with_screenshot(self):
+        for n in range(1, 11):
             with self.subTest(step=n):
                 self.assertIn(f"langkah-{n}", self.page.ids)
-        srcs = sorted(resolve(GUIDE_PAGE, i["src"])[0] for i in self.page.imgs)
+        srcs = sorted(resolve(GUIDE_PAGE, i["src"])[0] for i in self.page.imgs
+                      if i["src"].endswith(".png"))
         files = sorted(f"{GUIDE_IMG_DIR}/{f.name}" for f in (ROOT / GUIDE_IMG_DIR).glob("*.png"))
-        self.assertEqual(len(srcs), 9)
+        self.assertEqual(len(srcs), 10)
         self.assertEqual(srcs, files, "setiap tangkapan layar dipakai tepat sekali")
 
     def test_no_personal_data_in_markup(self):
@@ -352,6 +364,51 @@ class GuidePageTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.html)
         self.assertIn(GOOGLE_TRANSFER_URL, [h for _, _, h in self.page.links])
+
+    def meta(self, key):
+        return [a.get("content") for t, a in self.page.tags
+                if t == "meta" and (a.get("property") == key or a.get("name") == key)]
+
+    def test_cover_used_as_thumbnail_and_og_image(self):
+        self.assertIn(GUIDE_COVER, [resolve(GUIDE_PAGE, i["src"])[0] for i in self.page.imgs])
+        self.assertEqual(self.meta("og:image"), [SITE_URL + GUIDE_COVER])
+        self.assertEqual(self.meta("twitter:image"), [SITE_URL + GUIDE_COVER])
+        self.assertEqual(self.meta("twitter:card"), ["summary_large_image"])
+        self.assertEqual(self.meta("og:url"), [SITE_URL + "panduan/transfer-konten-google/"])
+        w, h = image_size(ROOT / GUIDE_COVER)
+        self.assertEqual(self.meta("og:image:width"), [str(w)])
+        self.assertEqual(self.meta("og:image:height"), [str(h)])
+        for key in ("og:title", "og:description", "og:image:alt"):
+            with self.subTest(key=key):
+                self.assertTrue(self.meta(key) and self.meta(key)[0].strip())
+
+    def test_ad_popup_and_static_fallback(self):
+        hrefs = [a.get("href") for t, a in self.page.tags if t == "a"]
+        self.assertEqual(hrefs.count(GEMINI_WA_URL), 2, "popup + bagian statis")
+        [dialog] = [a for t, a in self.page.tags if t == "dialog"]
+        self.assertEqual(dialog.get("id"), "promo-gemini")
+        self.assertNotIn("open", dialog)
+        for ref in (dialog["aria-labelledby"], dialog["aria-describedby"]):
+            self.assertIn(ref, self.page.ids)
+        self.assertIn('aria-label="Tutup iklan"', self.html)
+        self.assertEqual(self.html.count(">Iklan</span>"), 2, "iklan diberi label jelas")
+        self.assertIn("bukan layanan resmi Google", self.html)
+        self.assertIn("../../assets/js/promo.js", self.page.scripts)
+        for t, a in self.page.tags:
+            if t == "a" and a.get("href") == GEMINI_WA_URL:
+                self.assertEqual(a.get("rel"), "noopener")
+        js = (ROOT / "assets/js/promo.js").read_text(encoding="utf-8")
+        self.assertIn("showModal", js)
+        for bad in ("innerHTML", "fetch(", "eval(", "http"):
+            with self.subTest(bad=bad):
+                self.assertNotIn(bad, js)
+
+    def test_ad_only_on_guide_page(self):
+        for rel in PAGES:
+            if rel != GUIDE_PAGE:
+                with self.subTest(page=rel):
+                    self.assertFalse(any(x.endswith("promo.js") for x in parse(rel).scripts))
+                    self.assertNotIn("Gemini", (ROOT / rel).read_text(encoding="utf-8"))
 
 
 def to_whatsapp_number(local):
