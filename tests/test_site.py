@@ -359,7 +359,7 @@ class GuidePageTests(unittest.TestCase):
                 self.assertLessEqual(chunks, allowed)
 
     def test_states_independence_and_safety(self):
-        for phrase in ("tidak berafiliasi dengan Google", "Jangan bagikan kode",
+        for phrase in ("Jangan bagikan kode",
                        "accounts.google.com", "sudah kami buramkan"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.html)
@@ -392,7 +392,11 @@ class GuidePageTests(unittest.TestCase):
             self.assertIn(ref, self.page.ids)
         self.assertIn('aria-label="Tutup iklan"', self.html)
         self.assertEqual(self.html.count(">Iklan</span>"), 2, "iklan diberi label jelas")
-        self.assertIn("bukan layanan resmi Google", self.html)
+        # Pemilik situs meminta catatan pihak ketiga dan catatan afiliasi tidak ditampilkan.
+        for removed in ("pihak ketiga", "berafiliasi", "Oktober 2026"):
+            with self.subTest(removed=removed):
+                self.assertNotIn(removed, self.html)
+        self.assertIn('value="nanti"', self.html, "tombol Nanti saja menutup popup")
         self.assertIn("../../assets/js/promo.js", self.page.scripts)
         for t, a in self.page.tags:
             if t == "a" and a.get("href") == GEMINI_WA_URL:
