@@ -63,10 +63,14 @@ GUIDE_COVER = GUIDE_IMG_DIR + "/sampul-transfer-konten-google.jpg"
 GEMINI_WA_TEXT = "Halo, saya ingin minta informasi terkait akun Gemini Pro selama 18 bulan."
 GEMINI_WA_URL = "https://wa.me/62895353557327?text=" + encode_uri_component(GEMINI_WA_TEXT)
 
+SITE_WA_TEXT = "Halo Admin Siap Digital, saya ingin informasi lebih lanjut terkait website siapdigital.id."
+SITE_WA_URL = "https://wa.me/62895353557327?text=" + encode_uri_component(SITE_WA_TEXT)
+
 ALLOWED_EXTERNAL = {
     "https://github.com/sodikinnaa/siapdigital.id/issues",
     GOOGLE_TRANSFER_URL,
     GEMINI_WA_URL,
+    SITE_WA_URL,
     WEB_URL,
     PLAY_TESTING_URL,
     NOSCRIPT_WA_URL,
@@ -176,6 +180,24 @@ class SiteTests(unittest.TestCase):
         for rel in PAGES:
             self.assertTrue((ROOT / rel).is_file(), rel)
 
+    def test_floating_whatsapp_button_on_every_page(self):
+        for rel, p in self.parsed.items():
+            with self.subTest(page=rel):
+                floats = [a for t, a in p.tags if t == "a" and "wa-float" in a.get("class", "").split()]
+                self.assertEqual(len(floats), 1)
+                [a] = floats
+                self.assertEqual(a.get("href"), SITE_WA_URL)
+                self.assertEqual(a.get("rel"), "noopener")
+                self.assertTrue(a.get("aria-label", "").strip(), "label untuk tampilan ikon saja")
+
+    def test_admin_whatsapp_number_not_shown_as_text(self):
+        # Nomor admin hanya ada di dalam tautan tombol, tidak ditampilkan di halaman.
+        for rel in PAGES:
+            html = (ROOT / rel).read_text(encoding="utf-8")
+            visible = re.sub(r'href="[^"]*"', "", html)
+            with self.subTest(page=rel):
+                self.assertIsNone(re.search(r"0?895[\s.-]*3535[\s.-]*57327|62895353557327", visible))
+
     def test_internal_links_and_fragments_resolve(self):
         for rel, p in self.parsed.items():
             for tag, attr, href in p.links:
@@ -240,7 +262,7 @@ class SiteTests(unittest.TestCase):
                 for url in re.findall(r'https?://[^\s"<>]*play\.google\.com[^\s"<>]*', text):
                     self.assertEqual(url, PLAY_TESTING_URL)
                 for url in re.findall(r'https?://[^\s"<>]*wa\.me[^\s"<>]*', text):
-                    self.assertIn(url, (NOSCRIPT_WA_URL, GEMINI_WA_URL))
+                    self.assertIn(url, (NOSCRIPT_WA_URL, GEMINI_WA_URL, SITE_WA_URL))
                 for url in re.findall(r'https?://[^\s"<>]+', text):
                     if urlsplit(url).netloc.endswith("siapdigital.id"):
                         if url.startswith(SITE_URL):

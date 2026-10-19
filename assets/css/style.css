@@ -377,6 +377,26 @@ code {
 }
 @media (prefers-reduced-motion: reduce) { .promo-dialog[open] { animation: none; } }
 
+/* Tombol WhatsApp melayang (semua halaman) */
+.wa-float {
+  position: fixed; z-index: 60;
+  right: max(1rem, env(safe-area-inset-right, 0px)); bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  display: inline-flex; align-items: center; gap: .55rem; min-height: 52px; padding: .7rem 1.15rem .7rem .95rem;
+  border-radius: 999px; background: #0e7a3b; color: #fff; font-weight: 700; text-decoration: none;
+  box-shadow: 0 12px 28px -10px rgba(10, 60, 30, .65), 0 0 0 4px rgba(14, 122, 59, .15);
+  transition: transform .18s ease, background-color .18s ease;
+}
+.wa-float .wa-icon { width: 1.6rem; height: 1.6rem; }
+.wa-float:hover { background: #0a5c2c; color: #fff; transform: translateY(-2px); }
+.wa-float:focus-visible { outline-color: var(--navy-900); }
+/* Ruang di bawah footer agar tombol tidak menutupi tautan terakhir */
+body .site-footer { padding-bottom: 7rem; }
+@media (max-width: 520px) {
+  .wa-float { width: 56px; height: 56px; min-height: 0; padding: 0; justify-content: center; }
+  .wa-float-text { display: none; }
+  .wa-float .wa-icon { width: 1.9rem; height: 1.9rem; }
+}
+
 /* Footer */
 .site-footer { background: var(--navy-900); color: #c9d1e2; padding: 2.5rem 0; font-size: .95rem; }
 .site-footer a { color: #fff; }
@@ -390,7 +410,7 @@ code {
   @page { margin: 2cm; }
   html { scroll-padding-top: 0; }
   body { background: #fff; color: #000; font-size: 11pt; line-height: 1.5; }
-  .skip-link, .site-header, .nav-toggle, .site-footer, .toc, .btn-row, .tester-form, .promo-dialog, #gemini-pro { display: none !important; }
+  .skip-link, .site-header, .nav-toggle, .site-footer, .toc, .btn-row, .tester-form, .promo-dialog, #gemini-pro, .wa-float { display: none !important; }
   .doc { padding: 0; }
   .narrow, .container { width: auto; }
   h1, h2, h3, .eyebrow, .meta, .lead, .card p, .facts dt, .facts dd, th, a { color: #000 !important; }
