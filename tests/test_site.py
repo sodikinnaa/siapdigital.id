@@ -190,6 +190,14 @@ class SiteTests(unittest.TestCase):
                 self.assertEqual(a.get("rel"), "noopener")
                 self.assertTrue(a.get("aria-label", "").strip(), "label untuk tampilan ikon saja")
 
+    def test_admin_whatsapp_number_not_shown_as_text(self):
+        # Nomor admin hanya ada di dalam tautan tombol, tidak ditampilkan di halaman.
+        for rel in PAGES:
+            html = (ROOT / rel).read_text(encoding="utf-8")
+            visible = re.sub(r'href="[^"]*"', "", html)
+            with self.subTest(page=rel):
+                self.assertIsNone(re.search(r"0?895[\s.-]*3535[\s.-]*57327|62895353557327", visible))
+
     def test_internal_links_and_fragments_resolve(self):
         for rel, p in self.parsed.items():
             for tag, attr, href in p.links:
