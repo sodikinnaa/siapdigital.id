@@ -289,6 +289,57 @@ code {
   box-shadow: 0 24px 40px -28px rgba(15, 27, 51, .6);
 }
 
+/* Panduan: beberapa tangkapan layar per langkah, catatan di dalam langkah */
+.guide-media { display: grid; gap: 1.25rem; min-width: 0; }
+/* Dua tangkapan layar: teks langkah tetap terlihat saat gambar digulir (desktop) */
+@media (min-width: 861px) {
+  .guide-step:has(> .guide-media) > .guide-text { position: sticky; top: 5.5rem; }
+}
+.guide-text .callout { margin: .25rem 0 .75rem; font-size: .97rem; }
+.guide-text .callout p { margin: 0; }
+
+/* Kebutuhan tutorial: lima kolom muat dalam satu baris di desktop */
+.principles.requirements { grid-template-columns: repeat(auto-fit, minmax(min(11.5rem, 100%), 1fr)); }
+
+/* Alur produksi */
+.flow {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+}
+.flow li {
+  background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--teal-600);
+  border-radius: var(--radius); padding: 1.25rem;
+}
+.flow-label {
+  display: block; margin-bottom: .35rem; font-size: .78rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--teal-700);
+}
+.flow h3 { margin: 0 0 .35rem; }
+.flow p { margin: 0; color: var(--muted); }
+
+/* Daftar isi panduan */
+.guide-toc {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+}
+.guide-toc a {
+  display: grid; align-content: start; gap: .15rem; height: 100%; padding: .9rem 1.1rem; border-radius: var(--radius);
+  background: #fff; border: 1px solid var(--line); color: var(--navy-900); text-decoration: none;
+}
+.guide-toc a:hover { border-color: var(--teal-600); background: var(--teal-100); color: var(--navy-900); }
+.toc-part { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-700); }
+.toc-title { font-weight: 700; line-height: 1.35; }
+.toc-steps { font-size: .9rem; color: var(--muted); }
+.back-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 1.5rem; font-weight: 600; }
+
+/* Kartu panduan (beranda & katalog panduan) */
+.guide-card { padding: 0; overflow: hidden; gap: 0; }
+.guide-card > img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--paper-2); border-bottom: 1px solid var(--line); }
+.guide-card-body { display: flex; flex-direction: column; gap: .75rem; flex: 1; padding: 1.5rem; }
+/* .card .guide-meta mengalahkan .doc ul / .doc li (panduan/index.html memakai main.doc) */
+.card .guide-meta { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; margin: 0; padding: 0; }
+.card .guide-meta li { margin: 0; }
+
 /* Iklan */
 .btn-wa { background: #0e7a3b; color: #fff; }
 .btn-wa:hover { background: #0a5c2c; color: #fff; }
@@ -410,7 +461,7 @@ body .site-footer { padding-bottom: 7rem; }
   @page { margin: 2cm; }
   html { scroll-padding-top: 0; }
   body { background: #fff; color: #000; font-size: 11pt; line-height: 1.5; }
-  .skip-link, .site-header, .nav-toggle, .site-footer, .toc, .btn-row, .tester-form, .promo-dialog, #gemini-pro, .wa-float { display: none !important; }
+  .skip-link, .site-header, .nav-toggle, .site-footer, .toc, .btn-row, .tester-form, .promo-dialog, #gemini-pro, .wa-float, .back-link { display: none !important; }
   .doc { padding: 0; }
   .narrow, .container { width: auto; }
   h1, h2, h3, .eyebrow, .meta, .lead, .card p, .facts dt, .facts dd, th, a { color: #000 !important; }
@@ -418,7 +469,7 @@ body .site-footer { padding-bottom: 7rem; }
   .doc h2 { font-size: 15pt; margin-top: 1.5rem; }
   h2, h3 { break-after: avoid; page-break-after: avoid; }
   p, li { orphans: 3; widows: 3; }
-  tr, .callout, .card, .feature-graphic, .guide-step { break-inside: avoid; page-break-inside: avoid; }
+  tr, .callout, .card, .feature-graphic, .guide-step, .guide-shot, .flow li { break-inside: avoid; page-break-inside: avoid; }
   .callout, .callout.warn { background: none; border: 1px solid #000; border-left-width: 4px; border-radius: 0; }
   .placeholder, .badge { background: none !important; color: #000 !important; border: 1px solid #000; }
   table, th { background: none; }

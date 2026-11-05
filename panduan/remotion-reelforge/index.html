@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tutorial Remotion: Dari Ide sampai Reels Siap Tayang — Siap Digital</title>
+  <meta name="description" content="Tutorial bergambar membuat video Reels dengan Remotion dan AI: naskah dari ChatGPT, voice-over bahasa Indonesia dari Cartesia, project Remotion dari Claude, lalu render MP4 di Google Colab lewat ReelForge.">
+  <meta name="theme-color" content="#0f1b33">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Siap Digital">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:title" content="Tutorial Remotion: Dari Ide sampai Reels Siap Tayang">
+  <meta property="og:description" content="30 langkah bergambar membuat video Reels dengan ChatGPT, Cartesia, Claude, dan Remotion, lalu render MP4 di Google Colab.">
+  <meta property="og:url" content="https://siapdigital.id/panduan/remotion-reelforge/">
+  <meta property="og:image" content="https://siapdigital.id/assets/img/panduan/remotion-reelforge/sampul-remotion-reelforge.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Sampul tutorial: alur ChatGPT, Cartesia, Claude, dan ReelForge menjadi video Reels">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tutorial Remotion: Dari Ide sampai Reels Siap Tayang">
+  <meta name="twitter:description" content="Buat video Reels dengan ChatGPT, Cartesia, Claude, dan Remotion. Render MP4 di Google Colab.">
+  <meta name="twitter:image" content="https://siapdigital.id/assets/img/panduan/remotion-reelforge/sampul-remotion-reelforge.jpg">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="../../assets/js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#konten">Lewati ke konten</a>
+
+  <header class="site-header">
+    <nav class="container nav" aria-label="Navigasi utama">
+      <a class="brand" href="../../"><span class="brand-mark" aria-hidden="true">S</span>Siap Digital</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../../">Beranda</a></li>
+        <li><a href="../../apps/">Aplikasi</a></li>
+        <li><a href="../" aria-current="page">Panduan</a></li>
+        <li><a href="../../privacy/">Privasi</a></li>
+        <li><a href="../../terms/">Ketentuan</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="konten">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Panduan · Video AI</span>
+          <h1>Dari ide sampai Reels siap tayang.</h1>
+          <p class="lead">Tutorial lengkap membuat video Reels dengan ReelForge: naskah dari <strong>ChatGPT</strong>, voice-over dari <strong>Cartesia</strong>, project Remotion dari <strong>Claude</strong>, lalu render MP4 di <strong>Google Colab</strong>.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="#langkah-1">Mulai dari langkah 1</a>
+            <a class="btn btn-secondary" href="#daftar-isi">Lihat daftar isi</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-labelledby="ringkas-heading">
+          <h2 id="ringkas-heading">Sekilas</h2>
+          <ol>
+            <li>Level <strong>pemula</strong>, sekitar <strong>45 menit</strong>, 30 langkah bergambar.</li>
+            <li>Hasil: video vertikal <strong>1080×1920 (9:16)</strong> sekitar 30 detik, siap diunggah ke Reels.</li>
+            <li>Semua layanan cukup memakai <strong>akun gratis</strong>.</li>
+            <li>Render berjalan di <strong>Google Colab</strong>, tanpa instalasi di laptop.</li>
+          </ol>
+        </aside>
+      </div>
+      <figure class="container guide-cover">
+        <img src="../../assets/img/panduan/remotion-reelforge/sampul-remotion-reelforge.jpg" width="1200" height="675" alt="Sampul tutorial: naskah ChatGPT, suara Cartesia, dan project Claude diolah ReelForge menjadi video Reels vertikal" fetchpriority="high" decoding="async">
+      </figure>
+    </section>
+
+    <section class="section section-alt" id="alur" aria-labelledby="alur-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="alur-heading">Alur produksi</h2>
+          <p>Empat tahap, empat alat. Hasil tiap tahap menjadi bahan untuk tahap berikutnya.</p>
+        </div>
+        <ol class="flow">
+          <li>
+            <span class="flow-label">01 · Script</span>
+            <h3>ChatGPT</h3>
+            <p>Storyboard TXT + full voice-over</p>
+          </li>
+          <li>
+            <span class="flow-label">02 · Voice</span>
+            <h3>Cartesia</h3>
+            <p>Ubah naskah menjadi MP3 / WAV</p>
+          </li>
+          <li>
+            <span class="flow-label">03 · Motion</span>
+            <h3>Claude</h3>
+            <p>TXT + audio menjadi ZIP Remotion</p>
+          </li>
+          <li>
+            <span class="flow-label">04 · Export</span>
+            <h3>ReelForge</h3>
+            <p>Upload ZIP, render, preview MP4</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="persiapan" aria-labelledby="persiapan-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="persiapan-heading">Yang perlu disiapkan</h2>
+          <p>Semua layanan bisa dipakai gratis. Cara mendaftar ChatGPT, Claude, dan Cartesia ada di tutorial ini.</p>
+        </div>
+        <ul class="principles requirements">
+          <li>
+            <h3><a href="https://colab.research.google.com/" target="_blank" rel="noopener">Google Colab</a></h3>
+            <p>Akun Google untuk menjalankan server ReelForge (GPU T4 gratis).</p>
+          </li>
+          <li>
+            <h3><a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a></h3>
+            <p>Akun gratis untuk membuat naskah dan teks voice-over.</p>
+          </li>
+          <li>
+            <h3><a href="https://claude.ai/" target="_blank" rel="noopener">Claude</a></h3>
+            <p>Akun gratis untuk membuat project Remotion (ZIP).</p>
+          </li>
+          <li>
+            <h3><a href="https://www.cartesia.ai/" target="_blank" rel="noopener">Cartesia</a></h3>
+            <p>Akun gratis untuk text-to-speech bahasa Indonesia.</p>
+          </li>
+          <li>
+            <h3>Browser desktop</h3>
+            <p>Chrome atau Edge. Gunakan mode Incognito jika ingin memakai email khusus.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="daftar-isi" aria-labelledby="daftar-isi-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="daftar-isi-heading">Daftar isi</h2>
+          <p>Sudah punya akun ChatGPT, Claude, atau Cartesia? Lewati bagian registrasinya. Alamat email, nama, kode verifikasi, dan URL tunnel di tangkapan layar sudah kami buramkan.</p>
+        </div>
+        <ol class="guide-toc">
+          <li><a href="#colab"><span class="toc-part">Bagian 1</span><span class="toc-title">Siapkan server ReelForge di Google Colab</span><span class="toc-steps">Langkah 1–4</span></a></li>
+          <li><a href="#chatgpt"><span class="toc-part">Bagian 2</span><span class="toc-title">Registrasi ChatGPT</span><span class="toc-steps">Langkah 5–8</span></a></li>
+          <li><a href="#claude"><span class="toc-part">Bagian 3</span><span class="toc-title">Registrasi Claude</span><span class="toc-steps">Langkah 9–14</span></a></li>
+          <li><a href="#cartesia"><span class="toc-part">Bagian 4</span><span class="toc-title">Daftar Cartesia</span><span class="toc-steps">Langkah 15–18</span></a></li>
+          <li><a href="#naskah"><span class="toc-part">Bagian 5</span><span class="toc-title">Buat naskah dan voice-over text dengan ChatGPT</span><span class="toc-steps">Langkah 19–21</span></a></li>
+          <li><a href="#voice"><span class="toc-part">Bagian 6</span><span class="toc-title">Buat voice-over bahasa Indonesia di Cartesia</span><span class="toc-steps">Langkah 22–24</span></a></li>
+          <li><a href="#remotion"><span class="toc-part">Bagian 7</span><span class="toc-title">Buat project Remotion dengan Claude</span><span class="toc-steps">Langkah 25–27</span></a></li>
+          <li><a href="#render"><span class="toc-part">Bagian 8</span><span class="toc-title">Render video MP4 di ReelForge</span><span class="toc-steps">Langkah 28–30</span></a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="colab" aria-labelledby="colab-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 1 · Langkah 1–4</span>
+          <h2 id="colab-heading">Siapkan server ReelForge di Google Colab</h2>
+          <p>ReelForge berjalan sebagai notebook Colab yang menyalakan server render Remotion dan membukanya lewat Cloudflare Quick Tunnel. Cukup jalankan sekali di awal sesi.</p>
+        </div>
+
+        <ol class="guide-steps" start="1">
+          <li class="guide-step" id="langkah-1">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">1</span>
+              <h3>Buka notebook dan ubah jenis runtime</h3>
+              <p>Buka notebook ReelForge di Google Colab. Pada menu atas klik <strong>Runtime</strong>, lalu pilih <strong>Ubah jenis runtime</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/01-colab-runtime-menu.webp"><img src="../../assets/img/panduan/remotion-reelforge/01-colab-runtime-menu.webp" width="1400" height="758" alt="Google Colab: Menu Runtime → Ubah jenis runtime" loading="lazy" decoding="async"></a>
+              <figcaption>Menu Runtime → Ubah jenis runtime</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-2">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">2</span>
+              <h3>Pilih akselerator GPU T4</h3>
+              <p>Pada dialog yang muncul pilih <strong>Python 3</strong> sebagai jenis runtime dan <strong>GPU T4</strong> sebagai akselerator hardware, lalu klik <strong>Simpan</strong>.</p>
+              <div class="callout"><p><strong>Tips:</strong> GPU T4 mempercepat encoding video. Jika kuota GPU habis, render tetap bisa jalan di CPU tetapi lebih lambat.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/02-colab-pilih-gpu-t4.webp"><img src="../../assets/img/panduan/remotion-reelforge/02-colab-pilih-gpu-t4.webp" width="1400" height="758" alt="Google Colab: Akselerator hardware: GPU T4" loading="lazy" decoding="async"></a>
+              <figcaption>Akselerator hardware: GPU T4</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-3">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">3</span>
+              <h3>Jalankan semua sel</h3>
+              <p>Klik <strong>Runtime → Jalankan semua</strong> (Ctrl+F9). Saat muncul peringatan <em>Notebook ini tidak ditulis oleh Google</em>, klik <strong>Tetap jalankan</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/03-colab-peringatan-notebook.webp"><img src="../../assets/img/panduan/remotion-reelforge/03-colab-peringatan-notebook.webp" width="1400" height="758" alt="Google Colab: Klik Tetap jalankan pada peringatan" loading="lazy" decoding="async"></a>
+              <figcaption>Klik Tetap jalankan pada peringatan</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-4">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">4</span>
+              <h3>Tunggu setup selesai dan buka Web Studio</h3>
+              <p>Log akan menampilkan proses instalasi Node, Chromium, FFmpeg, dan pembuatan tunnel. Setelah muncul tombol <strong>BUKA REELFORGE WEB STUDIO</strong>, klik tombol tersebut.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Siapa pun yang memiliki URL tunnel bisa mengakses web ini. Jangan bagikan link-nya secara publik, dan biarkan tab Colab tetap terbuka selama bekerja.</p></div>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/04-colab-log-buka-studio.webp"><img src="../../assets/img/panduan/remotion-reelforge/04-colab-log-buka-studio.webp" width="1400" height="758" alt="Google Colab: Tombol BUKA REELFORGE WEB STUDIO muncul setelah setup selesai" loading="lazy" decoding="async"></a>
+                <figcaption>Tombol BUKA REELFORGE WEB STUDIO muncul setelah setup selesai</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/05-reelforge-studio.webp"><img src="../../assets/img/panduan/remotion-reelforge/05-reelforge-studio.webp" width="1400" height="764" alt="ReelForge Web Studio: Halaman ReelForge Web Studio terbuka di tab baru" loading="lazy" decoding="async"></a>
+                <figcaption>Halaman ReelForge Web Studio terbuka di tab baru</figcaption>
+              </figure>
+            </div>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="chatgpt" aria-labelledby="chatgpt-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 2 · Langkah 5–8</span>
+          <h2 id="chatgpt-heading">Registrasi ChatGPT</h2>
+          <p>ChatGPT dipakai untuk menulis storyboard dan teks voice-over. Lewati bagian ini jika sudah punya akun.</p>
+        </div>
+
+        <ol class="guide-steps" start="5">
+          <li class="guide-step" id="langkah-5">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">5</span>
+              <h3>Daftar dengan email</h3>
+              <p>Buka <a href="https://chatgpt.com/" target="_blank" rel="noopener">chatgpt.com</a>, klik <strong>Daftar gratis</strong>, lalu masukkan alamat email dan klik <strong>Lanjutkan</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/06-chatgpt-daftar.webp"><img src="../../assets/img/panduan/remotion-reelforge/06-chatgpt-daftar.webp" width="1400" height="758" alt="ChatGPT: Dialog Masuk atau daftar" loading="lazy" decoding="async"></a>
+              <figcaption>Dialog Masuk atau daftar</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-6">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">6</span>
+              <h3>Masukkan kode verifikasi</h3>
+              <p>Cek kotak masuk email, salin kode verifikasi 6 digit, lalu tempel pada kolom <strong>Kode</strong> dan klik <strong>Lanjutkan</strong>.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/07-chatgpt-cek-email.webp"><img src="../../assets/img/panduan/remotion-reelforge/07-chatgpt-cek-email.webp" width="1400" height="758" alt="ChatGPT: Halaman Cek kotak masuk Anda" loading="lazy" decoding="async"></a>
+                <figcaption>Halaman Cek kotak masuk Anda</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/08-chatgpt-kode-verifikasi.webp"><img src="../../assets/img/panduan/remotion-reelforge/08-chatgpt-kode-verifikasi.webp" width="1400" height="758" alt="ChatGPT: Kode sudah dimasukkan" loading="lazy" decoding="async"></a>
+                <figcaption>Kode sudah dimasukkan</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-7">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">7</span>
+              <h3>Isi nama dan usia</h3>
+              <p>Masukkan nama lengkap dan usia, lalu klik <strong>Lanjutkan</strong>. Setelah muncul halaman <em>Semua sudah siap</em>, klik <strong>Lanjutkan</strong> sekali lagi.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/09-chatgpt-nama-usia.webp"><img src="../../assets/img/panduan/remotion-reelforge/09-chatgpt-nama-usia.webp" width="1400" height="758" alt="ChatGPT: Form nama dan usia" loading="lazy" decoding="async"></a>
+                <figcaption>Form nama dan usia</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/10-chatgpt-semua-siap.webp"><img src="../../assets/img/panduan/remotion-reelforge/10-chatgpt-semua-siap.webp" width="1400" height="758" alt="ChatGPT: Konfirmasi akun siap" loading="lazy" decoding="async"></a>
+                <figcaption>Konfirmasi akun siap</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-8">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">8</span>
+              <h3>Beranda ChatGPT siap digunakan</h3>
+              <p>Akun sudah aktif. Biarkan tab ini terbuka, kita akan kembali ke sini pada langkah pembuatan naskah.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/11-chatgpt-beranda.webp"><img src="../../assets/img/panduan/remotion-reelforge/11-chatgpt-beranda.webp" width="1400" height="758" alt="ChatGPT: Beranda ChatGPT" loading="lazy" decoding="async"></a>
+              <figcaption>Beranda ChatGPT</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section" id="claude" aria-labelledby="claude-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 3 · Langkah 9–14</span>
+          <h2 id="claude-heading">Registrasi Claude</h2>
+          <p>Claude dipakai untuk mengubah naskah dan audio menjadi project Remotion lengkap dalam bentuk ZIP.</p>
+        </div>
+
+        <ol class="guide-steps" start="9">
+          <li class="guide-step" id="langkah-9">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">9</span>
+              <h3>Masuk dengan email</h3>
+              <p>Buka <a href="https://claude.ai/" target="_blank" rel="noopener">claude.ai</a>, masukkan alamat email, lalu klik <strong>Lanjutkan dengan email</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/12-claude-login.webp"><img src="../../assets/img/panduan/remotion-reelforge/12-claude-login.webp" width="1400" height="758" alt="Claude: Halaman masuk Claude" loading="lazy" decoding="async"></a>
+              <figcaption>Halaman masuk Claude</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-10">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">10</span>
+              <h3>Klik tombol Masuk dari email</h3>
+              <p>Buka email dari Anthropic dan klik tombol <strong>Masuk</strong>. Tautan hanya berlaku 10 menit.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/13-claude-email-masuk.webp"><img src="../../assets/img/panduan/remotion-reelforge/13-claude-email-masuk.webp" width="1400" height="727" alt="Claude: Email verifikasi Claude" loading="lazy" decoding="async"></a>
+              <figcaption>Email verifikasi Claude</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-11">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">11</span>
+              <h3>Setujui ketentuan dan buat akun</h3>
+              <p>Centang persetujuan <em>Consumer Terms</em> dan <em>Acceptable Use Policy</em>, lalu klik <strong>Buat akun</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/14-claude-buat-akun.webp"><img src="../../assets/img/panduan/remotion-reelforge/14-claude-buat-akun.webp" width="1400" height="764" alt="Claude: Halaman Mari buat akun Anda" loading="lazy" decoding="async"></a>
+              <figcaption>Halaman Mari buat akun Anda</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-12">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">12</span>
+              <h3>Pilih penggunaan pribadi, lalu lewati penawaran paket</h3>
+              <p>Pilih <strong>Untuk penggunaan pribadi</strong>. Pada halaman paket, pilih <strong>Gunakan Claude secara gratis</strong> (lewati).</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/15-claude-rencana-penggunaan.webp"><img src="../../assets/img/panduan/remotion-reelforge/15-claude-rencana-penggunaan.webp" width="1400" height="764" alt="Claude: Pilih Untuk penggunaan pribadi" loading="lazy" decoding="async"></a>
+                <figcaption>Pilih Untuk penggunaan pribadi</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/16-claude-paket.webp"><img src="../../assets/img/panduan/remotion-reelforge/16-claude-paket.webp" width="1400" height="764" alt="Claude: Pilih paket Free" loading="lazy" decoding="async"></a>
+                <figcaption>Pilih paket Free</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-13">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">13</span>
+              <h3>Lewati aplikasi desktop dan lanjutkan</h3>
+              <p>Pada halaman aplikasi desktop klik <strong>Lewati</strong>. Pada halaman <em>Sebelum chat pertama Anda</em> klik <strong>Lanjutkan</strong>.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/17-claude-aplikasi-desktop.webp"><img src="../../assets/img/panduan/remotion-reelforge/17-claude-aplikasi-desktop.webp" width="1400" height="764" alt="Claude: Penawaran aplikasi desktop, pilih Lewati" loading="lazy" decoding="async"></a>
+                <figcaption>Penawaran aplikasi desktop, pilih Lewati</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/18-claude-sebelum-chat.webp"><img src="../../assets/img/panduan/remotion-reelforge/18-claude-sebelum-chat.webp" width="1400" height="764" alt="Claude: Sebelum chat pertama, klik Lanjutkan" loading="lazy" decoding="async"></a>
+                <figcaption>Sebelum chat pertama, klik Lanjutkan</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-14">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">14</span>
+              <h3>Beranda Claude siap digunakan</h3>
+              <p>Akun Claude sudah aktif. Biarkan tab ini terbuka untuk langkah pembuatan project Remotion.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/19-claude-beranda.webp"><img src="../../assets/img/panduan/remotion-reelforge/19-claude-beranda.webp" width="1400" height="764" alt="Claude: Beranda Claude" loading="lazy" decoding="async"></a>
+              <figcaption>Beranda Claude</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="cartesia" aria-labelledby="cartesia-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 4 · Langkah 15–18</span>
+          <h2 id="cartesia-heading">Daftar Cartesia</h2>
+          <p>Cartesia menyediakan text-to-speech dengan suara bahasa Indonesia yang natural. Kuota gratisnya cukup untuk beberapa video pendek.</p>
+        </div>
+
+        <ol class="guide-steps" start="15">
+          <li class="guide-step" id="langkah-15">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">15</span>
+              <h3>Buka cartesia.ai dan klik Try Cartesia</h3>
+              <p>Kunjungi <a href="https://www.cartesia.ai/" target="_blank" rel="noopener">cartesia.ai</a>, lalu klik tombol <strong>Try Cartesia</strong> di pojok kanan atas.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/20-cartesia-landing.webp"><img src="../../assets/img/panduan/remotion-reelforge/20-cartesia-landing.webp" width="1400" height="764" alt="Cartesia: Halaman depan Cartesia" loading="lazy" decoding="async"></a>
+              <figcaption>Halaman depan Cartesia</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-16">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">16</span>
+              <h3>Isi form pendaftaran dan verifikasi email</h3>
+              <p>Isi nama depan, nama belakang, email, dan password, lalu klik <strong>Continue</strong>. Masukkan kode 6 digit yang dikirim ke email.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/21-cartesia-daftar.webp"><img src="../../assets/img/panduan/remotion-reelforge/21-cartesia-daftar.webp" width="1400" height="764" alt="Cartesia: Form pendaftaran Cartesia" loading="lazy" decoding="async"></a>
+                <figcaption>Form pendaftaran Cartesia</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/22-cartesia-kode-verifikasi.webp"><img src="../../assets/img/panduan/remotion-reelforge/22-cartesia-kode-verifikasi.webp" width="1400" height="764" alt="Cartesia: Masukkan kode verifikasi" loading="lazy" decoding="async"></a>
+                <figcaption>Masukkan kode verifikasi</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-17">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">17</span>
+              <h3>Lewati survei onboarding</h3>
+              <p>Pada pertanyaan <em>How did you hear about us?</em> klik <strong>Skip</strong>. Pada <em>Where do you want to start?</em> pilih <strong>I'm exploring</strong> atau <strong>Start with Models</strong>.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/23-cartesia-how-did-you-hear.webp"><img src="../../assets/img/panduan/remotion-reelforge/23-cartesia-how-did-you-hear.webp" width="1400" height="764" alt="Cartesia: Klik Skip" loading="lazy" decoding="async"></a>
+                <figcaption>Klik Skip</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/24-cartesia-where-to-start.webp"><img src="../../assets/img/panduan/remotion-reelforge/24-cartesia-where-to-start.webp" width="1400" height="764" alt="Cartesia: Pilih Models atau I&#x27;m exploring" loading="lazy" decoding="async"></a>
+                <figcaption>Pilih Models atau I'm exploring</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-18">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">18</span>
+              <h3>Buka menu Text-to-Speech</h3>
+              <p>Jika masuk ke halaman <em>Agents</em>, klik tab <strong>Models</strong> di pojok kiri bawah, lalu pilih menu <strong>Text-to-Speech</strong> di sidebar.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/25-cartesia-agents.webp"><img src="../../assets/img/panduan/remotion-reelforge/25-cartesia-agents.webp" width="1400" height="764" alt="Cartesia: Halaman Agents, pindah ke tab Models" loading="lazy" decoding="async"></a>
+                <figcaption>Halaman Agents, pindah ke tab Models</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/26-cartesia-text-to-speech.webp"><img src="../../assets/img/panduan/remotion-reelforge/26-cartesia-text-to-speech.webp" width="1400" height="764" alt="Cartesia: Halaman Text-to-Speech" loading="lazy" decoding="async"></a>
+                <figcaption>Halaman Text-to-Speech</figcaption>
+              </figure>
+            </div>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section" id="naskah" aria-labelledby="naskah-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 5 · Langkah 19–21</span>
+          <h2 id="naskah-heading">Buat naskah dan voice-over text dengan ChatGPT</h2>
+          <p>ReelForge menyediakan Master Prompt yang otomatis menyusun brief video. Anda cukup mengisi topik, durasi, dan gaya.</p>
+        </div>
+
+        <ol class="guide-steps" start="19">
+          <li class="guide-step" id="langkah-19">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">19</span>
+              <h3>Isi Master Prompt di ReelForge, salin bagian ChatGPT</h3>
+              <p>Di ReelForge Web Studio, bagian <strong>Prompt Library</strong>: isi <strong>Topik</strong>, <strong>Target durasi</strong>, <strong>Deskripsi</strong>, <strong>Target audiens</strong>, <strong>Call to action</strong>, dan <strong>Gaya visual</strong>. Pastikan tab <strong>ChatGPT</strong> aktif, lalu klik <strong>Salin prompt</strong>.</p>
+              <div class="callout"><p><strong>Tips:</strong> Contoh gaya visual: Kinetic Typography, Flat 2D Vector Animation, Line Art, Minimalist Monoline.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/27-reelforge-master-prompt.webp"><img src="../../assets/img/panduan/remotion-reelforge/27-reelforge-master-prompt.webp" width="1400" height="764" alt="ReelForge Web Studio: Master prompt siap copy, tab ChatGPT" loading="lazy" decoding="async"></a>
+              <figcaption>Master prompt siap copy, tab ChatGPT</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-20">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">20</span>
+              <h3>Tempel prompt di ChatGPT</h3>
+              <p>Kembali ke tab ChatGPT, tempel prompt pada kotak chat dan kirim. ChatGPT akan membuat production file lengkap (brief, storyboard, palet warna) dan <strong>FULL TEXT VOICE-OVER FINAL</strong>.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/28-chatgpt-paste-prompt.webp"><img src="../../assets/img/panduan/remotion-reelforge/28-chatgpt-paste-prompt.webp" width="1400" height="764" alt="ChatGPT: Prompt ditempel di ChatGPT" loading="lazy" decoding="async"></a>
+                <figcaption>Prompt ditempel di ChatGPT</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/29-chatgpt-output-voice-over.webp"><img src="../../assets/img/panduan/remotion-reelforge/29-chatgpt-output-voice-over.webp" width="1400" height="764" alt="ChatGPT: Output: Full text voice-over final" loading="lazy" decoding="async"></a>
+                <figcaption>Output: Full text voice-over final</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-21">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">21</span>
+              <h3>Salin teks voice-over dan unduh file TXT</h3>
+              <p>Salin seluruh teks pada bagian <strong>FULL TEXT VOICE-OVER FINAL</strong> (akan dipakai di Cartesia). Lalu unduh file <code>motion_graphic_remotion.txt</code> yang dilampirkan ChatGPT.</p>
+              <p class="step-note">Naskah ini juga menjadi acuan voice-over di storyboard. Jangan ubah isinya setelah audio dibuat agar subtitle tetap sinkron.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/33-chatgpt-download-txt.webp"><img src="../../assets/img/panduan/remotion-reelforge/33-chatgpt-download-txt.webp" width="1400" height="764" alt="ChatGPT: Unduh file TXT dari ChatGPT" loading="lazy" decoding="async"></a>
+                <figcaption>Unduh file TXT dari ChatGPT</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/34-chatgpt-production-file.webp"><img src="../../assets/img/panduan/remotion-reelforge/34-chatgpt-production-file.webp" width="1400" height="764" alt="ChatGPT: Isi production file: brief, konsep, palet warna" loading="lazy" decoding="async"></a>
+                <figcaption>Isi production file: brief, konsep, palet warna</figcaption>
+              </figure>
+            </div>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="voice" aria-labelledby="voice-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 6 · Langkah 22–24</span>
+          <h2 id="voice-heading">Buat voice-over bahasa Indonesia di Cartesia</h2>
+          <p>Ubah teks voice-over menjadi audio. Pilih suara berbahasa Indonesia agar pelafalannya natural.</p>
+        </div>
+
+        <ol class="guide-steps" start="22">
+          <li class="guide-step" id="langkah-22">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">22</span>
+              <h3>Tempel teks di Text-to-Speech</h3>
+              <p>Di halaman <strong>Text-to-Speech</strong> Cartesia, tempel teks voice-over pada kolom transcript. Lalu klik pilihan <strong>voice</strong> di panel kanan atas.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/30-cartesia-paste-teks.webp"><img src="../../assets/img/panduan/remotion-reelforge/30-cartesia-paste-teks.webp" width="1400" height="764" alt="Cartesia: Teks voice-over sudah ditempel" loading="lazy" decoding="async"></a>
+              <figcaption>Teks voice-over sudah ditempel</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-23">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">23</span>
+              <h3>Cari suara bahasa Indonesia</h3>
+              <p>Pada kotak pencarian ketik <strong>indonesia</strong>. Pilih salah satu suara, misalnya <em>Galang – Serene Communicator</em> atau <em>Intan – Service Representative</em>.</p>
+              <div class="callout"><p><strong>Tips:</strong> Klik ikon play untuk mendengar contoh sebelum memilih. Atur speed sekitar 1.0x agar durasi sesuai target.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/31-cartesia-cari-suara-indonesia.webp"><img src="../../assets/img/panduan/remotion-reelforge/31-cartesia-cari-suara-indonesia.webp" width="1400" height="764" alt="Cartesia: Daftar suara berbahasa Indonesia" loading="lazy" decoding="async"></a>
+              <figcaption>Daftar suara berbahasa Indonesia</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-24">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">24</span>
+              <h3>Klik Generate dan unduh audio</h3>
+              <p>Klik <strong>Generate</strong>. Setelah audio muncul di bagian bawah, klik ikon <strong>Download audio</strong> untuk mengunduh file WAV/MP3.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/32-cartesia-generate.webp"><img src="../../assets/img/panduan/remotion-reelforge/32-cartesia-generate.webp" width="1400" height="764" alt="Cartesia: Audio berhasil dibuat" loading="lazy" decoding="async"></a>
+                <figcaption>Audio berhasil dibuat</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/35-cartesia-download-audio.webp"><img src="../../assets/img/panduan/remotion-reelforge/35-cartesia-download-audio.webp" width="1400" height="764" alt="Cartesia: Tombol Download audio" loading="lazy" decoding="async"></a>
+                <figcaption>Tombol Download audio</figcaption>
+              </figure>
+            </div>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section" id="remotion" aria-labelledby="remotion-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 7 · Langkah 25–27</span>
+          <h2 id="remotion-heading">Buat project Remotion dengan Claude</h2>
+          <p>Claude menerima naskah TXT dan audio, lalu membuat project Remotion lengkap (komposisi, animasi, subtitle, timing) dalam satu file ZIP.</p>
+        </div>
+
+        <ol class="guide-steps" start="25">
+          <li class="guide-step" id="langkah-25">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">25</span>
+              <h3>Pilih prompt untuk Claude di ReelForge</h3>
+              <p>Kembali ke ReelForge, pada <strong>Prompt Library</strong> klik tab <strong>Claude</strong>, lalu klik <strong>Salin prompt</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/36-reelforge-prompt-claude.webp"><img src="../../assets/img/panduan/remotion-reelforge/36-reelforge-prompt-claude.webp" width="1400" height="764" alt="Claude: Master prompt, tab Claude" loading="lazy" decoding="async"></a>
+              <figcaption>Master prompt, tab Claude</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-26">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">26</span>
+              <h3>Tempel prompt ke Claude dan upload file</h3>
+              <p>Di Claude, tempel prompt pada kotak chat. Klik ikon <strong>+</strong> lalu upload file <strong>TXT</strong> dari ChatGPT dan file <strong>audio</strong> dari Cartesia. Kirim pesan.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/37-claude-paste-prompt.webp"><img src="../../assets/img/panduan/remotion-reelforge/37-claude-paste-prompt.webp" width="1400" height="764" alt="Claude: Prompt ditempel di Claude" loading="lazy" decoding="async"></a>
+                <figcaption>Prompt ditempel di Claude</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/38-claude-upload-file.webp"><img src="../../assets/img/panduan/remotion-reelforge/38-claude-upload-file.webp" width="1400" height="764" alt="Claude: File TXT dan audio terlampir" loading="lazy" decoding="async"></a>
+                <figcaption>File TXT dan audio terlampir</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-27">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">27</span>
+              <h3>Unduh file ZIP project</h3>
+              <p>Tunggu Claude selesai menyusun project. Di akhir jawaban akan ada lampiran <code>remotion_reels_remotion.zip</code>. Klik untuk mengunduhnya.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Paket Free Claude memiliki batas penggunaan per 5 jam. Jika kena batas sebelum ZIP selesai, tunggu reset lalu minta Claude melanjutkan.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/39-claude-unduh-zip.webp"><img src="../../assets/img/panduan/remotion-reelforge/39-claude-unduh-zip.webp" width="1400" height="764" alt="Claude: File ZIP siap diunduh" loading="lazy" decoding="async"></a>
+              <figcaption>File ZIP siap diunduh</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="render" aria-labelledby="render-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 8 · Langkah 28–30</span>
+          <h2 id="render-heading">Render video MP4 di ReelForge</h2>
+          <p>Langkah terakhir: upload ZIP ke ReelForge. Server di Colab akan menginstal dependency, me-render frame, dan menggabungkannya dengan audio.</p>
+        </div>
+
+        <ol class="guide-steps" start="28">
+          <li class="guide-step" id="langkah-28">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">28</span>
+              <h3>Upload ZIP dan mulai render</h3>
+              <p>Pada panel <strong>ZIP → Video MP4</strong>, seret file ZIP atau klik <strong>Pilih atau seret file ZIP</strong>. Pilih <strong>Render Mode: Auto</strong>, centang kotak konfirmasi, lalu klik <strong>Upload &amp; Render MP4</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/40-reelforge-upload-zip.webp"><img src="../../assets/img/panduan/remotion-reelforge/40-reelforge-upload-zip.webp" width="1400" height="764" alt="ReelForge Web Studio: ZIP terpilih, centang konfirmasi, lalu Upload &amp; Render" loading="lazy" decoding="async"></a>
+              <figcaption>ZIP terpilih, centang konfirmasi, lalu Upload &amp; Render</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-29">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">29</span>
+              <h3>Tunggu proses render</h3>
+              <p>Progress bar menampilkan tahap: unzip, install dependency, render frame, dan encode. Log detail bisa dilihat pada kotak hitam di bawahnya.</p>
+              <p class="step-note">Render 30 detik video biasanya memakan waktu 3–8 menit tergantung kompleksitas animasi.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/41-reelforge-render-berjalan.webp"><img src="../../assets/img/panduan/remotion-reelforge/41-reelforge-render-berjalan.webp" width="1400" height="764" alt="ReelForge Web Studio: Render berjalan, fallback ke CPU jika GPU tidak tersedia" loading="lazy" decoding="async"></a>
+              <figcaption>Render berjalan, fallback ke CPU jika GPU tidak tersedia</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-30">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">30</span>
+              <h3>Selesai, video siap diputar</h3>
+              <p>Setelah 100%, muncul bagian <strong>Video siap diputar</strong>. Putar untuk mengecek hasil, lalu unduh MP4 dan unggah ke Instagram Reels.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/42-reelforge-video-siap.webp"><img src="../../assets/img/panduan/remotion-reelforge/42-reelforge-video-siap.webp" width="1400" height="764" alt="ReelForge Web Studio: Video siap diputar dan diunduh" loading="lazy" decoding="async"></a>
+              <figcaption>Video siap diputar dan diunduh</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="tanya-jawab" aria-labelledby="faq-heading">
+      <div class="narrow">
+        <h2 id="faq-heading">Tanya jawab</h2>
+        <h3>Render gagal dengan pesan 'Lihat log untuk detail'. Apa yang harus dicek?</h3>
+        <p>Buka log di panel render. Penyebab paling umum: ZIP tidak berisi <code>package.json</code> di root, atau dependency gagal diinstal. Minta Claude memperbaiki struktur project lalu upload ulang.</p>
+        <h3>Subtitle tidak sinkron dengan suara.</h3>
+        <p>Timing subtitle dibuat Claude secara estimasi. Edit file <code>src/data/captions.ts</code> di dalam ZIP, sesuaikan waktu per kalimat, lalu zip ulang dan render kembali.</p>
+        <h3>URL ReelForge tidak bisa dibuka lagi.</h3>
+        <p>Tunnel Cloudflare mati saat runtime Colab berhenti. Jalankan ulang semua sel di Colab untuk mendapat URL baru.</p>
+        <p class="step-note">Tampilan tiap layanan bisa berubah sewaktu-waktu. Tangkapan layar diambil pada November 2026.</p>
+      </div>
+    </section>
+  </main>
+
+  <a class="wa-float" href="https://wa.me/62895353557327?text=Halo%20Admin%20Siap%20Digital%2C%20saya%20ingin%20informasi%20lebih%20lanjut%20terkait%20website%20siapdigital.id." target="_blank" rel="noopener" aria-label="Chat WhatsApp Siap Digital untuk info website"><svg class="wa-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg><span class="wa-float-text">Info website</span></a>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p><strong>Siap Digital</strong></p>
+        <p>Studio aplikasi edukasi berbahasa Indonesia.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="../../apps/">Aplikasi</a></li>
+        <li><a href="../">Panduan</a></li>
+        <li><a href="../../privacy/">Kebijakan Privasi</a></li>
+        <li><a href="../../terms/">Ketentuan Layanan</a></li>
+        <li><a href="https://github.com/sodikinnaa/siapdigital.id/issues">Masukan</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
