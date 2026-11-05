@@ -19,19 +19,23 @@ PAGES = [
     "apps/jelajah-nusantara/index.html",
     "privacy/index.html",
     "terms/index.html",
+    "panduan/index.html",
     "panduan/transfer-konten-google/index.html",
+    "panduan/remotion-reelforge/index.html",
 ]
 
 # Target navigasi utama (relatif terhadap root) dan halaman yang seharusnya aria-current.
-NAV_TARGETS = ["index.html", "apps/index.html", "privacy/index.html", "terms/index.html"]
+NAV_TARGETS = ["index.html", "apps/index.html", "panduan/index.html", "privacy/index.html", "terms/index.html"]
 NAV_CURRENT = {
     "index.html": "index.html",
     "apps/index.html": "apps/index.html",
     "apps/jelajah-nusantara/index.html": "apps/index.html",
     "privacy/index.html": "privacy/index.html",
     "terms/index.html": "terms/index.html",
-    # Halaman panduan berdiri sendiri: tidak ada item navigasi utama yang aktif.
-    "panduan/transfer-konten-google/index.html": None,
+    # Setiap panduan berada di bawah item navigasi Panduan.
+    "panduan/index.html": "panduan/index.html",
+    "panduan/transfer-konten-google/index.html": "panduan/index.html",
+    "panduan/remotion-reelforge/index.html": "panduan/index.html",
 }
 
 WEB_URL = "https://eduquest.siapdigital.id/"
@@ -66,7 +70,18 @@ GEMINI_WA_URL = "https://wa.me/62895353557327?text=" + encode_uri_component(GEMI
 SITE_WA_TEXT = "Halo Admin Siap Digital, saya ingin informasi lebih lanjut terkait website siapdigital.id."
 SITE_WA_URL = "https://wa.me/62895353557327?text=" + encode_uri_component(SITE_WA_TEXT)
 
-ALLOWED_EXTERNAL = {
+GUIDE_HUB = "panduan/index.html"
+REMOTION_PAGE = "panduan/remotion-reelforge/index.html"
+REMOTION_IMG_DIR = "assets/img/panduan/remotion-reelforge"
+REMOTION_COVER = REMOTION_IMG_DIR + "/sampul-remotion-reelforge.jpg"
+REMOTION_SERVICE_URLS = {
+    "https://colab.research.google.com/",
+    "https://chatgpt.com/",
+    "https://claude.ai/",
+    "https://www.cartesia.ai/",
+}
+
+ALLOWED_EXTERNAL = REMOTION_SERVICE_URLS | {
     "https://github.com/sodikinnaa/siapdigital.id/issues",
     GOOGLE_TRANSFER_URL,
     GEMINI_WA_URL,
@@ -156,11 +171,31 @@ def resolve(page_rel, href):
     return target, parts.fragment
 
 
+def webp_chunks(data):
+    """Daftar FourCC chunk di dalam berkas WebP (RIFF)."""
+    chunks, i = [], 12
+    while i + 8 <= len(data):
+        length = struct.unpack("<I", data[i + 4:i + 8])[0]
+        chunks.append(data[i:i + 4])
+        i += 8 + length + (length & 1)
+    return chunks
+
+
 def image_size(path):
-    """Dimensi intrinsik (lebar, tinggi) PNG/JPEG tanpa dependensi."""
+    """Dimensi intrinsik (lebar, tinggi) PNG/JPEG/WebP tanpa dependensi."""
     data = path.read_bytes()
     if data.startswith(b"\x89PNG\r\n\x1a\n"):
         return struct.unpack(">II", data[16:24])
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        kind = data[12:16]
+        if kind == b"VP8 ":
+            w, h = struct.unpack("<HH", data[26:30])
+            return w & 0x3FFF, h & 0x3FFF
+        if kind == b"VP8L":
+            bits = int.from_bytes(data[21:25], "little")
+            return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+        if kind == b"VP8X":
+            return int.from_bytes(data[24:27], "little") + 1, int.from_bytes(data[27:30], "little") + 1
     if data.startswith(b"\xff\xd8"):
         i = 2
         while i < len(data):
@@ -347,11 +382,20 @@ class GuidePageTests(unittest.TestCase):
         self.page = parse(GUIDE_PAGE)
         self.html = (ROOT / GUIDE_PAGE).read_text(encoding="utf-8")
 
-    def test_every_page_links_to_guide_in_footer(self):
+    def test_every_page_links_to_guide_hub_in_footer(self):
         for rel in PAGES:
+            footer = (ROOT / rel).read_text(encoding="utf-8").split('<footer class="site-footer">', 1)[1]
+            p = PageParser()
+            p.feed(footer)
             with self.subTest(page=rel):
-                targets = [resolve(rel, h)[0] for _, _, h in parse(rel).links]
-                self.assertIn(GUIDE_PAGE, targets)
+                self.assertIn(GUIDE_HUB, [resolve(rel, h)[0] for _, _, h in p.links])
+
+    def test_hub_and_home_link_every_guide(self):
+        for rel in (GUIDE_HUB, "index.html"):
+            targets = [resolve(rel, h)[0] for _, _, h in parse(rel).links]
+            for guide in (GUIDE_PAGE, REMOTION_PAGE):
+                with self.subTest(page=rel, guide=guide):
+                    self.assertIn(guide, targets)
 
     def test_ten_numbered_steps_each_with_screenshot(self):
         for n in range(1, 11):
@@ -435,6 +479,80 @@ class GuidePageTests(unittest.TestCase):
                 with self.subTest(page=rel):
                     self.assertFalse(any(x.endswith("promo.js") for x in parse(rel).scripts))
                     self.assertNotIn("Gemini", (ROOT / rel).read_text(encoding="utf-8"))
+
+
+class RemotionTutorialTests(unittest.TestCase):
+    def setUp(self):
+        self.page = parse(REMOTION_PAGE)
+        self.html = (ROOT / REMOTION_PAGE).read_text(encoding="utf-8")
+
+    def meta(self, key):
+        return [a.get("content") for t, a in self.page.tags
+                if t == "meta" and (a.get("property") == key or a.get("name") == key)]
+
+    def test_thirty_numbered_steps_in_eight_sections(self):
+        for n in range(1, 31):
+            with self.subTest(step=n):
+                self.assertIn(f"langkah-{n}", self.page.ids)
+        self.assertNotIn("langkah-31", self.page.ids)
+        sections = ("colab", "chatgpt", "claude", "cartesia", "naskah", "voice", "remotion", "render")
+        toc = [h for t, a in self.page.tags if t == "a" for h in [a.get("href", "")] if h.startswith("#")]
+        for sec in sections:
+            with self.subTest(section=sec):
+                self.assertIn(sec, self.page.ids)
+                self.assertIn("#" + sec, toc, "daftar isi menautkan setiap bagian")
+
+    def test_every_screenshot_used_exactly_once(self):
+        srcs = [resolve(REMOTION_PAGE, i["src"])[0] for i in self.page.imgs if i["src"].endswith(".webp")]
+        files = sorted(f"{REMOTION_IMG_DIR}/{f.name}" for f in (ROOT / REMOTION_IMG_DIR).glob("*.webp"))
+        self.assertEqual(len(files), 42)
+        self.assertEqual(sorted(srcs), files)
+        # Setiap tangkapan layar dapat dibuka dalam ukuran penuh.
+        hrefs = {resolve(REMOTION_PAGE, h)[0] for t, a, h in self.page.links if t == "a"}
+        self.assertLessEqual(set(srcs), hrefs)
+
+    def test_no_personal_data_in_markup(self):
+        self.assertEqual(re.findall(r"[\w.+-]+@[\w-]+\.[\w.]+", self.html), [])
+        # Nama akun di tangkapan layar ("sodikin"/"sodikinn"), bukan nama pemilik repo GitHub.
+        for bad in (r"semeruexpose", r"\bsodikinn?\b", r"aguzza", r"trycloudflare\.com/",
+                    r"colab\.research\.google\.com/drive"):
+            with self.subTest(bad=bad):
+                self.assertIsNone(re.search(bad, self.html))
+        self.assertIn("sudah kami buramkan", self.html)
+
+    def test_screenshots_carry_no_metadata_chunks(self):
+        for f in (ROOT / REMOTION_IMG_DIR).glob("*.webp"):
+            with self.subTest(image=f.name):
+                self.assertEqual(webp_chunks(f.read_bytes()), [b"VP8 "])
+                self.assertEqual(image_size(f)[0], 1400)
+
+    def test_cover_used_as_thumbnail_and_og_image(self):
+        self.assertIn(REMOTION_COVER, [resolve(REMOTION_PAGE, i["src"])[0] for i in self.page.imgs])
+        self.assertEqual(self.meta("og:image"), [SITE_URL + REMOTION_COVER])
+        self.assertEqual(self.meta("twitter:image"), [SITE_URL + REMOTION_COVER])
+        self.assertEqual(self.meta("og:url"), [SITE_URL + "panduan/remotion-reelforge/"])
+        w, h = image_size(ROOT / REMOTION_COVER)
+        self.assertEqual((w, h), (1200, 675))
+        self.assertEqual(self.meta("og:image:width"), [str(w)])
+        self.assertEqual(self.meta("og:image:height"), [str(h)])
+        for key in ("og:title", "og:description", "og:image:alt", "twitter:card"):
+            with self.subTest(key=key):
+                self.assertTrue(self.meta(key) and self.meta(key)[0].strip())
+
+    def test_service_links_open_safely(self):
+        external = [a for t, a in self.page.tags if t == "a" and a.get("href") in REMOTION_SERVICE_URLS]
+        self.assertEqual({a["href"] for a in external}, REMOTION_SERVICE_URLS)
+        for a in external:
+            with self.subTest(href=a["href"]):
+                self.assertEqual(a.get("target"), "_blank")
+                self.assertEqual(a.get("rel"), "noopener")
+
+    def test_safety_warnings_kept(self):
+        for phrase in ("Siapa pun yang memiliki URL tunnel", "Jangan bagikan link-nya",
+                       "batas penggunaan per 5 jam", "1080×1920"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, self.html)
+        self.assertEqual(self.html.count('class="callout warn"'), 2)
 
 
 def to_whatsapp_number(local):

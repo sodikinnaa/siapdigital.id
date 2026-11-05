@@ -1,6 +1,6 @@
 # Siap Digital
 
-Situs resmi Siap Digital: katalog aplikasi, informasi produk, Kebijakan Privasi, dan Ketentuan Layanan.
+Situs resmi Siap Digital: katalog aplikasi, informasi produk, panduan bergambar, Kebijakan Privasi, dan Ketentuan Layanan.
 
 ## Halaman
 
@@ -9,6 +9,16 @@ Situs resmi Siap Digital: katalog aplikasi, informasi produk, Kebijakan Privasi,
 - Jelajah Nusantara: `apps/jelajah-nusantara/`
 - Kebijakan Privasi: `privacy/`
 - Ketentuan Layanan: `terms/`
+- Katalog panduan: `panduan/`
 - Panduan transfer akun kampus ke Gmail: `panduan/transfer-konten-google/`
+- Tutorial Remotion (ReelForge: ChatGPT → Cartesia → Claude → render MP4): `panduan/remotion-reelforge/`
 
 Website: https://sodikinnaa.github.io/siapdigital.id/
+
+## Pengujian
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+Tes memeriksa tautan internal, navigasi, dimensi gambar (PNG/JPEG/WebP), metadata tangkapan layar, dan konten wajib tiap halaman.
