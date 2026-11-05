@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generator Prompt ChatGPT untuk Naskah Reels — Siap Digital</title>
+  <meta name="description" content="Isi topik, durasi, dan gaya video, lalu salin prompt ChatGPT ReelForge untuk membuat storyboard TXT dan teks voice-over final video Reels.">
+  <meta name="theme-color" content="#0f1b33">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Siap Digital">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:title" content="Generator Prompt ChatGPT: Storyboard &amp; Voice-over Reels">
+  <meta property="og:description" content="Isi topik, durasi, dan gaya video, lalu salin prompt ChatGPT ReelForge untuk membuat storyboard TXT dan teks voice-over final video Reels.">
+  <meta property="og:url" content="https://siapdigital.id/panduan/remotion-reelforge/prompt-chatgpt/">
+  <meta property="og:image" content="https://siapdigital.id/assets/img/panduan/remotion-reelforge/sampul-remotion-reelforge.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Sampul tutorial Remotion: alur ChatGPT, Cartesia, Claude, dan ReelForge menjadi video Reels">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../assets/css/style.css">
+  <script src="../../../assets/js/main.js" defer></script>
+  <script src="../../../assets/js/prompt-generator.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#konten">Lewati ke konten</a>
+
+  <header class="site-header">
+    <nav class="container nav" aria-label="Navigasi utama">
+      <a class="brand" href="../../../"><span class="brand-mark" aria-hidden="true">S</span>Siap Digital</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../../../">Beranda</a></li>
+        <li><a href="../../../apps/">Aplikasi</a></li>
+        <li><a href="../../" aria-current="page">Panduan</a></li>
+        <li><a href="../../../privacy/">Privasi</a></li>
+        <li><a href="../../../terms/">Ketentuan</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="konten">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <nav class="crumbs" aria-label="Lokasi halaman">
+            <ol>
+              <li><a href="../../">Panduan</a></li>
+              <li><a href="../">Tutorial Remotion</a></li>
+              <li>Prompt ChatGPT</li>
+            </ol>
+          </nav>
+          <span class="eyebrow">Tutorial Remotion · Alat 1 dari 2</span>
+          <h1>Generator prompt ChatGPT</h1>
+          <p class="lead">Isi detail video sekali, lalu salin prompt untuk ChatGPT. Hasilnya <strong>storyboard TXT</strong> dan <strong>teks voice-over final</strong> yang siap diubah jadi suara di Cartesia.</p>
+          <ol class="prompt-steps" aria-label="Urutan prompt">
+            <li><a href="./" aria-current="page"><span class="ps-no" aria-hidden="true">1</span><span><strong>ChatGPT</strong><small>Storyboard + voice-over</small></span></a></li>
+            <li><a href="../prompt-claude/"><span class="ps-no" aria-hidden="true">2</span><span><strong>Claude</strong><small>Project Remotion ZIP</small></span></a></li>
+          </ol>
+        </div>
+        <aside class="hero-panel" aria-labelledby="butuh-heading">
+          <h2 id="butuh-heading">Yang Anda butuhkan</h2>
+          <ol>
+            <li>Akun <strong>ChatGPT</strong> (gratis cukup).</li>
+            <li>Topik video dan <strong>fitur yang benar-benar ada</strong>.</li>
+            <li>Sekitar <strong>5 menit</strong> untuk mengisi dan menyalin.</li>
+          </ol>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="generator" aria-label="Generator prompt ChatGPT">
+      <div class="container prompt-grid">
+        <form class="card prompt-form" id="prompt-form" data-kind="gpt" aria-labelledby="form-heading" hidden data-js-only>
+          <div class="prompt-form-head">
+            <h2 id="form-heading">Detail video</h2>
+            <div class="prompt-form-tools">
+              <button type="button" class="btn-ghost" id="prompt-example">Isi contoh</button>
+              <button type="button" class="btn-ghost" id="prompt-reset">Kosongkan</button>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="pf-topic">Topik <span class="req">(wajib)</span></label>
+              <input id="pf-topic" name="topic" type="text" maxlength="120" autocomplete="off" placeholder="Contoh: CLI Proxy" required>
+            </div>
+            <div class="field">
+              <label for="pf-duration">Target durasi <span class="opt">(detik)</span></label>
+              <input id="pf-duration" name="duration" type="number" min="5" max="180" step="1" value="20" inputmode="numeric" aria-describedby="pf-duration-help">
+              <p class="field-help" id="pf-duration-help">5–180, misalnya 15, 20, atau 45.</p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="pf-description">Deskripsi / fitur produk <span class="req">(wajib)</span></label>
+            <textarea id="pf-description" name="description" maxlength="1000" rows="3" placeholder="Apa produk ini dan fitur apa yang benar-benar dimiliki?" required aria-describedby="pf-description-help"></textarea>
+            <p class="field-help" id="pf-description-help">Tulis fitur yang benar-benar ada. Prompt melarang ChatGPT mengarang fitur atau klaim.</p>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="pf-audience">Target audiens</label>
+              <input id="pf-audience" name="audience" type="text" maxlength="200" autocomplete="off" placeholder="Contoh: Developer, pemula AI">
+            </div>
+            <div class="field">
+              <label for="pf-cta">Call to action</label>
+              <input id="pf-cta" name="cta" type="text" maxlength="200" autocomplete="off" placeholder="Contoh: Follow untuk tutorial berikutnya">
+            </div>
+          </div>
+          <div class="field">
+            <label for="pf-style">Gaya visual</label>
+            <input id="pf-style" name="style" type="text" maxlength="300" autocomplete="off" placeholder="Tulis sendiri atau pilih di bawah" aria-describedby="pf-style-help">
+            <p class="field-help" id="pf-style-help">Kosong berarti “modern premium”.</p>
+            <div class="chip-row" role="group" aria-label="Pilihan gaya visual">
+              <button type="button" class="chip-toggle" data-style="Kinetic Typography" aria-pressed="false">Kinetic Typography</button>
+              <button type="button" class="chip-toggle" data-style="Flat 2D Vector Animation" aria-pressed="false">Flat 2D Vector Animation</button>
+              <button type="button" class="chip-toggle" data-style="Line Art" aria-pressed="false">Line Art</button>
+              <button type="button" class="chip-toggle" data-style="Minimalist Monoline" aria-pressed="false">Minimalist Monoline</button>
+              <button type="button" class="chip-toggle" data-style="Premium dark tech" aria-pressed="false">Premium dark tech</button>
+              <button type="button" class="chip-toggle" data-style="Cinematic terminal UI" aria-pressed="false">Cinematic terminal UI</button>
+            </div>
+          </div>
+          <p class="form-note">Isian tersimpan otomatis di browser ini saja, tidak dikirim ke server, dan ikut terpakai di halaman prompt Claude.</p>
+        </form>
+
+        <section class="prompt-panel" aria-labelledby="output-heading">
+          <div class="prompt-panel-head">
+            <div>
+              <span class="prompt-kicker">Prompt ChatGPT</span>
+              <h2 id="output-heading">Storyboard &amp; voice-over</h2>
+            </div>
+            <span class="prompt-count" id="prompt-count"></span>
+          </div>
+          <label class="sr-only" for="prompt-output">Teks prompt chatgpt siap salin</label>
+          <textarea class="prompt-text" id="prompt-output" readonly spellcheck="false" rows="18">ROLE: CREATIVE DIRECTOR &amp; REELS SCRIPTWRITER
+
+Buat satu file TXT production-ready untuk video Instagram Reels yang akan dikerjakan di Claude menggunakan Remotion.
+
+INPUT:
+Topik: [ISI TOPIK]
+Penjelasan / sumber fitur: [ISI DESKRIPSI]
+Audiens: [ISI AUDIENS]
+CTA: [ISI CTA]
+Target durasi: 15-20 detik; 1080x1920; 30 FPS; Bahasa Indonesia.
+
+WAJIB DI FILE TXT:
+A. Brief: tujuan, pesan utama, konsep, palet warna HEX, font, estetika.
+B. Storyboard per PART: timestamp estimasi, tujuan, exact voice-over, teks layar, komposisi, animasi dan transisi, efek suara, catatan teknis Remotion.
+C. Aset: komponen SVG/CSS yang perlu dibuat dan aset opsional.
+D. Aturan timing: waktu storyboard hanya estimasi; audio Cartesia adalah acuan akhir; safe area Reels; jangan potong narasi.
+E. FULL TEXT VOICE-OVER FINAL: satu paragraf bersih tanpa timestamp / arahan. Harus sama persis dengan gabungan voice-over per part, agar dapat langsung ditempel ke Cartesia.
+F. INSTRUKSI UNTUK CLAUDE: gunakan file audio asli Cartesia, jangan buat voice baru, sinkronkan visual dan subtitle dengan audio, output project Remotion source lengkap dalam ZIP.
+
+Prioritaskan hook 1-3 detik, satu pesan kuat, visual premium dan natural; jangan mengarang fitur atau klaim produk. Sesuaikan jumlah kata agar durasi realistis mendekati 15-20 detik; bila lebih, ringkas naskah sebelum final. Angka target durasi di konfigurasi adalah pilihan pengguna dan mengutamakan kecocokan audio final.
+
+OUTPUT:
+1. Buat file TXT bernama motion_graphic_[topik].txt yang dapat diunduh.
+2. Tampilkan kembali hanya FULL TEXT VOICE-OVER FINAL terpisah di chat agar bisa disalin ke Cartesia.
+3. Pastikan tidak ada perbedaan kalimat antara storyboard, full text dalam TXT, dan teks yang ditampilkan di chat.
+
+Tambahan: tentukan rekomendasi visual dan animasi yang dapat diimplementasikan tanpa library eksternal di luar Remotion, React, TypeScript, CSS dan SVG. Sertakan instruksi Claude agar package.json dan package-lock.json konsisten serta semua aset lokal.</textarea>
+          <noscript><p class="prompt-note">JavaScript nonaktif: salin teks di atas, lalu ganti penanda <code>[ISI TOPIK]</code>, <code>[ISI DESKRIPSI]</code>, <code>[ISI AUDIENS]</code>, dan <code>[ISI CTA]</code> secara manual.</p></noscript>
+          <div class="prompt-actions">
+            <button type="button" class="btn btn-copy" id="prompt-copy" hidden data-js-only>Salin prompt</button>
+            <a class="btn btn-on-dark" href="https://chatgpt.com/" target="_blank" rel="noopener">Buka ChatGPT ↗</a>
+          </div>
+          <p class="prompt-status" id="prompt-status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </section>
+
+    <section class="section" id="cara-pakai" aria-labelledby="cara-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="cara-heading">Cara pakai</h2>
+          <p>Panduan lengkap dengan tangkapan layar ada di <a href="../">tutorial Remotion</a>.</p>
+        </div>
+        <ol class="principles how-steps">
+          <li>
+            <h3>Isi detail video</h3>
+            <p>Topik dan deskripsi wajib diisi. Pilih gaya visual atau tulis sendiri.</p>
+          </li>
+          <li>
+            <h3>Salin dan kirim ke ChatGPT</h3>
+            <p>ChatGPT membuat file <code>motion_graphic_[topik].txt</code> dan menampilkan <strong>FULL TEXT VOICE-OVER FINAL</strong>. Lihat <a href="../#langkah-20">langkah 20–21</a>.</p>
+          </li>
+          <li>
+            <h3>Ubah jadi suara di Cartesia</h3>
+            <p>Tempel teks voice-over di Cartesia, pilih suara bahasa Indonesia, lalu unduh audionya. Lihat <a href="../#langkah-22">langkah 22–24</a>.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="lanjut" aria-labelledby="lanjut-heading">
+      <div class="container">
+        <div class="card next-step">
+          <span class="eyebrow">Langkah berikutnya</span>
+          <h2 id="lanjut-heading">Prompt Claude untuk project Remotion</h2>
+          <p>Sudah punya file TXT dari ChatGPT dan audio dari Cartesia? Buat project Remotion dengan Claude. Isian di halaman ini ikut terbawa.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="../prompt-claude/">Lanjut ke prompt Claude →</a>
+            <a class="btn btn-secondary" href="../">Baca tutorial lengkap</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <a class="wa-float" href="https://wa.me/62895353557327?text=Halo%20Admin%20Siap%20Digital%2C%20saya%20ingin%20informasi%20lebih%20lanjut%20terkait%20website%20siapdigital.id." target="_blank" rel="noopener" aria-label="Chat WhatsApp Siap Digital untuk info website"><svg class="wa-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg><span class="wa-float-text">Info website</span></a>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p><strong>Siap Digital</strong></p>
+        <p>Studio aplikasi edukasi berbahasa Indonesia.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="../../../apps/">Aplikasi</a></li>
+        <li><a href="../../">Panduan</a></li>
+        <li><a href="../../../privacy/">Kebijakan Privasi</a></li>
+        <li><a href="../../../terms/">Ketentuan Layanan</a></li>
+        <li><a href="https://github.com/sodikinnaa/siapdigital.id/issues">Masukan</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
