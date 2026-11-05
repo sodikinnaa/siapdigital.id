@@ -80,8 +80,10 @@ REMOTION_SERVICE_URLS = {
     "https://claude.ai/",
     "https://www.cartesia.ai/",
 }
+REELFORGE_NOTEBOOK_URL = "https://colab.research.google.com/drive/1jjNd_7Rx0eOxNXgsuxftZmg6bxrzBcDN?usp=sharing"
 
 ALLOWED_EXTERNAL = REMOTION_SERVICE_URLS | {
+    REELFORGE_NOTEBOOK_URL,
     "https://github.com/sodikinnaa/siapdigital.id/issues",
     GOOGLE_TRANSFER_URL,
     GEMINI_WA_URL,
@@ -514,11 +516,22 @@ class RemotionTutorialTests(unittest.TestCase):
     def test_no_personal_data_in_markup(self):
         self.assertEqual(re.findall(r"[\w.+-]+@[\w-]+\.[\w.]+", self.html), [])
         # Nama akun di tangkapan layar ("sodikin"/"sodikinn"), bukan nama pemilik repo GitHub.
-        for bad in (r"semeruexpose", r"\bsodikinn?\b", r"aguzza", r"trycloudflare\.com/",
-                    r"colab\.research\.google\.com/drive"):
+        for bad in (r"semeruexpose", r"\bsodikinn?\b", r"aguzza", r"trycloudflare\.com/"):
             with self.subTest(bad=bad):
                 self.assertIsNone(re.search(bad, self.html))
         self.assertIn("sudah kami buramkan", self.html)
+        # Satu-satunya tautan Drive/Colab spesifik adalah notebook ReelForge resmi.
+        drive_links = re.findall(r'https://colab\.research\.google\.com/drive/[^"\s<]*', self.html)
+        self.assertTrue(drive_links)
+        self.assertEqual(set(drive_links), {REELFORGE_NOTEBOOK_URL})
+
+    def test_notebook_link_in_hero_and_first_step(self):
+        hero = self.html.split('<section class="hero">', 1)[1].split("</section>", 1)[0]
+        step1 = self.html.split('id="langkah-1"', 1)[1].split("</li>", 1)[0]
+        for where, block in (("hero", hero), ("langkah-1", step1)):
+            with self.subTest(where=where):
+                self.assertIn(f'href="{REELFORGE_NOTEBOOK_URL}" target="_blank" rel="noopener"', block)
+        self.assertIn(">Buka notebook ReelForge</a>", step1)
 
     def test_screenshots_carry_no_metadata_chunks(self):
         for f in (ROOT / REMOTION_IMG_DIR).glob("*.webp"):

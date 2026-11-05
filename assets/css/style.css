@@ -297,6 +297,7 @@ code {
 }
 .guide-text .callout { margin: .25rem 0 .75rem; font-size: .97rem; }
 .guide-text .callout p { margin: 0; }
+.guide-text > .btn { margin: 0 0 .75rem; }
 
 /* Kebutuhan tutorial: lima kolom muat dalam satu baris di desktop */
 .principles.requirements { grid-template-columns: repeat(auto-fit, minmax(min(11.5rem, 100%), 1fr)); }
