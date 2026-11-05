@@ -12,6 +12,8 @@ Situs resmi Siap Digital: katalog aplikasi, informasi produk, panduan bergambar,
 - Katalog panduan: `panduan/`
 - Panduan transfer akun kampus ke Gmail: `panduan/transfer-konten-google/`
 - Tutorial Remotion (ReelForge: ChatGPT → Cartesia → Claude → render MP4): `panduan/remotion-reelforge/`
+- Generator prompt ChatGPT: `panduan/remotion-reelforge/prompt-chatgpt/`
+- Generator prompt Claude: `panduan/remotion-reelforge/prompt-claude/`
 
 Website: https://sodikinnaa.github.io/siapdigital.id/
 
@@ -21,4 +23,4 @@ Website: https://sodikinnaa.github.io/siapdigital.id/
 python3 -m unittest discover -s tests
 ```
 
-Tes memeriksa tautan internal, navigasi, dimensi gambar (PNG/JPEG/WebP), metadata tangkapan layar, dan konten wajib tiap halaman.
+Tes memeriksa tautan internal, navigasi, dimensi gambar (PNG/JPEG/WebP), metadata tangkapan layar, konten wajib tiap halaman, serta template dan logika generator prompt (dijalankan di Node bila tersedia).

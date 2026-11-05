@@ -1,12 +1,15 @@
 """Validasi tautan dan struktur situs statis (hanya pustaka standar)."""
 
+import hashlib
 import json
+import math
 import posixpath
 import re
 import shutil
 import struct
 import subprocess
 import unittest
+from html import unescape as html_unescape
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import quote, urlsplit
@@ -22,6 +25,8 @@ PAGES = [
     "panduan/index.html",
     "panduan/transfer-konten-google/index.html",
     "panduan/remotion-reelforge/index.html",
+    "panduan/remotion-reelforge/prompt-chatgpt/index.html",
+    "panduan/remotion-reelforge/prompt-claude/index.html",
 ]
 
 # Target navigasi utama (relatif terhadap root) dan halaman yang seharusnya aria-current.
@@ -36,6 +41,8 @@ NAV_CURRENT = {
     "panduan/index.html": "panduan/index.html",
     "panduan/transfer-konten-google/index.html": "panduan/index.html",
     "panduan/remotion-reelforge/index.html": "panduan/index.html",
+    "panduan/remotion-reelforge/prompt-chatgpt/index.html": "panduan/index.html",
+    "panduan/remotion-reelforge/prompt-claude/index.html": "panduan/index.html",
 }
 
 WEB_URL = "https://eduquest.siapdigital.id/"
@@ -566,6 +573,157 @@ class RemotionTutorialTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.html)
         self.assertEqual(self.html.count('class="callout warn"'), 2)
+
+
+PROMPT_PAGES = {
+    "gpt": "panduan/remotion-reelforge/prompt-chatgpt/index.html",
+    "claude": "panduan/remotion-reelforge/prompt-claude/index.html",
+}
+PROMPT_JS = "assets/js/prompt-generator.js"
+# SHA-256 template ReelForge V5.4 (variabel PROMPTS di notebook); berubah hanya jika template sengaja diganti.
+PROMPT_TEMPLATE_SHA256 = {
+    "gpt": "f91edc008f0abbb6e949c4bf578fb2504e17656fc53b6f3a5c4c5259afad7cc8",
+    "claude": "c197aec64e78bcb25a183085c9f8f92ddf4936182a0fa327917de04f28972ba4",
+}
+
+
+def prompt_template(rel):
+    raw = re.search(r'<textarea class="prompt-text" id="prompt-output"[^>]*>(.*?)</textarea>',
+                    (ROOT / rel).read_text(encoding="utf-8"), re.S).group(1)
+    return html_unescape(raw)
+
+
+def py_duration(value):
+    """Padanan durationLabel: Number() JS, rentang 5–180, Math.round (setengah ke atas)."""
+    s = value.strip()
+    try:
+        x = float(s) if s else 0.0
+    except ValueError:
+        return "20 detik"
+    return f"{math.floor(x + 0.5)} detik" if math.isfinite(x) and 5 <= x <= 180 else "20 detik"
+
+
+def py_build_prompt(kind, template, raw):
+    """Implementasi ulang makePrompt ReelForge V5.4 sebagai acuan."""
+    g = lambda k: str(raw.get(k, "")).strip()
+    v = {"topic": g("topic") or "[ISI TOPIK]", "description": g("description") or "[ISI DESKRIPSI]",
+         "audience": g("audience") or "[ISI AUDIENS]", "cta": g("cta") or "[ISI CTA]",
+         "duration": py_duration(g("duration")), "style": g("style") or "modern premium"}
+    head = (f"Topik: {v['topic']}\nDeskripsi: {v['description']}\nAudiens: {v['audience']}\nCTA: {v['cta']}\n")
+    if kind == "gpt":
+        t = template
+        for a, b in (("[ISI TOPIK]", v["topic"]), ("[ISI DESKRIPSI]", v["description"]),
+                     ("[ISI AUDIENS]", v["audience"]), ("[ISI CTA]", v["cta"]), ("15-20 detik", v["duration"])):
+            t = t.replace(a, b)
+        return f"KONFIGURASI VIDEO\n{head}Durasi: {v['duration']}\nGaya visual: {v['style']}\n\n{t}"
+    return (f"KONFIGURASI PROJECT (IKUTI TXT & AUDIO TERLAMPIR)\n{head}Target durasi: {v['duration']}\n"
+            f"Gaya visual: {v['style']}\n\n" + template.replace("15-20 detik", v["duration"]))
+
+
+class PromptGeneratorTests(unittest.TestCase):
+    def setUp(self):
+        self.pages = {k: parse(rel) for k, rel in PROMPT_PAGES.items()}
+        self.html = {k: (ROOT / rel).read_text(encoding="utf-8") for k, rel in PROMPT_PAGES.items()}
+        self.js = (ROOT / PROMPT_JS).read_text(encoding="utf-8")
+
+    def test_templates_are_reelforge_v54(self):
+        for kind, rel in PROMPT_PAGES.items():
+            tpl = prompt_template(rel)
+            with self.subTest(kind=kind):
+                self.assertEqual(hashlib.sha256(tpl.encode("utf-8")).hexdigest(), PROMPT_TEMPLATE_SHA256[kind])
+        self.assertIn("[ISI TOPIK]", prompt_template(PROMPT_PAGES["gpt"]))
+        self.assertIn("MainReel", prompt_template(PROMPT_PAGES["claude"]))
+
+    def test_form_and_output_markup(self):
+        for kind, p in self.pages.items():
+            tags = {a.get("id"): (t, a) for t, a in p.tags if a.get("id")}
+            with self.subTest(kind=kind):
+                tag, form = tags["prompt-form"]
+                self.assertEqual((tag, form.get("data-kind")), ("form", kind))
+                self.assertNotIn("action", form)
+                # Tanpa JS: form dan tombol salin tersembunyi, template tetap bisa disalin manual.
+                for el in ("prompt-form", "prompt-copy"):
+                    self.assertIn("hidden", tags[el][1])
+                    self.assertIn("data-js-only", tags[el][1])
+                self.assertIn("readonly", tags["prompt-output"][1])
+                self.assertIn("<noscript>", self.html[kind])
+                self.assertEqual(tags["prompt-status"][1].get("role"), "status")
+                for name in ("topic", "duration", "description", "audience", "cta", "style"):
+                    [field] = [a for t, a in p.tags if a.get("name") == name and t in ("input", "textarea")]
+                    self.assertEqual(len([1 for t, a in p.tags if t == "label" and a.get("for") == field["id"]]), 1)
+                for name in ("topic", "description"):
+                    self.assertIn("required", [a for t, a in p.tags if a.get("name") == name and t != "meta"][0])
+
+    def test_pages_link_each_other_tutorial_and_ai(self):
+        other = {"gpt": PROMPT_PAGES["claude"], "claude": PROMPT_PAGES["gpt"]}
+        ai = {"gpt": "https://chatgpt.com/", "claude": "https://claude.ai/"}
+        for kind, rel in PROMPT_PAGES.items():
+            targets = [resolve(rel, h)[0] for _, _, h in self.pages[kind].links]
+            with self.subTest(kind=kind):
+                self.assertIn(other[kind], targets)
+                self.assertIn(REMOTION_PAGE, targets)
+                [a] = [a for t, a in self.pages[kind].tags if t == "a" and a.get("href") == ai[kind]]
+                self.assertEqual((a.get("target"), a.get("rel")), ("_blank", "noopener"))
+        for rel in (REMOTION_PAGE, GUIDE_HUB, "index.html"):
+            targets = [resolve(rel, h)[0] for _, _, h in parse(rel).links]
+            with self.subTest(page=rel):
+                self.assertIn(PROMPT_PAGES["gpt"], targets)
+        tutorial_targets = [resolve(REMOTION_PAGE, h)[0] for _, _, h in parse(REMOTION_PAGE).links]
+        self.assertIn(PROMPT_PAGES["claude"], tutorial_targets)
+
+    def test_script_only_on_generator_pages(self):
+        for rel in PAGES:
+            has = any(s.endswith("prompt-generator.js") for s in parse(rel).scripts)
+            with self.subTest(page=rel):
+                self.assertEqual(has, rel in PROMPT_PAGES.values())
+
+    def test_js_static_safety(self):
+        for bad in ("innerHTML", "outerHTML", "insertAdjacentHTML", "document.write", "fetch(",
+                    "XMLHttpRequest", "sendBeacon", "sessionStorage", "document.cookie", "eval(", "http"):
+            with self.subTest(bad=bad):
+                self.assertNotIn(bad, self.js)
+        # localStorage hanya disentuh di dalam try/catch.
+        for line in self.js.splitlines():
+            if "localStorage" in line and not line.lstrip().startswith("//"):
+                with self.subTest(line=line.strip()):
+                    self.assertIn("try {", line)
+
+    @unittest.skipUnless(shutil.which("node"), "node tidak tersedia")
+    def test_js_matches_original_algorithm_in_node(self):
+        cases = [
+            {},
+            {"topic": "CLI Proxy", "duration": "18.4", "description": "Deskripsi", "audience": "Dev",
+             "cta": "Follow", "style": "Line Art"},
+            {"topic": "  Remotion  ", "duration": "4", "description": "x"},
+            {"topic": "A", "duration": "181", "description": "B", "audience": "C", "cta": "D", "style": "E"},
+            {"topic": "A", "duration": "abc", "description": "B"},
+            {"topic": "A", "duration": "45", "description": "B"},
+            {"topic": "A", "duration": "", "description": "B"},
+        ]
+        templates = {k: prompt_template(rel) for k, rel in PROMPT_PAGES.items()}
+        script = (
+            "const g = require(process.argv[1]); const d = JSON.parse(process.argv[2]);"
+            "const out = {};"
+            "for (const k of ['gpt','claude']) out[k] = d.cases.map(c => g.buildPrompt(k, d.templates[k], c));"
+            "out.dollar = g.buildPrompt('gpt', d.templates.gpt, {topic: 'Rp $& 10', description: 'x'});"
+            "out.toggle = [g.toggleStyle('', 'Line Art'), g.toggleStyle('Line Art, Neon', 'line art'),"
+            " g.hasStyle('Premium dark tech, neon', 'premium DARK tech')];"
+            "out.missing = [g.missingRequired({}), g.missingRequired({topic: ' ', description: 'x'})];"
+            "out.sanitize = g.sanitize({topic: 5, description: 'y'.repeat(2000), evil: 'x'});"
+            "console.log(JSON.stringify(out));"
+        )
+        payload = json.dumps({"cases": cases, "templates": templates})
+        res = subprocess.run(["node", "-e", script, str(ROOT / PROMPT_JS), payload],
+                             capture_output=True, text=True, check=True, timeout=30)
+        r = json.loads(res.stdout)
+        for kind in ("gpt", "claude"):
+            for i, c in enumerate(cases):
+                with self.subTest(kind=kind, case=i):
+                    self.assertEqual(r[kind][i], py_build_prompt(kind, templates[kind], c))
+        self.assertIn("Topik: Rp $& 10", r["dollar"], "pola $ dari pengguna tidak ditafsirkan")
+        self.assertEqual(r["toggle"], ["Line Art", "Neon", True])
+        self.assertEqual(r["missing"], [["topic", "description"], ["topic"]])
+        self.assertEqual(r["sanitize"], {"description": "y" * 1000})
 
 
 def to_whatsapp_number(local):
