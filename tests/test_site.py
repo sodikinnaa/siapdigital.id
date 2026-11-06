@@ -598,7 +598,7 @@ PROMPT_JS = "assets/js/prompt-generator.js"
 # SHA-256 template prompt versi situs (turunan ReelForge V5.4); berubah hanya jika template sengaja diganti.
 PROMPT_TEMPLATE_SHA256 = {
     "gpt": "2b3199c455173ae21173664c87136744a63b39a51864b668e2615b396c522720",
-    "claude": "83d92b5855da3cdaab1a425cff67f826baccd3d7b572645c2c3434964084ff2a",
+    "claude": "d645fe2115922be6f64bdcbc8cd26baf5713b4d61dbd1a6462e2725da152c475",
 }
 
 
@@ -676,6 +676,8 @@ class PromptGeneratorTests(unittest.TestCase):
                        "CAPTION & ELEMEN PENDUKUNG (rekomendasi", "[GAYA CAPTION]", "createTikTokStyleCaptions",
                        "calculateMetadata", "HookOverlay", "ProgressBar", "TEKNIK ANIMASI", "useCurrentFrame()",
                        "jangan mengarang hash", "README.md", "still:hook",
+                       "JANGAN memanggil delayRender() atau loadFont()", "useFontsReady()",
+                       "useState(() => delayRender(",
                        "CSS transition/animation", "mask reveal", "stroke-dashoffset", "npx remotion still", "900×1400",
                        "ATURAN WAJIB STABILITAS FONT"):
             with self.subTest(marker=marker):
@@ -685,6 +687,8 @@ class PromptGeneratorTests(unittest.TestCase):
         for bad in ("ReelForge", "Colab"):
             with self.subTest(bad=bad):
                 self.assertNotIn(bad, gpt + claude)
+        # Pola lama yang menyebabkan timeout font tidak boleh dianjurkan lagi.
+        self.assertNotIn("registrasi font yang deterministik sekali di tingkat modul", claude)
 
     def test_form_and_output_markup(self):
         for kind, p in self.pages.items():

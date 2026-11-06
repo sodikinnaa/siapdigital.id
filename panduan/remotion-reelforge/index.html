@@ -638,6 +638,8 @@ npx remotion studio</code></pre>
         <p>Pastikan terminal dibuka di folder yang berisi <code>package.json</code> dan Node.js versi LTS sudah terpasang. Jika ZIP tidak berisi package-lock.json, pakai npm install, bukan npm ci. Jika error menyebut dependency atau TypeScript, kirim pesan error-nya ke Claude dan minta ZIP yang sudah diperbaiki.</p>
         <h3>Subtitle tidak sinkron dengan suara.</h3>
         <p>Timing subtitle masih estimasi. Edit file <code>src/data/captions.ts</code>, sesuaikan waktu per kata atau kalimat, lalu render ulang, atau minta Claude merender ulang dengan timing yang Anda perbaiki.</p>
+        <h3>Render gagal dengan pesan "A delayRender() ... was called but not cleared".</h3>
+        <p>Biasanya karena project memanggil <code>delayRender()</code> untuk font di tingkat modul. Render tetap jalan sebentar, lalu gagal sekitar satu menit kemudian. Salin prompt terbaru dari generator prompt Claude (sudah berisi pola font yang benar), atau minta Claude memindahkan delayRender ke dalam komponen utama lewat hook <code>useFontsReady()</code>. Menaikkan timeout tidak menyelesaikan masalah ini.</p>
         <p class="step-note">Tampilan tiap layanan bisa berubah sewaktu-waktu. Tangkapan layar diambil pada November 2026.</p>
       </div>
     </section>
