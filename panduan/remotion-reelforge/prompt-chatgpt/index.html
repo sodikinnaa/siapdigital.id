@@ -130,6 +130,16 @@
               <button type="button" class="chip-toggle" data-style="Cinematic terminal UI" aria-pressed="false">Cinematic terminal UI</button>
             </div>
           </div>
+          <div class="field">
+            <label for="pf-caption">Gaya caption</label>
+            <select id="pf-caption" name="caption" aria-describedby="pf-caption-help">
+              <option value="bold" selected>Bold: kapital tegas, kata aktif kuning</option>
+              <option value="bounce">Bounce: memantul, warna bergantian</option>
+              <option value="clean">Clean: minimalis, fade halus</option>
+              <option value="auto">Biarkan Claude memilih</option>
+            </select>
+            <p class="field-help" id="pf-caption-help">Bold cocok untuk edukasi, Bounce untuk hiburan, Clean untuk nada profesional. Preset diadaptasi dari claude-shorts (MIT).</p>
+          </div>
           <p class="form-note">Isian tersimpan otomatis di browser ini saja, tidak dikirim ke server, dan ikut terpakai di halaman prompt Claude.</p>
         </form>
 
@@ -176,6 +186,7 @@ Tujuan, satu pesan utama, konsep, audiens, nada bicara.
 - Ukuran minimum: judul 72 px, teks layar 48 px, subtitle 40 px.
 - Safe area 1080x1920 (perkiraan UI Reels): atas 250 px, bawah 400 px, kanan 150 px, kiri 60 px.
 - Motion: durasi masuk/keluar dalam frame (30 FPS), easing atau spring, jeda antar elemen.
+- Caption: [GAYA CAPTION SINGKAT]. Atur komposisi agar caption, hook di 3,5 detik pertama, dan progress bar tipis tidak menabrak teks layar.
 
 === C. SEGMEN VOICE-OVER ===
 Pecah voice-over menjadi segmen bernomor S1, S2, ... (satu kalimat atau frasa per segmen), dengan jumlah kata tiap segmen. Tulis VO persis seperti diucapkan: angka, singkatan, dan istilah asing dieja sesuai bagian F.
@@ -195,7 +206,7 @@ TRANSISI: ke PART berikutnya
 CATATAN_REMOTION: hal teknis yang perlu diperhatikan
 
 === E. KOMPONEN &amp; ASET ===
-Daftar komponen reusable (nama, fungsi, props). Ikon digambar sebagai SVG geometris sederhana. Jangan memakai logo resmi kecuali filenya disediakan. Tanpa efek suara kecuali filenya disediakan. Hindari efek berat (blur besar, bayangan besar, ratusan partikel) agar render di Google Colab tetap cepat.
+Daftar komponen reusable (nama, fungsi, props). Komponen yang disarankan bila cocok: HookOverlay, Captions, ProgressBar. Ikon digambar sebagai SVG geometris sederhana. Jangan memakai logo resmi kecuali filenya disediakan. Tanpa efek suara kecuali filenya disediakan. Hindari efek berat (blur besar, bayangan besar, ratusan partikel) agar render di Google Colab tetap cepat.
 
 === F. PELAFALAN ===
 Tabel istilah: tulisan di layar → cara diucapkan di VO.

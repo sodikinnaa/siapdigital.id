@@ -245,7 +245,7 @@ caption { text-align: left; }
 .field { display: grid; gap: .35rem; }
 .field label { font-weight: 700; color: var(--navy-900); }
 .field .req, .field .opt { font-weight: 500; color: var(--muted); }
-.field input, .field textarea {
+.field input, .field textarea, .field select {
   width: 100%; min-height: 44px; padding: .65rem .8rem; font: inherit; color: var(--ink);
   background: #fff; border: 1px solid var(--navy-600); border-radius: 10px;
 }
