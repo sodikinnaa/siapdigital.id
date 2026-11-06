@@ -43,9 +43,9 @@
   };
 
   var OUTPUTS = {
-    both: '- Render video final menjadi MP4 (H.264 + AAC, yuv420p, 1080x1920, 30 FPS) bernama [NAMA MP4] dan berikan sebagai file yang bisa diunduh. Jalankan npm ci, npx remotion browser ensure, lalu render.\n- Berikan juga ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest) bernama [NAMA ZIP].\n- Bila render MP4 tidak memungkinkan di lingkunganmu, jelaskan alasannya dengan jujur dan tetap berikan ZIP.',
-    mp4: '- Render video final menjadi MP4 (H.264 + AAC, yuv420p, 1080x1920, 30 FPS) bernama [NAMA MP4] dan berikan sebagai file yang bisa diunduh. Jalankan npm ci, npx remotion browser ensure, lalu render.\n- Bila render tidak memungkinkan di lingkunganmu, jelaskan alasannya dengan jujur dan berikan ZIP project lengkap [NAMA ZIP] sebagai cadangan.',
-    zip: '- Satu ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest) bernama [NAMA ZIP], siap dirender di laptop dengan npm ci lalu npx remotion render.\n- Jangan hanya mengirim teks/kode apabila fasilitas pembuatan ZIP tersedia.'
+    both: '- Render video final menjadi MP4 (H.264 + AAC, yuv420p, 1080x1920, 30 FPS) bernama [NAMA MP4] dan berikan sebagai file yang bisa diunduh. Jalankan npm install (atau npm ci bila ada package-lock.json), npx remotion browser ensure, lalu render.\n- Berikan juga ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest) bernama [NAMA ZIP].\n- Bila render MP4 tidak memungkinkan di lingkunganmu, jelaskan alasannya dengan jujur dan tetap berikan ZIP beserta README langkah ekspor.',
+    mp4: '- Render video final menjadi MP4 (H.264 + AAC, yuv420p, 1080x1920, 30 FPS) bernama [NAMA MP4] dan berikan sebagai file yang bisa diunduh. Jalankan npm install (atau npm ci bila ada package-lock.json), npx remotion browser ensure, lalu render.\n- Bila render tidak memungkinkan di lingkunganmu, jelaskan alasannya dengan jujur dan berikan ZIP project lengkap [NAMA ZIP] beserta README langkah ekspor sebagai cadangan.',
+    zip: '- Satu ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest) bernama [NAMA ZIP], siap diekspor di laptop dengan npm install lalu npx remotion render.\n- Jangan hanya mengirim teks/kode apabila fasilitas pembuatan ZIP tersedia.'
   };
 
   // Acuan kecepatan bicara Cartesia (dari contoh tutorial: 92 kata ≈ 41 detik).

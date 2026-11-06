@@ -224,10 +224,11 @@ KETENTUAN:
 - Subtitle sinkron dengan waktu ucapan audio yang asli; jika word alignment tidak tersedia, buat timing manual yang ditinjau, bukan membagi kata sama rata.
 - Teks mobile-readable, safe area Instagram, transisi rapi, closing CTA tidak memotong audio.
 - Semua aset lokal; jangan butuh CDN saat rendering.
-- Buat package.json dan package-lock.json yang konsisten, tsconfig, entry point src/index.ts, komposisi utama bernama MainReel (ID standar untuk semua topik), dan folder public berisi audio.
+- Buat package.json, tsconfig, entry point src/index.ts, komposisi utama bernama MainReel (ID standar untuk semua topik), dan folder public berisi audio. Sertakan package-lock.json hanya bila benar-benar dibuat dengan akses ke registry npm; jangan mengarang hash.
+- Sertakan README.md berisi langkah ekspor di laptop (npm install, npx remotion browser ensure, perintah render lengkap) dan script npm still:hook, still:mid, still:last untuk mengecek frame.
 - DurationInFrames mengikuti durasi total audio + penutup yang diperlukan; laporkan durasi aktual bila berbeda jauh dari [DURASI].
 - Pastikan perintah berikut berfungsi:
-  npm ci
+  npm install (atau npm ci bila package-lock.json disertakan)
   npx remotion browser ensure
   npx remotion compositions src/index.ts
   npx remotion render src/index.ts MainReel output.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p
@@ -238,7 +239,7 @@ OUTPUT WAJIB:
 - Sertakan durasi, jumlah frame, scene list, status pengujian, dan instruksi singkat render.
 
 KOMPATIBILITAS RENDER:
-Project harus bisa dirender di lingkunganmu sendiri maupun di laptop pengguna (Node.js 22 LTS di Windows, macOS, atau Linux) cukup dengan npm ci lalu npx remotion render. Gunakan versi dependency Remotion/React/TypeScript yang konsisten; pastikan paket @remotion/* satu versi dengan remotion dan package-lock.json sinkron dengan package.json. Hindari CDN, API key, install script yang tidak perlu, dan jangan sertakan node_modules. Komposisi utama wajib MainReel.
+Project harus bisa dirender di lingkunganmu sendiri maupun di laptop pengguna (Node.js 22 LTS di Windows, macOS, atau Linux) cukup dengan npm install (atau npm ci bila ada package-lock.json) lalu npx remotion render. Gunakan versi dependency Remotion/React/TypeScript yang konsisten; pastikan paket @remotion/* satu versi dengan remotion; bila package-lock.json disertakan, pastikan sinkron dengan package.json. Hindari CDN, API key, install script yang tidak perlu, dan jangan sertakan node_modules. Komposisi utama wajib MainReel.
 
 ATURAN WAJIB STABILITAS FONT &amp; MENCEGAH delayRender() TIMEOUT:
 - Project dirender oleh Chrome Headless Shell, baik di lingkunganmu maupun di laptop pengguna (kadang hanya 2 vCPU). Jangan mengandalkan font jaringan, CDN, atau Google Fonts runtime.
@@ -254,7 +255,7 @@ ATURAN WAJIB STABILITAS FONT &amp; MENCEGAH delayRender() TIMEOUT:
 - Bila font pernah gagal dengan pesan `A delayRender() ... was called but not cleared`, perbaiki akar masalahnya: verifikasi asset, loading sekali, penyelesaian/cancel handle dan tidak ada loading ulang per-frame.
 
 PETUNJUK EKSPOR:
-Bila membuat ZIP, pastikan ZIP memuat seluruh font lokal di public/fonts/ (jika digunakan), voice-over asli, source, package.json dan package-lock.json. Jangan sertakan node_modules. Desain harus tetap konsisten tanpa bergantung pada internet saat video di-render.
+Bila membuat ZIP, pastikan ZIP memuat seluruh font lokal di public/fonts/ (jika digunakan), voice-over asli, source, README.md, package.json (dan package-lock.json bila ada). Jangan sertakan node_modules. Desain harus tetap konsisten tanpa bergantung pada internet saat video di-render.
 </textarea>
           <noscript><p class="prompt-note">JavaScript nonaktif: salin teks di atas, lalu tambahkan topik, deskripsi, audiens, CTA, durasi, dan gaya visual di baris paling atas.</p></noscript>
           <div class="prompt-actions">
@@ -283,7 +284,7 @@ Bila membuat ZIP, pastikan ZIP memuat seluruh font lokal di public/fonts/ (jika 
           </li>
           <li>
             <h3>Unduh MP4 atau ZIP</h3>
-            <p>Unduh <code>reels_[topik].mp4</code> dan langsung unggah ke Reels. Kalau hanya dapat ZIP, render sendiri di laptop. Lihat <a href="../#langkah-23">langkah 23–26</a>.</p>
+            <p>Unduh <code>reels_[topik].mp4</code> dan langsung unggah ke Reels. Kalau hanya dapat ZIP (umum di paket Free), ekspor sendiri di laptop. Lihat <a href="../#langkah-23">langkah 23–28</a>.</p>
           </li>
         </ol>
       </div>
