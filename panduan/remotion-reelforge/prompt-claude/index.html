@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Generator Prompt Claude untuk Project Remotion — Siap Digital</title>
-  <meta name="description" content="Salin prompt Claude ReelForge untuk mengubah storyboard TXT dari ChatGPT dan audio Cartesia menjadi project Remotion lengkap dalam ZIP, siap dirender jadi MP4.">
+  <title>Generator Prompt Claude untuk Video Remotion — Siap Digital</title>
+  <meta name="description" content="Salin prompt Claude untuk mengubah storyboard TXT dari ChatGPT dan audio Cartesia menjadi video Remotion: MP4 siap upload, ZIP project, atau keduanya.">
   <meta name="theme-color" content="#0f1b33">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Siap Digital">
   <meta property="og:locale" content="id_ID">
-  <meta property="og:title" content="Generator Prompt Claude: Project Remotion ZIP">
-  <meta property="og:description" content="Salin prompt Claude ReelForge untuk mengubah storyboard TXT dari ChatGPT dan audio Cartesia menjadi project Remotion lengkap dalam ZIP, siap dirender jadi MP4.">
+  <meta property="og:title" content="Generator Prompt Claude: Video Remotion MP4 atau ZIP">
+  <meta property="og:description" content="Salin prompt Claude untuk mengubah storyboard TXT dari ChatGPT dan audio Cartesia menjadi video Remotion: MP4 siap upload, ZIP project, atau keduanya.">
   <meta property="og:url" content="https://siapdigital.id/panduan/remotion-reelforge/prompt-claude/">
   <meta property="og:image" content="https://siapdigital.id/assets/img/panduan/remotion-reelforge/thumb-prompt-claude.jpg">
   <meta property="og:image:type" content="image/jpeg">
@@ -54,10 +54,10 @@
           </nav>
           <span class="eyebrow">Tutorial Remotion · Alat 2 dari 2</span>
           <h1>Generator prompt Claude</h1>
-          <p class="lead">Buat prompt agar Claude menyusun <strong>project Remotion lengkap dalam ZIP</strong> dari storyboard ChatGPT dan audio Cartesia, siap dirender jadi MP4 di ReelForge.</p>
+          <p class="lead">Buat prompt agar Claude membangun video Remotion dari storyboard ChatGPT dan audio Cartesia. Pilih hasilnya: <strong>MP4 siap upload</strong>, <strong>ZIP project</strong>, atau keduanya.</p>
           <ol class="prompt-steps" aria-label="Urutan prompt">
             <li><a href="../prompt-chatgpt/"><span class="ps-no" aria-hidden="true">1</span><span><strong>ChatGPT</strong><small>Storyboard + voice-over</small></span></a></li>
-            <li><a href="./" aria-current="page"><span class="ps-no" aria-hidden="true">2</span><span><strong>Claude</strong><small>Project Remotion ZIP</small></span></a></li>
+            <li><a href="./" aria-current="page"><span class="ps-no" aria-hidden="true">2</span><span><strong>Claude</strong><small>Video MP4 atau ZIP</small></span></a></li>
           </ol>
         </div>
         <aside class="hero-panel" aria-labelledby="butuh-heading">
@@ -80,6 +80,15 @@
               <button type="button" class="btn-ghost" id="prompt-example">Isi contoh</button>
               <button type="button" class="btn-ghost" id="prompt-reset">Kosongkan</button>
             </div>
+          </div>
+          <div class="field">
+            <label for="pf-output">Output dari Claude</label>
+            <select id="pf-output" name="output" aria-describedby="pf-output-help">
+              <option value="both" selected>MP4 + ZIP (disarankan)</option>
+              <option value="mp4">MP4 saja, siap upload</option>
+              <option value="zip">ZIP project saja</option>
+            </select>
+            <p class="field-help" id="pf-output-help">MP4 dirender Claude bila lingkungannya mendukung; kalau tidak, Claude memberi ZIP sebagai cadangan. ZIP bisa dirender sendiri di laptop.</p>
           </div>
           <div class="field-row">
             <div class="field">
@@ -169,7 +178,7 @@
           <div class="prompt-panel-head">
             <div>
               <span class="prompt-kicker">Prompt Claude</span>
-              <h2 id="output-heading">Project Remotion ZIP</h2>
+              <h2 id="output-heading">Video Remotion</h2>
             </div>
             <span class="prompt-count" id="prompt-count"></span>
           </div>
@@ -225,15 +234,14 @@ KETENTUAN:
 - Validasi TypeScript, imports, aset, durasi, audio dan render jika lingkungan memungkinkan; laporkan dengan jujur apakah render test dilakukan.
 
 OUTPUT WAJIB:
-- Satu ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest), bernama [NAMA ZIP].
+[OUTPUT]
 - Sertakan durasi, jumlah frame, scene list, status pengujian, dan instruksi singkat render.
-- Jangan hanya mengirim teks/kode apabila fasilitas pembuatan ZIP tersedia.
 
-WAJIB UNTUK WEB RENDERER INSTALL-PER-PROJECT:
-Gunakan versi dependency Remotion/React/TypeScript sesuai project; pastikan paket @remotion/* kompatibel dan package-lock.json sinkron dengan package.json. ReelForge mengekstrak ZIP lalu menjalankan npm ci (atau npm install jika perlu) di dalam folder project. Tidak perlu menyamakan versi dengan runtime bootstrap. Project harus kompatibel dengan Node.js 22 di Google Colab Linux. Hindari CDN, API key, install script yang tidak perlu, dan jangan sertakan node_modules di ZIP. Komposisi utama wajib MainReel; untuk kompatibilitas ZIP lama renderer juga dapat mendeteksi komposisi lain secara otomatis.
+KOMPATIBILITAS RENDER:
+Project harus bisa dirender di lingkunganmu sendiri maupun di laptop pengguna (Node.js 22 LTS di Windows, macOS, atau Linux) cukup dengan npm ci lalu npx remotion render. Gunakan versi dependency Remotion/React/TypeScript yang konsisten; pastikan paket @remotion/* satu versi dengan remotion dan package-lock.json sinkron dengan package.json. Hindari CDN, API key, install script yang tidak perlu, dan jangan sertakan node_modules. Komposisi utama wajib MainReel.
 
 ATURAN WAJIB STABILITAS FONT &amp; MENCEGAH delayRender() TIMEOUT:
-- Project akan dirender oleh Chrome Headless Shell di Google Colab Linux (kadang hanya 2 vCPU). Jangan mengandalkan font jaringan, CDN, atau Google Fonts runtime.
+- Project dirender oleh Chrome Headless Shell, baik di lingkunganmu maupun di laptop pengguna (kadang hanya 2 vCPU). Jangan mengandalkan font jaringan, CDN, atau Google Fonts runtime.
 - Pilih font sistem yang pasti tersedia, ATAU sertakan file WOFF2/TTF/OTF lokal yang valid di public/fonts/. Jika menggunakan Inter, pastikan file Inter benar-benar ada dan dapat diakses lewat staticFile('fonts/...').
 - Jika butuh loadFont() dari @remotion/fonts, deklarasikan paket yang sesuai versinya dalam package.json dan package-lock.json; pastikan pemanggilan mengikuti dokumentasi versi Remotion yang digunakan. Jangan menambahkan dependency hanya untuk font jika tidak diperlukan.
 - Utamakan registrasi font yang deterministik sekali di tingkat modul atau @font-face untuk aset lokal; hindari memulai pemuatan ulang di tiap render atau tiap perubahan frame.
@@ -246,7 +254,7 @@ ATURAN WAJIB STABILITAS FONT &amp; MENCEGAH delayRender() TIMEOUT:
 - Bila font pernah gagal dengan pesan `A delayRender() ... was called but not cleared`, perbaiki akar masalahnya: verifikasi asset, loading sekali, penyelesaian/cancel handle dan tidak ada loading ulang per-frame.
 
 PETUNJUK EKSPOR:
-Pastikan ZIP tetap memuat seluruh font lokal di public/fonts/ (jika digunakan), voice-over asli, source, package.json dan package-lock.json. Jangan sertakan node_modules. Desain harus tetap konsisten tanpa bergantung pada internet saat video di-render.
+Bila membuat ZIP, pastikan ZIP memuat seluruh font lokal di public/fonts/ (jika digunakan), voice-over asli, source, package.json dan package-lock.json. Jangan sertakan node_modules. Desain harus tetap konsisten tanpa bergantung pada internet saat video di-render.
 </textarea>
           <noscript><p class="prompt-note">JavaScript nonaktif: salin teks di atas, lalu tambahkan topik, deskripsi, audiens, CTA, durasi, dan gaya visual di baris paling atas.</p></noscript>
           <div class="prompt-actions">
@@ -271,11 +279,11 @@ Pastikan ZIP tetap memuat seluruh font lokal di public/fonts/ (jika digunakan), 
           </li>
           <li>
             <h3>Tempel prompt dan lampirkan file</h3>
-            <p>Di Claude, tempel prompt, klik <strong>+</strong> untuk melampirkan TXT dan audio, lalu kirim. Lihat <a href="../#langkah-26">langkah 26</a>.</p>
+            <p>Di Claude, tempel prompt, klik <strong>+</strong> untuk melampirkan TXT dan audio, lalu kirim. Lihat <a href="../#langkah-22">langkah 22</a>.</p>
           </li>
           <li>
-            <h3>Unduh ZIP dan render</h3>
-            <p>Unduh <code>remotion_reels_[topik].zip</code>, lalu upload ke ReelForge untuk dirender jadi MP4. Lihat <a href="../#langkah-27">langkah 27–30</a>.</p>
+            <h3>Unduh MP4 atau ZIP</h3>
+            <p>Unduh <code>reels_[topik].mp4</code> dan langsung unggah ke Reels. Kalau hanya dapat ZIP, render sendiri di laptop. Lihat <a href="../#langkah-23">langkah 23–26</a>.</p>
           </li>
         </ol>
       </div>
