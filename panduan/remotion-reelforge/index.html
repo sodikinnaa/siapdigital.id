@@ -10,7 +10,7 @@
   <meta property="og:site_name" content="Siap Digital">
   <meta property="og:locale" content="id_ID">
   <meta property="og:title" content="Tutorial Remotion: Dari Ide sampai Reels Siap Tayang">
-  <meta property="og:description" content="26 langkah bergambar membuat video Reels dengan ChatGPT, Cartesia, Claude, dan Remotion. Hasilnya MP4 siap upload atau ZIP project.">
+  <meta property="og:description" content="28 langkah bergambar membuat video Reels dengan ChatGPT, Cartesia, Claude, dan Remotion. Hasilnya MP4 siap upload atau ZIP project.">
   <meta property="og:url" content="https://siapdigital.id/panduan/remotion-reelforge/">
   <meta property="og:image" content="https://siapdigital.id/assets/img/panduan/remotion-reelforge/sampul-remotion-reelforge.jpg">
   <meta property="og:image:type" content="image/jpeg">
@@ -57,10 +57,10 @@
         <aside class="hero-panel" aria-labelledby="ringkas-heading">
           <h2 id="ringkas-heading">Sekilas</h2>
           <ol>
-            <li>Level <strong>pemula</strong>, sekitar <strong>40 menit</strong>, 26 langkah bergambar (3 terakhir opsional).</li>
+            <li>Level <strong>pemula</strong>, sekitar <strong>40 menit</strong>, 28 langkah bergambar (5 terakhir opsional).</li>
             <li>Hasil: video vertikal <strong>1080×1920 (9:16)</strong>, siap diunggah ke Reels.</li>
             <li>Prompt disusun otomatis lewat <strong>generator prompt</strong> di situs ini.</li>
-            <li>Pilih <strong>MP4 langsung dari Claude</strong>, atau ZIP untuk dirender sendiri di laptop.</li>
+            <li>Pilih <strong>MP4 langsung dari Claude</strong>, atau ekspor ZIP sendiri di laptop.</li>
           </ol>
         </aside>
       </div>
@@ -94,7 +94,7 @@
           <li>
             <span class="flow-label">04 · Publish</span>
             <h3>Reels</h3>
-            <p>Unggah MP4, atau render ZIP di laptop dulu</p>
+            <p>Unggah MP4, atau ekspor ZIP di laptop dulu</p>
           </li>
         </ol>
         <div class="btn-row">
@@ -108,7 +108,7 @@
       <div class="container">
         <div class="section-head">
           <h2 id="persiapan-heading">Yang perlu disiapkan</h2>
-          <p>ChatGPT, Claude, dan Cartesia bisa dicoba dengan akun gratis, dan cara mendaftarnya ada di tutorial ini. Node.js hanya perlu bila Anda ingin merender ZIP sendiri.</p>
+          <p>ChatGPT, Claude, dan Cartesia bisa dicoba dengan akun gratis, dan cara mendaftarnya ada di tutorial ini. Node.js hanya perlu bila Claude hanya memberi ZIP dan Anda mengekspornya sendiri.</p>
         </div>
         <ul class="principles requirements">
           <li>
@@ -129,7 +129,7 @@
           </li>
           <li>
             <h3><a href="https://nodejs.org/" target="_blank" rel="noopener">Node.js (opsional)</a></h3>
-            <p>Hanya bila ingin merender ZIP sendiri di laptop.</p>
+            <p>Untuk mengekspor ZIP menjadi MP4 di laptop bila Claude tidak bisa merender.</p>
           </li>
         </ul>
       </div>
@@ -148,7 +148,7 @@
           <li><a href="#naskah"><span class="toc-part">Bagian 4</span><span class="toc-title">Buat naskah dan voice-over dengan ChatGPT</span><span class="toc-steps">Langkah 15–17</span></a></li>
           <li><a href="#voice"><span class="toc-part">Bagian 5</span><span class="toc-title">Buat voice-over bahasa Indonesia di Cartesia</span><span class="toc-steps">Langkah 18–20</span></a></li>
           <li><a href="#video"><span class="toc-part">Bagian 6</span><span class="toc-title">Buat video dengan Claude</span><span class="toc-steps">Langkah 21–23</span></a></li>
-          <li><a href="#render-lokal"><span class="toc-part">Bagian 7</span><span class="toc-title">Opsional: render ZIP di laptop</span><span class="toc-steps">Langkah 24–26</span></a></li>
+          <li><a href="#render-lokal"><span class="toc-part">Bagian 7</span><span class="toc-title">Ekspor ZIP menjadi MP4 di laptop</span><span class="toc-steps">Langkah 24–28</span></a></li>
         </ol>
       </div>
     </section>
@@ -545,7 +545,7 @@
             <div class="guide-text">
               <span class="step-no" aria-hidden="true">23</span>
               <h3>Unduh hasilnya</h3>
-              <p>Tunggu Claude selesai. Jika memilih MP4, Claude merender video dan memberi file <code>reels_[topik].mp4</code> yang bisa langsung diunggah ke Instagram Reels. Jika mendapat ZIP, unduh <code>remotion_reels_[topik].zip</code> lalu render di laptop (langkah 24–26).</p>
+              <p>Tunggu Claude selesai. Jika Claude berhasil merender, unduh <code>reels_[topik].mp4</code> dan langsung unggah ke Instagram Reels. Jika Claude hanya memberi ZIP, unduh <code>remotion_reels_[topik].zip</code> lalu ekspor sendiri di laptop (langkah 24–28).</p>
               <div class="callout warn"><p><strong>Perhatian:</strong> Paket Free Claude memiliki batas penggunaan per 5 jam. Jika kena batas sebelum selesai, tunggu reset lalu minta Claude melanjutkan.</p></div>
               <p class="step-note">Render MP4 bergantung pada lingkungan Claude. Bila Claude tidak bisa merender, ia diminta menjelaskan alasannya dan tetap memberi ZIP.</p>
             </div>
@@ -561,38 +561,67 @@
     <section class="section" id="render-lokal" aria-labelledby="render-lokal-heading">
       <div class="container">
         <div class="section-head">
-          <span class="eyebrow">Bagian 7 · Langkah 24–26</span>
-          <h2 id="render-lokal-heading">Opsional: render ZIP di laptop</h2>
-          <p>Lewati bagian ini jika Claude sudah memberi MP4. Bagian ini butuh Node.js dan terminal, tetapi cukup dilakukan sekali.</p>
+          <span class="eyebrow">Bagian 7 · Langkah 24–28</span>
+          <h2 id="render-lokal-heading">Ekspor ZIP menjadi MP4 di laptop</h2>
+          <p>Lewati bagian ini jika Claude sudah memberi MP4. Di paket Free, sandbox Claude biasanya tidak punya akses internet, jadi Claude hanya bisa memberi ZIP. Ekspornya cukup beberapa perintah di terminal.</p>
         </div>
 
         <ol class="guide-steps" start="24">
-          <li class="guide-step guide-step-text" id="langkah-24">
+          <li class="guide-step" id="langkah-24">
             <div class="guide-text">
               <span class="step-no" aria-hidden="true">24</span>
-              <h3>Instal Node.js</h3>
-              <p>Unduh dan instal Node.js versi <strong>LTS</strong> dari <a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org</a>. Setelah selesai, buka terminal (PowerShell di Windows, Terminal di macOS) dan pastikan versinya muncul.</p>
-              <pre class="code-block"><code>node --version
-npm --version</code></pre>
+              <h3>Kenali respons Claude yang hanya memberi ZIP</h3>
+              <p>Claude akan menjelaskan bahwa jaringan di sandbox mati sehingga <code>npm ci</code>, <code>npx remotion browser ensure</code>, dan render tidak bisa dijalankan, lalu melampirkan ZIP berisi source, audio, font, dan <code>README.md</code>. Baca bagian <strong>Yang belum</strong> dan instruksi render di akhir jawaban, lalu unduh ZIP-nya.</p>
+              <p class="step-note">Ini wajar dan bukan kegagalan: project sudah lengkap, hanya proses render yang dipindah ke laptop Anda.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/45-claude-tidak-bisa-render.webp"><img src="../../assets/img/panduan/remotion-reelforge/45-claude-tidak-bisa-render.webp" width="1400" height="763" alt="Claude: Claude menjelaskan kenapa MP4 belum bisa dirender" loading="lazy" decoding="async"></a>
+                <figcaption>Claude menjelaskan kenapa MP4 belum bisa dirender</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/46-claude-zip-dan-instruksi.webp"><img src="../../assets/img/panduan/remotion-reelforge/46-claude-zip-dan-instruksi.webp" width="1400" height="763" alt="Claude: Instruksi render dan lampiran ZIP di akhir jawaban" loading="lazy" decoding="async"></a>
+                <figcaption>Instruksi render dan lampiran ZIP di akhir jawaban</figcaption>
+              </figure>
             </div>
           </li>
           <li class="guide-step guide-step-text" id="langkah-25">
             <div class="guide-text">
               <span class="step-no" aria-hidden="true">25</span>
-              <h3>Ekstrak ZIP dan instal dependency</h3>
-              <p>Ekstrak file ZIP, buka terminal di folder project (folder yang berisi <code>package.json</code>), lalu jalankan:</p>
-              <pre class="code-block"><code>npm ci
-npx remotion browser ensure</code></pre>
-              <div class="callout warn"><p><strong>Perhatian:</strong> <code>npm ci</code> menjalankan kode dari project. Jalankan hanya untuk ZIP yang Anda buat sendiri atau percayai.</p></div>
+              <h3>Instal Node.js</h3>
+              <p>Unduh dan instal Node.js versi <strong>LTS</strong> dari <a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org</a>. Setelah selesai, buka terminal (PowerShell di Windows, Terminal di macOS) dan pastikan versinya muncul. Langkah ini cukup sekali.</p>
+              <pre class="code-block"><code>node --version
+npm --version</code></pre>
             </div>
           </li>
           <li class="guide-step guide-step-text" id="langkah-26">
             <div class="guide-text">
               <span class="step-no" aria-hidden="true">26</span>
+              <h3>Ekstrak ZIP dan instal dependency</h3>
+              <p>Ekstrak file ZIP, buka terminal di folder project (folder yang berisi <code>package.json</code>), lalu jalankan perintah di bawah. Pakai <code>npm install</code>, bukan <code>npm ci</code>, karena ZIP dari Claude biasanya belum berisi <code>package-lock.json</code>.</p>
+              <pre class="code-block"><code>npm install
+npx remotion browser ensure</code></pre>
+              <div class="callout"><p><strong>Tips:</strong> Muncul error versi tidak ditemukan (ETARGET)? Samakan versi <code>remotion</code> dan semua <code>@remotion/*</code> di <code>package.json</code> ke satu versi yang tersedia (cek dengan <code>npm view remotion version</code>), lalu ulangi <code>npm install</code>.</p></div>
+              <div class="callout warn"><p><strong>Perhatian:</strong> <code>npm install</code> menjalankan kode dari project. Jalankan hanya untuk ZIP yang Anda buat sendiri atau percayai.</p></div>
+            </div>
+          </li>
+          <li class="guide-step guide-step-text" id="langkah-27">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">27</span>
+              <h3>Cek beberapa frame dulu</h3>
+              <p>Sebelum render penuh, cek frame hook, tengah, dan akhir. Jika <code>README.md</code> menyediakan perintah seperti <code>npm run still:hook</code>, pakai itu. Kalau tidak, ambil frame manual lalu buka file PNG-nya.</p>
+              <pre class="code-block"><code>npx remotion still src/index.ts MainReel hook.png --frame=30
+npx remotion studio</code></pre>
+              <div class="callout"><p><strong>Tips:</strong> <code>npx remotion studio</code> membuka pratinjau interaktif di browser. Cocok untuk mengecek teks terpotong, posisi caption, dan sinkronisasi suara.</p></div>
+            </div>
+          </li>
+          <li class="guide-step guide-step-text" id="langkah-28">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">28</span>
               <h3>Render menjadi MP4</h3>
-              <p>Jalankan perintah render. File <code>out.mp4</code> muncul di folder project dan siap diunggah ke Reels.</p>
-              <pre class="code-block"><code>npx remotion render src/index.ts MainReel out.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p</code></pre>
-              <div class="callout"><p><strong>Tips:</strong> Mau cek dulu sebelum render? Jalankan <code>npx remotion studio</code> untuk pratinjau di browser.</p></div>
+              <p>Jalankan perintah render. File <code>out.mp4</code> muncul di folder project dan siap diunggah ke Reels. Render video 50 detik bisa memakan waktu beberapa menit, tergantung kecepatan laptop.</p>
+              <pre class="code-block"><code>npx remotion render src/index.ts MainReel out.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=120000</code></pre>
+              <p class="step-note">Ikuti perintah di README dari Claude bila berbeda, misalnya nama komposisi selain MainReel.</p>
             </div>
           </li>
         </ol>
@@ -604,9 +633,9 @@ npx remotion browser ensure</code></pre>
       <div class="narrow">
         <h2 id="faq-heading">Tanya jawab</h2>
         <h3>Claude tidak memberi MP4. Apa yang harus dilakukan?</h3>
-        <p>Minta Claude memberi ZIP project (atau pilih output ZIP di generator), lalu render di laptop dengan langkah 24–26.</p>
+        <p>Minta Claude memberi ZIP project (atau pilih output ZIP di generator), lalu render di laptop dengan langkah 24–28.</p>
         <h3>Render di laptop gagal. Apa yang dicek?</h3>
-        <p>Pastikan terminal dibuka di folder yang berisi <code>package.json</code> dan Node.js versi LTS sudah terpasang. Jika error menyebut dependency atau TypeScript, kirim pesan error-nya ke Claude dan minta ZIP yang sudah diperbaiki.</p>
+        <p>Pastikan terminal dibuka di folder yang berisi <code>package.json</code> dan Node.js versi LTS sudah terpasang. Jika ZIP tidak berisi package-lock.json, pakai npm install, bukan npm ci. Jika error menyebut dependency atau TypeScript, kirim pesan error-nya ke Claude dan minta ZIP yang sudah diperbaiki.</p>
         <h3>Subtitle tidak sinkron dengan suara.</h3>
         <p>Timing subtitle masih estimasi. Edit file <code>src/data/captions.ts</code>, sesuaikan waktu per kata atau kalimat, lalu render ulang, atau minta Claude merender ulang dengan timing yang Anda perbaiki.</p>
         <p class="step-note">Tampilan tiap layanan bisa berubah sewaktu-waktu. Tangkapan layar diambil pada November 2026.</p>

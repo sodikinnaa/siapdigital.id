@@ -499,10 +499,10 @@ class RemotionTutorialTests(unittest.TestCase):
                 if t == "meta" and (a.get("property") == key or a.get("name") == key)]
 
     def test_numbered_steps_in_seven_sections(self):
-        for n in range(1, 27):
+        for n in range(1, 29):
             with self.subTest(step=n):
                 self.assertIn(f"langkah-{n}", self.page.ids)
-        self.assertNotIn("langkah-27", self.page.ids)
+        self.assertNotIn("langkah-29", self.page.ids)
         sections = ("chatgpt", "claude", "cartesia", "naskah", "voice", "video", "render-lokal")
         toc = [h for t, a in self.page.tags if t == "a" for h in [a.get("href", "")] if h.startswith("#")]
         for sec in sections:
@@ -528,15 +528,20 @@ class RemotionTutorialTests(unittest.TestCase):
         for phrase in ("Output dari Claude", "MP4 + ZIP", "MP4 saja", "ZIP project saja"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, step21)
-        for cmd in ("npm ci", "npx remotion render src/index.ts MainReel out.mp4"):
+        for cmd in ("npm install", "npx remotion still src/index.ts MainReel", "--timeout=120000",
+                    "npx remotion render src/index.ts MainReel out.mp4"):
             with self.subTest(cmd=cmd):
                 self.assertIn(cmd, self.html)
-        self.assertEqual(self.html.count('<pre class="code-block">'), 3)
+        self.assertEqual(self.html.count('<pre class="code-block">'), 4)
+        # Bagian ekspor dibuka dengan contoh respons Claude yang hanya memberi ZIP.
+        step24 = self.html.split('id="langkah-24"', 1)[1].split("</li>", 1)[0]
+        self.assertIn("45-claude-tidak-bisa-render.webp", step24)
+        self.assertIn("46-claude-zip-dan-instruksi.webp", step24)
 
     def test_every_screenshot_used_exactly_once(self):
         srcs = [resolve(REMOTION_PAGE, i["src"])[0] for i in self.page.imgs if i["src"].endswith(".webp")]
         files = sorted(f"{REMOTION_IMG_DIR}/{f.name}" for f in (ROOT / REMOTION_IMG_DIR).glob("*.webp"))
-        self.assertEqual(len(files), 34)
+        self.assertEqual(len(files), 36)
         self.assertEqual(sorted(srcs), files)
         # Setiap tangkapan layar dapat dibuka dalam ukuran penuh.
         hrefs = {resolve(REMOTION_PAGE, h)[0] for t, a, h in self.page.links if t == "a"}
@@ -578,7 +583,7 @@ class RemotionTutorialTests(unittest.TestCase):
                 self.assertEqual(a.get("rel"), "noopener")
 
     def test_safety_warnings_kept(self):
-        for phrase in ("batas penggunaan per 5 jam", "1080×1920", "<code>npm ci</code> menjalankan kode",
+        for phrase in ("batas penggunaan per 5 jam", "1080×1920", "<code>npm install</code> menjalankan kode",
                        "tetap memberi ZIP"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.html)
@@ -593,7 +598,7 @@ PROMPT_JS = "assets/js/prompt-generator.js"
 # SHA-256 template prompt versi situs (turunan ReelForge V5.4); berubah hanya jika template sengaja diganti.
 PROMPT_TEMPLATE_SHA256 = {
     "gpt": "2b3199c455173ae21173664c87136744a63b39a51864b668e2615b396c522720",
-    "claude": "63cc48f67540ee0e945d851784bf1d3f4472f63e1a8185fe5d507e2c2ea98146",
+    "claude": "83d92b5855da3cdaab1a425cff67f826baccd3d7b572645c2c3434964084ff2a",
 }
 
 
@@ -670,6 +675,7 @@ class PromptGeneratorTests(unittest.TestCase):
         for marker in ("CARA MEMBACA TXT", "[OUTPUT]", "KOMPATIBILITAS RENDER", "[ISI FAKTA]", "src/data/captions.ts", "MainReel",
                        "CAPTION & ELEMEN PENDUKUNG (rekomendasi", "[GAYA CAPTION]", "createTikTokStyleCaptions",
                        "calculateMetadata", "HookOverlay", "ProgressBar", "TEKNIK ANIMASI", "useCurrentFrame()",
+                       "jangan mengarang hash", "README.md", "still:hook",
                        "CSS transition/animation", "mask reveal", "stroke-dashoffset", "npx remotion still", "900×1400",
                        "ATURAN WAJIB STABILITAS FONT"):
             with self.subTest(marker=marker):
