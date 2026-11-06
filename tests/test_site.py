@@ -3,6 +3,7 @@
 import hashlib
 import json
 import math
+import unicodedata
 import posixpath
 import re
 import shutil
@@ -580,10 +581,10 @@ PROMPT_PAGES = {
     "claude": "panduan/remotion-reelforge/prompt-claude/index.html",
 }
 PROMPT_JS = "assets/js/prompt-generator.js"
-# SHA-256 template ReelForge V5.4 (variabel PROMPTS di notebook); berubah hanya jika template sengaja diganti.
+# SHA-256 template prompt versi situs (turunan ReelForge V5.4); berubah hanya jika template sengaja diganti.
 PROMPT_TEMPLATE_SHA256 = {
-    "gpt": "f91edc008f0abbb6e949c4bf578fb2504e17656fc53b6f3a5c4c5259afad7cc8",
-    "claude": "c197aec64e78bcb25a183085c9f8f92ddf4936182a0fa327917de04f28972ba4",
+    "gpt": "ff96a60410861f442f4068ddd1c811f432dac69f94d2b6fbc93bda5b9dc0a69d",
+    "claude": "19b72e67368ad2ecf21f5af2dc271b6fdc03ff225b680e657dce70b9ae0d8849",
 }
 
 
@@ -593,31 +594,42 @@ def prompt_template(rel):
     return html_unescape(raw)
 
 
-def py_duration(value):
-    """Padanan durationLabel: Number() JS, rentang 5–180, Math.round (setengah ke atas)."""
+def py_seconds(value):
+    """Padanan seconds(): Number() JS, rentang 5–180, Math.round (setengah ke atas), selain itu 20."""
     s = value.strip()
     try:
         x = float(s) if s else 0.0
     except ValueError:
-        return "20 detik"
-    return f"{math.floor(x + 0.5)} detik" if math.isfinite(x) and 5 <= x <= 180 else "20 detik"
+        return 20
+    return math.floor(x + 0.5) if math.isfinite(x) and 5 <= x <= 180 else 20
+
+
+def py_slug(value):
+    s = unicodedata.normalize("NFKD", value.strip().lower())
+    s = "".join(ch for ch in s if not unicodedata.combining(ch))
+    s = re.sub(r"[^a-z0-9]+", "_", s).strip("_")[:40].rstrip("_")
+    return s or "video"
 
 
 def py_build_prompt(kind, template, raw):
-    """Implementasi ulang makePrompt ReelForge V5.4 sebagai acuan."""
+    """Implementasi acuan buildPrompt (generator versi situs)."""
     g = lambda k: str(raw.get(k, "")).strip()
-    v = {"topic": g("topic") or "[ISI TOPIK]", "description": g("description") or "[ISI DESKRIPSI]",
-         "audience": g("audience") or "[ISI AUDIENS]", "cta": g("cta") or "[ISI CTA]",
-         "duration": py_duration(g("duration")), "style": g("style") or "modern premium"}
-    head = (f"Topik: {v['topic']}\nDeskripsi: {v['description']}\nAudiens: {v['audience']}\nCTA: {v['cta']}\n")
+    sec = py_seconds(g("duration"))
+    v = {"ISI TOPIK": g("topic") or "[ISI TOPIK]", "ISI DESKRIPSI": g("description") or "[ISI DESKRIPSI]",
+         "ISI FAKTA": g("facts") or "(tidak diisi)", "ISI ISTILAH": g("terms") or "(tidak diisi)",
+         "ISI AUDIENS": g("audience") or "[ISI AUDIENS]", "ISI CTA": g("cta") or "[ISI CTA]",
+         "DURASI": f"{sec} detik",
+         "ANGGARAN KATA": f"{math.floor(sec * 2.0 + 0.5)}–{math.floor(sec * 2.2 + 0.5)} kata"}
+    slug = py_slug(g("topic"))
+    v["NAMA FILE"] = f"motion_graphic_{slug}.txt"
+    v["NAMA ZIP"] = f"remotion_reels_{slug}.zip"
+    style = g("style") or "modern premium"
+    body = re.sub(r"\[(" + "|".join(map(re.escape, v)) + r")\]", lambda m: v[m.group(1)], template)
+    head = (f"Topik: {v['ISI TOPIK']}\nDeskripsi: {v['ISI DESKRIPSI']}\nAudiens: {v['ISI AUDIENS']}\nCTA: {v['ISI CTA']}\n")
     if kind == "gpt":
-        t = template
-        for a, b in (("[ISI TOPIK]", v["topic"]), ("[ISI DESKRIPSI]", v["description"]),
-                     ("[ISI AUDIENS]", v["audience"]), ("[ISI CTA]", v["cta"]), ("15-20 detik", v["duration"])):
-            t = t.replace(a, b)
-        return f"KONFIGURASI VIDEO\n{head}Durasi: {v['duration']}\nGaya visual: {v['style']}\n\n{t}"
-    return (f"KONFIGURASI PROJECT (IKUTI TXT & AUDIO TERLAMPIR)\n{head}Target durasi: {v['duration']}\n"
-            f"Gaya visual: {v['style']}\n\n" + template.replace("15-20 detik", v["duration"]))
+        return (f"KONFIGURASI VIDEO\n{head}Durasi: {v['DURASI']} (anggaran voice-over {v['ANGGARAN KATA']})\n"
+                f"Gaya visual: {style}\n\n{body}")
+    return f"KONFIGURASI PROJECT (IKUTI TXT & AUDIO TERLAMPIR)\n{head}Target durasi: {v['DURASI']}\nGaya visual: {style}\n\n{body}"
 
 
 class PromptGeneratorTests(unittest.TestCase):
@@ -626,13 +638,22 @@ class PromptGeneratorTests(unittest.TestCase):
         self.html = {k: (ROOT / rel).read_text(encoding="utf-8") for k, rel in PROMPT_PAGES.items()}
         self.js = (ROOT / PROMPT_JS).read_text(encoding="utf-8")
 
-    def test_templates_are_reelforge_v54(self):
+    def test_templates_are_current_version(self):
         for kind, rel in PROMPT_PAGES.items():
             tpl = prompt_template(rel)
             with self.subTest(kind=kind):
                 self.assertEqual(hashlib.sha256(tpl.encode("utf-8")).hexdigest(), PROMPT_TEMPLATE_SHA256[kind])
-        self.assertIn("[ISI TOPIK]", prompt_template(PROMPT_PAGES["gpt"]))
-        self.assertIn("MainReel", prompt_template(PROMPT_PAGES["claude"]))
+        gpt, claude = prompt_template(PROMPT_PAGES["gpt"]), prompt_template(PROMPT_PAGES["claude"])
+        for marker in ("[ISI TOPIK]", "[ISI FAKTA]", "[ISI ISTILAH]", "[ANGGARAN KATA]", "[NAMA FILE]",
+                       "ATURAN FAKTA", "=== C. SEGMEN VOICE-OVER ===", "=== K. CHECKLIST ===", "Gunakan Python"):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, gpt)
+        for marker in ("CARA MEMBACA TXT", "[NAMA ZIP]", "[ISI FAKTA]", "src/data/captions.ts", "MainReel",
+                       "ATURAN WAJIB STABILITAS FONT"):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, claude)
+        # Template lama memakai "15-20 detik" sebagai penanda durasi; versi ini memakai [DURASI].
+        self.assertNotIn("15-20 detik", gpt + claude)
 
     def test_form_and_output_markup(self):
         for kind, p in self.pages.items():
@@ -648,7 +669,7 @@ class PromptGeneratorTests(unittest.TestCase):
                 self.assertIn("readonly", tags["prompt-output"][1])
                 self.assertIn("<noscript>", self.html[kind])
                 self.assertEqual(tags["prompt-status"][1].get("role"), "status")
-                for name in ("topic", "duration", "description", "audience", "cta", "style"):
+                for name in ("topic", "duration", "description", "facts", "terms", "audience", "cta", "style"):
                     [field] = [a for t, a in p.tags if a.get("name") == name and t in ("input", "textarea")]
                     self.assertEqual(len([1 for t, a in p.tags if t == "label" and a.get("for") == field["id"]]), 1)
                 for name in ("topic", "description"):
@@ -707,7 +728,7 @@ class PromptGeneratorTests(unittest.TestCase):
                     self.assertIn("try {", line)
 
     @unittest.skipUnless(shutil.which("node"), "node tidak tersedia")
-    def test_js_matches_original_algorithm_in_node(self):
+    def test_js_matches_reference_in_node(self):
         cases = [
             {},
             {"topic": "CLI Proxy", "duration": "18.4", "description": "Deskripsi", "audience": "Dev",
@@ -717,6 +738,9 @@ class PromptGeneratorTests(unittest.TestCase):
             {"topic": "A", "duration": "abc", "description": "B"},
             {"topic": "A", "duration": "45", "description": "B"},
             {"topic": "A", "duration": "", "description": "B"},
+            {"topic": "Hermes Agent", "duration": "50", "description": "Pengenalan",
+             "facts": "- Fakta 1\n- Fakta 2 [ISI CTA]", "terms": "agentic = e-jen-tik", "cta": "Kunjungi profil"},
+            {"topic": "Café Ünïcode!!", "duration": "12.6", "description": "x"},
         ]
         templates = {k: prompt_template(rel) for k, rel in PROMPT_PAGES.items()}
         script = (
@@ -724,6 +748,7 @@ class PromptGeneratorTests(unittest.TestCase):
             "const out = {};"
             "for (const k of ['gpt','claude']) out[k] = d.cases.map(c => g.buildPrompt(k, d.templates[k], c));"
             "out.dollar = g.buildPrompt('gpt', d.templates.gpt, {topic: 'Rp $& 10', description: 'x'});"
+            "out.extra = [g.wordBudget('50'), g.wordBudget('x'), g.slug('  Hermes Agent! '), g.slug('***')];"
             "out.toggle = [g.toggleStyle('', 'Line Art'), g.toggleStyle('Line Art, Neon', 'line art'),"
             " g.hasStyle('Premium dark tech, neon', 'premium DARK tech')];"
             "out.missing = [g.missingRequired({}), g.missingRequired({topic: ' ', description: 'x'})];"
@@ -739,6 +764,7 @@ class PromptGeneratorTests(unittest.TestCase):
                 with self.subTest(kind=kind, case=i):
                     self.assertEqual(r[kind][i], py_build_prompt(kind, templates[kind], c))
         self.assertIn("Topik: Rp $& 10", r["dollar"], "pola $ dari pengguna tidak ditafsirkan")
+        self.assertEqual(r["extra"], ["100–110 kata", "40–44 kata", "hermes_agent", "video"])
         self.assertEqual(r["toggle"], ["Line Art", "Neon", True])
         self.assertEqual(r["missing"], [["topic", "description"], ["topic"]])
         self.assertEqual(r["sanitize"], {"description": "y" * 1000})

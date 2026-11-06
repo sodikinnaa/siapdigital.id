@@ -89,13 +89,23 @@
             <div class="field">
               <label for="pf-duration">Target durasi <span class="opt">(detik)</span></label>
               <input id="pf-duration" name="duration" type="number" min="5" max="180" step="1" value="20" inputmode="numeric" aria-describedby="pf-duration-help">
-              <p class="field-help" id="pf-duration-help">5–180, misalnya 15, 20, atau 45.</p>
+              <p class="field-help" id="pf-duration-help">5–180 detik. Anggaran voice-over: 20 detik ≈ 40–44 kata.</p>
             </div>
           </div>
           <div class="field">
             <label for="pf-description">Deskripsi / fitur produk <span class="req">(wajib)</span></label>
             <textarea id="pf-description" name="description" maxlength="1000" rows="3" placeholder="Apa produk ini dan fitur apa yang benar-benar dimiliki?" required aria-describedby="pf-description-help"></textarea>
             <p class="field-help" id="pf-description-help">Samakan dengan isian prompt ChatGPT agar project konsisten dengan storyboard.</p>
+          </div>
+          <div class="field">
+            <label for="pf-facts">Fakta &amp; sumber <span class="opt">(sangat disarankan)</span></label>
+            <textarea id="pf-facts" name="facts" maxlength="1500" rows="4" placeholder="Satu fakta per baris, misalnya:&#10;- Dibuat oleh … (link resmi)&#10;- Bisa …&#10;- Bedanya dengan chatbot biasa: …" aria-describedby="pf-facts-help"></textarea>
+            <p class="field-help" id="pf-facts-help">3–5 fakta dari sumber resmi. Kalau kosong atau kurang, ChatGPT diminta bertanya dulu, bukan menebak.</p>
+          </div>
+          <div class="field">
+            <label for="pf-terms">Istilah &amp; pelafalan <span class="opt">(opsional)</span></label>
+            <input id="pf-terms" name="terms" type="text" maxlength="500" autocomplete="off" placeholder="Contoh: AI = ei-ai, agentic = e-jen-tik" aria-describedby="pf-terms-help">
+            <p class="field-help" id="pf-terms-help">Cara mengucapkan istilah asing di voice-over. Teks layar tetap memakai tulisan aslinya.</p>
           </div>
           <div class="field-row">
             <div class="field">
@@ -134,9 +144,20 @@
           <label class="sr-only" for="prompt-output">Teks prompt claude siap salin</label>
           <textarea class="prompt-text" id="prompt-output" readonly spellcheck="false" rows="18">ROLE: SENIOR REMOTION ENGINEER &amp; MOTION GRAPHIC DEVELOPER
 
-Saya melampirkan (1) TXT storyboard dari ChatGPT dan (2) MP3/WAV voice-over FINAL dari Cartesia.
+Saya melampirkan (1) [NAMA FILE] berisi spesifikasi storyboard dari ChatGPT dan (2) MP3/WAV voice-over FINAL dari Cartesia.
 
-Bangun PROJECT REMOTION LENGKAP, bukan potongan kode. Produksi Reels vertikal 1080x1920, 30 FPS, target 15-20 detik. Durasi aktual harus mengikuti panjang audio asli; target 15-20 detik adalah arahan awal, bukan alasan untuk memotong, mengganti, mempercepat, atau membuat ulang voice-over.
+Bangun PROJECT REMOTION LENGKAP, bukan potongan kode. Produksi Reels vertikal 1080x1920, 30 FPS, target [DURASI]. Durasi aktual harus mengikuti panjang audio asli; target [DURASI] adalah arahan awal, bukan alasan untuk memotong, mengganti, mempercepat, atau membuat ulang voice-over.
+
+Fakta dari pengguna (untuk verifikasi teks layar, jangan menambah klaim baru):
+[ISI FAKTA]
+
+CARA MEMBACA TXT:
+- Jadikan bagian DESIGN TOKENS (palet, font, ukuran, safe area, motion) konstanta di satu file, misalnya src/theme.ts.
+- Pakai SEGMEN VOICE-OVER (S1..Sn) sebagai dasar timing. Ukur durasi audio asli. Bila word alignment tidak tersedia, bagi durasi tiap segmen secara proporsional terhadap jumlah katanya, beri jeda wajar di tanda titik, lalu durasi PART = jumlah durasi segmen yang dirujuknya. Simpan timing di src/data/captions.ts agar mudah disesuaikan.
+- Terjemahkan field STORYBOARD (TEKS_LAYAR, SUBTITLE, LAYOUT, KOMPONEN, MASUK/KELUAR dalam frame, TRANSISI) apa adanya. Subtitle memakai field SUBTITLE, bukan ejaan pelafalan.
+- Bangun komponen reusable sesuai bagian KOMPONEN &amp; ASET.
+- Abaikan efek suara bila filenya tidak dilampirkan; jangan memakai logo resmi yang tidak disediakan.
+- Bila TXT bertentangan dengan aturan teknis di prompt ini, aturan teknis yang berlaku; sebutkan penyesuaiannya di laporan.
 
 KETENTUAN:
 - Gunakan React + TypeScript + Remotion, animasi frame-based (spring/interpolate), SVG/CSS, visual premium mengikuti storyboard; bukan slideshow teks.
@@ -145,7 +166,7 @@ KETENTUAN:
 - Teks mobile-readable, safe area Instagram, transisi rapi, closing CTA tidak memotong audio.
 - Semua aset lokal; jangan butuh CDN saat rendering.
 - Buat package.json dan package-lock.json yang konsisten, tsconfig, entry point src/index.ts, komposisi utama bernama MainReel (ID standar untuk semua topik), dan folder public berisi audio.
-- DurationInFrames mengikuti durasi total audio + penutup yang diperlukan; laporkan durasi aktual bila &gt;20 detik.
+- DurationInFrames mengikuti durasi total audio + penutup yang diperlukan; laporkan durasi aktual bila berbeda jauh dari [DURASI].
 - Pastikan perintah berikut berfungsi:
   npm ci
   npx remotion browser ensure
@@ -154,12 +175,12 @@ KETENTUAN:
 - Validasi TypeScript, imports, aset, durasi, audio dan render jika lingkungan memungkinkan; laporkan dengan jujur apakah render test dilakukan.
 
 OUTPUT WAJIB:
-- Satu ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest), bernama remotion_reels_[topik].zip.
+- Satu ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest), bernama [NAMA ZIP].
 - Sertakan durasi, jumlah frame, scene list, status pengujian, dan instruksi singkat render.
 - Jangan hanya mengirim teks/kode apabila fasilitas pembuatan ZIP tersedia.
 
 WAJIB UNTUK WEB RENDERER INSTALL-PER-PROJECT:
-Gunakan versi dependency Remotion/React/TypeScript sesuai project; pastikan paket @remotion/* kompatibel dan package-lock.json sinkron dengan package.json. ReelForge V5 mengekstrak ZIP lalu menjalankan npm ci (atau npm install jika perlu) di dalam folder project. Tidak perlu menyamakan versi dengan runtime bootstrap. Project harus kompatibel dengan Node.js 22 di Google Colab Linux. Hindari CDN, API key, install script yang tidak perlu, dan jangan sertakan node_modules di ZIP. Komposisi utama wajib MainReel; untuk kompatibilitas ZIP lama renderer juga dapat mendeteksi komposisi lain secara otomatis.
+Gunakan versi dependency Remotion/React/TypeScript sesuai project; pastikan paket @remotion/* kompatibel dan package-lock.json sinkron dengan package.json. ReelForge mengekstrak ZIP lalu menjalankan npm ci (atau npm install jika perlu) di dalam folder project. Tidak perlu menyamakan versi dengan runtime bootstrap. Project harus kompatibel dengan Node.js 22 di Google Colab Linux. Hindari CDN, API key, install script yang tidak perlu, dan jangan sertakan node_modules di ZIP. Komposisi utama wajib MainReel; untuk kompatibilitas ZIP lama renderer juga dapat mendeteksi komposisi lain secara otomatis.
 
 ATURAN WAJIB STABILITAS FONT &amp; MENCEGAH delayRender() TIMEOUT:
 - Project akan dirender oleh Chrome Headless Shell di Google Colab Linux (kadang hanya 2 vCPU). Jangan mengandalkan font jaringan, CDN, atau Google Fonts runtime.
@@ -170,9 +191,9 @@ ATURAN WAJIB STABILITAS FONT &amp; MENCEGAH delayRender() TIMEOUT:
 - Jangan menempatkan proses load font di komponen per-frame, loop, atau useEffect yang berulang. Jangan melakukan fetch font dari localhost/CDN di setiap frame.
 - Pastikan semua path font dan nama font-family konsisten serta tersedia ketika dijalankan di Chromium headless. Gunakan font fallback yang aman jika font khusus tidak wajib.
 - Cek semua async initialization, gambar, dan font agar tidak ada delayRender handle yang tertahan. Jangan sekadar menaikkan timeout untuk menutupi sumber masalah.
-- Uji minimal awal, tengah, akhir video, khususnya frame sekitar 162 bila relevan, dan render penuh bila runtime mendukung. Catat apakah pengujian sungguhan berhasil; jangan mengarang klaim.
+- Uji minimal awal, tengah, akhir video, dan render penuh bila runtime mendukung. Catat apakah pengujian sungguhan berhasil; jangan mengarang klaim.
 - Project sebaiknya dapat dirender dengan opsi --timeout=120000 sebagai batas toleransi, TETAPI semua font/aset harus tetap dapat selesai dimuat dengan benar tanpa timeout panjang.
-- Bila font Inter pernah gagal dengan pesan `A delayRender() "Memuat font lokal Inter" was called but not cleared`, perbaiki akar masalahnya: verifikasi asset, loading sekali, penyelesaian/cancel handle dan tidak ada loading ulang per-frame.
+- Bila font pernah gagal dengan pesan `A delayRender() ... was called but not cleared`, perbaiki akar masalahnya: verifikasi asset, loading sekali, penyelesaian/cancel handle dan tidak ada loading ulang per-frame.
 
 PETUNJUK EKSPOR:
 Pastikan ZIP tetap memuat seluruh font lokal di public/fonts/ (jika digunakan), voice-over asli, source, package.json dan package-lock.json. Jangan sertakan node_modules. Desain harus tetap konsisten tanpa bergantung pada internet saat video di-render.
@@ -196,7 +217,7 @@ Pastikan ZIP tetap memuat seluruh font lokal di public/fonts/ (jika digunakan), 
         <ol class="principles how-steps">
           <li>
             <h3>Cek isian</h3>
-            <p>Gunakan isian yang sama dengan prompt ChatGPT. Durasi mengikuti panjang audio Cartesia.</p>
+            <p>Gunakan isian yang sama dengan prompt ChatGPT. Prompt ini meminta Claude membaca segmen VO, design tokens, dan field storyboard dari TXT; durasi tetap mengikuti audio Cartesia.</p>
           </li>
           <li>
             <h3>Tempel prompt dan lampirkan file</h3>

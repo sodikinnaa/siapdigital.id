@@ -1,18 +1,22 @@
-// Generator prompt ReelForge V5.4 untuk ChatGPT dan Claude.
+// Generator prompt ReelForge (versi situs, turunan V5.4) untuk ChatGPT dan Claude.
 // Template prompt dibaca dari <textarea> di halaman (satu sumber, tetap terbaca tanpa JS).
 // Tidak ada permintaan jaringan: isian hanya disimpan di localStorage browser ini agar
 // terbawa antara halaman ChatGPT dan Claude. Fungsi murni diekspor untuk pengujian (Node).
 (function () {
   var STORAGE_KEY = 'reelforge-prompt-v1';
-  var FIELDS = ['topic', 'duration', 'description', 'audience', 'cta', 'style'];
+  var FIELDS = ['topic', 'duration', 'description', 'facts', 'terms', 'audience', 'cta', 'style'];
   var REQUIRED = ['topic', 'description'];
-  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, audience: 200, cta: 200, style: 300 };
+  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, facts: 1500, terms: 500, audience: 200, cta: 200, style: 300 };
+  // Acuan kecepatan bicara Cartesia (dari contoh tutorial: 92 kata ≈ 41 detik).
+  var WORDS_PER_SECOND_LOW = 2.0;
+  var WORDS_PER_SECOND_HIGH = 2.2;
   var EXAMPLE = {
     topic: 'CLI Proxy',
     duration: '20',
     description: 'CLI Proxy membantu menghubungkan terminal dengan layanan API melalui perantara yang terstruktur.',
     audience: 'Developer, programmer, pemula AI',
     cta: 'Follow untuk tutorial berikutnya',
+    terms: 'CLI = si-el-ai, API = ei-pi-ai',
     style: 'Premium dark tech, neon cyan-violet, cinematic terminal UI'
   };
 
@@ -20,10 +24,27 @@
     return value == null ? '' : String(value).trim();
   }
 
-  // Sama dengan ReelForge: angka 5–180 dibulatkan, selain itu kembali ke 20 detik.
+  // Angka 5–180 dibulatkan; selain itu kembali ke 20 detik (sama dengan ReelForge).
+  function seconds(value) {
+    var s = Number(text(value));
+    return isFinite(s) && s >= 5 && s <= 180 ? Math.round(s) : 20;
+  }
+
   function durationLabel(value) {
-    var seconds = Number(text(value));
-    return isFinite(seconds) && seconds >= 5 && seconds <= 180 ? Math.round(seconds) + ' detik' : '20 detik';
+    return seconds(value) + ' detik';
+  }
+
+  function wordBudget(value) {
+    var s = seconds(value);
+    return Math.round(s * WORDS_PER_SECOND_LOW) + '–' + Math.round(s * WORDS_PER_SECOND_HIGH) + ' kata';
+  }
+
+  // Nama file: huruf kecil, garis bawah, tanpa aksen; maksimal 40 karakter.
+  function slug(value) {
+    var s = text(value).toLowerCase();
+    if (s.normalize) s = s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+    s = s.replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40).replace(/_+$/, '');
+    return s || 'video';
   }
 
   function values(raw) {
@@ -33,33 +54,36 @@
       description: text(raw.description) || '[ISI DESKRIPSI]',
       audience: text(raw.audience) || '[ISI AUDIENS]',
       cta: text(raw.cta) || '[ISI CTA]',
+      facts: text(raw.facts) || '(tidak diisi)',
+      terms: text(raw.terms) || '(tidak diisi)',
       duration: durationLabel(raw.duration),
+      budget: wordBudget(raw.duration),
+      slug: slug(raw.topic),
       style: text(raw.style) || 'modern premium'
     };
   }
 
-  // split/join: mengganti semua kemunculan tanpa menafsirkan pola $ di teks pengguna.
-  function replaceAll(source, find, replacement) {
-    return source.split(find).join(replacement);
+  var PLACEHOLDER = /\[(ISI TOPIK|ISI DESKRIPSI|ISI FAKTA|ISI ISTILAH|ISI AUDIENS|ISI CTA|DURASI|ANGGARAN KATA|NAMA FILE|NAMA ZIP)\]/g;
+
+  // Satu kali jalan dengan fungsi pengganti: teks pengguna tidak diganti ulang dan pola $ tidak ditafsirkan.
+  function fillTemplate(template, v) {
+    var map = {
+      'ISI TOPIK': v.topic, 'ISI DESKRIPSI': v.description, 'ISI FAKTA': v.facts, 'ISI ISTILAH': v.terms,
+      'ISI AUDIENS': v.audience, 'ISI CTA': v.cta, 'DURASI': v.duration, 'ANGGARAN KATA': v.budget,
+      'NAMA FILE': 'motion_graphic_' + v.slug + '.txt', 'NAMA ZIP': 'remotion_reels_' + v.slug + '.zip'
+    };
+    return String(template).replace(PLACEHOLDER, function (_, key) { return map[key]; });
   }
 
   function buildPrompt(kind, template, raw) {
     var v = values(raw);
-    var t = String(template);
+    var head = 'Topik: ' + v.topic + '\nDeskripsi: ' + v.description + '\nAudiens: ' + v.audience + '\nCTA: ' + v.cta + '\n';
     if (kind === 'gpt') {
-      t = replaceAll(t, '[ISI TOPIK]', v.topic);
-      t = replaceAll(t, '[ISI DESKRIPSI]', v.description);
-      t = replaceAll(t, '[ISI AUDIENS]', v.audience);
-      t = replaceAll(t, '[ISI CTA]', v.cta);
-      t = replaceAll(t, '15-20 detik', v.duration);
-      return 'KONFIGURASI VIDEO\nTopik: ' + v.topic + '\nDeskripsi: ' + v.description +
-        '\nAudiens: ' + v.audience + '\nCTA: ' + v.cta + '\nDurasi: ' + v.duration +
-        '\nGaya visual: ' + v.style + '\n\n' + t;
+      return 'KONFIGURASI VIDEO\n' + head + 'Durasi: ' + v.duration + ' (anggaran voice-over ' + v.budget + ')' +
+        '\nGaya visual: ' + v.style + '\n\n' + fillTemplate(template, v);
     }
-    return 'KONFIGURASI PROJECT (IKUTI TXT & AUDIO TERLAMPIR)\nTopik: ' + v.topic +
-      '\nDeskripsi: ' + v.description + '\nAudiens: ' + v.audience + '\nCTA: ' + v.cta +
-      '\nTarget durasi: ' + v.duration + '\nGaya visual: ' + v.style + '\n\n' +
-      replaceAll(t, '15-20 detik', v.duration);
+    return 'KONFIGURASI PROJECT (IKUTI TXT & AUDIO TERLAMPIR)\n' + head + 'Target durasi: ' + v.duration +
+      '\nGaya visual: ' + v.style + '\n\n' + fillTemplate(template, v);
   }
 
   function missingRequired(raw) {
@@ -96,6 +120,8 @@
 
   var api = {
     durationLabel: durationLabel,
+    wordBudget: wordBudget,
+    slug: slug,
     buildPrompt: buildPrompt,
     missingRequired: missingRequired,
     sanitize: sanitize,
@@ -116,6 +142,7 @@
   var kind = form.getAttribute('data-kind') === 'claude' ? 'claude' : 'gpt';
   var template = output.defaultValue;
   var counter = document.getElementById('prompt-count');
+  var durationHelp = document.getElementById('pf-duration-help');
   var status = document.getElementById('prompt-status');
   var copyBtn = document.getElementById('prompt-copy');
   var chips = Array.prototype.slice.call(form.querySelectorAll('[data-style]'));
@@ -157,6 +184,7 @@
     var data = current();
     output.value = buildPrompt(kind, template, data);
     counter.textContent = output.value.length.toLocaleString('id-ID') + ' karakter';
+    if (durationHelp) durationHelp.textContent = '5–180 detik. Anggaran voice-over: ' + durationLabel(data.duration) + ' ≈ ' + wordBudget(data.duration) + '.';
     chips.forEach(function (chip) {
       chip.setAttribute('aria-pressed', hasStyle(data.style, chip.getAttribute('data-style')) ? 'true' : 'false');
     });
