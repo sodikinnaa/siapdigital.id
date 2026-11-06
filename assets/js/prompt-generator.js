@@ -4,9 +4,9 @@
 // terbawa antara halaman ChatGPT dan Claude. Fungsi murni diekspor untuk pengujian (Node).
 (function () {
   var STORAGE_KEY = 'reelforge-prompt-v1';
-  var FIELDS = ['topic', 'duration', 'description', 'facts', 'terms', 'audience', 'cta', 'style', 'caption'];
+  var FIELDS = ['topic', 'duration', 'description', 'facts', 'terms', 'audience', 'cta', 'style', 'caption', 'structure', 'hook'];
   var REQUIRED = ['topic', 'description'];
-  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, facts: 1500, terms: 500, audience: 200, cta: 200, style: 300, caption: 10 };
+  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, facts: 1500, terms: 500, audience: 200, cta: 200, style: 300, caption: 10, structure: 10, hook: 10 };
   // Preset caption diadaptasi dari claude-shorts (MIT, Daniel Agrici); posisi disesuaikan dengan safe area Reels.
   var CAPTIONS = {
     bold: {
@@ -25,6 +25,21 @@
       name: 'dipilih Claude sesuai nada video (tegas, memantul, atau bersih)',
       spec: 'Pilih sendiri yang paling cocok dengan nada video: Bold (kapital, sorot kata aktif), Bounce (memantul, warna bergantian), atau Clean (minimalis, fade halus). Tetap di atas ±420 px dari bawah dan tidak menutupi teks layar.'
     }
+  };
+
+  // Struktur cerita dan jenis hook diadaptasi dari motion-skills (iart.ai, MIT).
+  var STRUCTURES = {
+    explainer: 'Edukasi (explainer): Problem ±20% (sebut masalah dengan bahasa penonton) → Stakes (kenapa penting) → Solusi ±15% (satu kalimat) → Cara kerja ±45% (1–3 langkah konkret, satu langkah per PART) → Payoff + CTA ±20%. Pilih SATU analogi dari dunia penonton dan pakai konsisten di VO dan visual.',
+    retensi: 'Retensi: Hook (0–1 detik, membuka rasa penasaran) → Setup (alasan menonton, sampai ±4 detik) → Body (beberapa beat, satu ide per beat) → Payoff yang menjawab hook, atau loop kembali ke frame pertama.',
+    auto: 'Pilih yang paling cocok dan sebutkan di BRIEF: Edukasi (Problem → Stakes → Solusi → Cara kerja 1–3 langkah → Payoff + CTA, dengan satu analogi) atau Retensi (Hook → Setup → Body beat → Payoff/loop).'
+  };
+  var HOOKS = {
+    auto: 'Pilih satu jenis hook yang paling cocok dan sebutkan di BRIEF: open loop, janji langsung, negasi, taruhan, atau listicle.',
+    openloop: 'Open loop, misalnya "Alasan sebenarnya kenapa …"; jawabannya baru diberikan di payoff.',
+    janji: 'Janji langsung, misalnya "… dalam 30 detik, tanpa …"; sebut hasil dan batas waktunya.',
+    negasi: 'Negasi, misalnya "Berhenti …" atau "Ternyata … itu keliru"; untuk sudut pandang tegas.',
+    taruhan: 'Taruhan, misalnya "Kesalahan ini bikin … jangan diulangi"; tetap hanya memakai fakta yang diberikan.',
+    listicle: 'Listicle, misalnya "3 … yang … (nomor 3 paling …)"; siapkan rujukan ke depan.'
   };
 
   // Acuan kecepatan bicara Cartesia (dari contoh tutorial: 92 kata ≈ 41 detik).
@@ -80,17 +95,20 @@
       budget: wordBudget(raw.duration),
       slug: slug(raw.topic),
       style: text(raw.style) || 'modern premium',
-      caption: CAPTIONS[text(raw.caption)] ? text(raw.caption) : 'bold'
+      caption: CAPTIONS[text(raw.caption)] ? text(raw.caption) : 'bold',
+      structure: STRUCTURES[text(raw.structure)] ? text(raw.structure) : 'explainer',
+      hook: HOOKS[text(raw.hook)] ? text(raw.hook) : 'auto'
     };
   }
 
-  var PLACEHOLDER = /\[(GAYA CAPTION SINGKAT|GAYA CAPTION|ISI TOPIK|ISI DESKRIPSI|ISI FAKTA|ISI ISTILAH|ISI AUDIENS|ISI CTA|DURASI|ANGGARAN KATA|NAMA FILE|NAMA ZIP)\]/g;
+  var PLACEHOLDER = /\[(STRUKTUR|JENIS HOOK|GAYA CAPTION SINGKAT|GAYA CAPTION|ISI TOPIK|ISI DESKRIPSI|ISI FAKTA|ISI ISTILAH|ISI AUDIENS|ISI CTA|DURASI|ANGGARAN KATA|NAMA FILE|NAMA ZIP)\]/g;
 
   // Satu kali jalan dengan fungsi pengganti: teks pengguna tidak diganti ulang dan pola $ tidak ditafsirkan.
   function fillTemplate(template, v) {
     var map = {
       'ISI TOPIK': v.topic, 'ISI DESKRIPSI': v.description, 'ISI FAKTA': v.facts, 'ISI ISTILAH': v.terms,
       'ISI AUDIENS': v.audience, 'ISI CTA': v.cta, 'DURASI': v.duration, 'ANGGARAN KATA': v.budget,
+      'STRUKTUR': STRUCTURES[v.structure], 'JENIS HOOK': HOOKS[v.hook],
       'GAYA CAPTION': CAPTIONS[v.caption].spec, 'GAYA CAPTION SINGKAT': CAPTIONS[v.caption].name,
       'NAMA FILE': 'motion_graphic_' + v.slug + '.txt', 'NAMA ZIP': 'remotion_reels_' + v.slug + '.zip'
     };
@@ -120,6 +138,8 @@
       if (typeof data[k] === 'string') clean[k] = data[k].slice(0, MAX_LENGTH[k]);
     });
     if (clean.caption && !CAPTIONS[clean.caption]) delete clean.caption;
+    if (clean.structure && !STRUCTURES[clean.structure]) delete clean.structure;
+    if (clean.hook && !HOOKS[clean.hook]) delete clean.hook;
     return clean;
   }
 
@@ -151,7 +171,9 @@
     toggleStyle: toggleStyle,
     hasStyle: hasStyle,
     EXAMPLE: EXAMPLE,
-    CAPTIONS: CAPTIONS
+    CAPTIONS: CAPTIONS,
+    STRUCTURES: STRUCTURES,
+    HOOKS: HOOKS
   };
 
   if (typeof module === 'object' && module.exports) {
@@ -257,7 +279,7 @@
   });
 
   document.getElementById('prompt-reset').addEventListener('click', function () {
-    FIELDS.forEach(function (k) { field(k).value = k === 'duration' ? '20' : (k === 'caption' ? 'bold' : ''); });
+    FIELDS.forEach(function (k) { field(k).value = k === 'duration' ? '20' : ({ caption: 'bold', structure: 'explainer', hook: 'auto' }[k] || ''); });
     forget();
     markInvalid([]);
     render();

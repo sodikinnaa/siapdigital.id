@@ -130,6 +130,28 @@
               <button type="button" class="chip-toggle" data-style="Cinematic terminal UI" aria-pressed="false">Cinematic terminal UI</button>
             </div>
           </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="pf-structure">Struktur cerita</label>
+              <select id="pf-structure" name="structure">
+                <option value="explainer" selected>Edukasi / explainer</option>
+                <option value="retensi">Retensi / hiburan</option>
+                <option value="auto">Biarkan AI memilih</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="pf-hook">Jenis hook</label>
+              <select id="pf-hook" name="hook">
+                <option value="auto" selected>Biarkan AI memilih</option>
+                <option value="openloop">Open loop: “Alasan sebenarnya…”</option>
+                <option value="janji">Janji langsung: “… dalam 30 detik”</option>
+                <option value="negasi">Negasi: “Berhenti …”</option>
+                <option value="taruhan">Taruhan: “Kesalahan ini …”</option>
+                <option value="listicle">Listicle: “3 hal …”</option>
+              </select>
+            </div>
+          </div>
+          <p class="field-help">Edukasi: problem → stakes → solusi → cara kerja → payoff, dengan satu analogi. Retensi: hook → setup → beat → payoff/loop. Diadaptasi dari motion-skills (iart.ai, MIT).</p>
           <div class="field">
             <label for="pf-caption">Gaya caption</label>
             <select id="pf-caption" name="caption" aria-describedby="pf-caption-help">
@@ -175,10 +197,17 @@ ANGGARAN KATA:
 - Acuan kecepatan Cartesia ±2,2 kata/detik. Target [DURASI] = [ANGGARAN KATA] voice-over total, termasuk CTA.
 - Cantumkan jumlah kata per segmen, per PART, total, dan estimasi durasi (total kata ÷ 2,2). Bila di luar anggaran, revisi naskah sebelum final.
 
+ATURAN CERITA:
+- Satu ide utama yang bisa diulang penonton dalam satu kalimat. Ide kedua jadikan video lain.
+- Struktur: [STRUKTUR]
+- Hook: [JENIS HOOK] Teks hook sudah tampil di layar sejak frame pertama (banyak penonton menonton tanpa suara) dan frame pertama adalah visual terkuat, bukan fade dari hitam. Hook membuka rasa penasaran yang baru dijawab di payoff.
+- Pattern interrupt: perubahan visual setiap 2–4 detik dengan jarak tidak seragam (punch-in, potongan, diagram muncul, caption pop). Tidak boleh ada bagian tengah yang datar.
+- Penutup: payoff menjawab hook; bila cocok, kalimat atau visual terakhir menyambung kembali ke frame pertama agar video enak ditonton ulang. CTA hanya satu.
+
 STRUKTUR FILE TXT (pakai judul bagian persis seperti ini):
 
 === A. BRIEF ===
-Tujuan, satu pesan utama, konsep, audiens, nada bicara.
+Tujuan, satu pesan utama (satu kalimat), struktur cerita, jenis hook, analogi utama (bila ada), konsep, audiens, nada bicara.
 
 === B. DESIGN TOKENS ===
 - Palet HEX dengan peran: latar, permukaan, primer, aksen, teks, teks redup.
@@ -197,12 +226,14 @@ PART: nomor dan nama
 SEGMEN: S.. sampai S.. (waktu PART mengikuti segmen, bukan detik)
 ESTIMASI: detik mulai sampai selesai (perkiraan saja)
 TUJUAN:
+BEAT: bagian struktur cerita (mis. Hook, Problem, Cara kerja 1, Payoff)
 TEKS_LAYAR: maksimal 2 baris, 22 karakter per baris
 SUBTITLE: teks tampilan per segmen (memakai tulisan asli istilah, bukan ejaan pelafalan)
 LAYOUT: posisi elemen di dalam safe area
 KOMPONEN: nama komponen dari bagian E beserta props
-MASUK / KELUAR: animasi dan durasinya dalam frame
+MASUK / KELUAR: animasi (mis. mask reveal per kata, stagger per huruf, diagram bertahap, pop) dan durasinya dalam frame
 TRANSISI: ke PART berikutnya
+INTERRUPT: jenis perubahan visual di awal PART (punch-in, potongan, diagram muncul, caption pop) atau - bila tidak ada
 CATATAN_REMOTION: hal teknis yang perlu diperhatikan
 
 === E. KOMPONEN &amp; ASET ===
@@ -224,7 +255,7 @@ Singkat saja: gunakan audio asli Cartesia, jangan buat voice baru, ikuti design 
 Daftar sumber fakta yang dipakai.
 
 === K. CHECKLIST ===
-Total kata, estimasi durasi, gabungan segmen sama dengan full text (ya/tidak), semua TEKS_LAYAR maksimal 22 karakter per baris (ya/tidak).
+Total kata, estimasi durasi, gabungan segmen sama dengan full text (ya/tidak), semua TEKS_LAYAR maksimal 22 karakter per baris (ya/tidak), teks hook tampil di frame pertama (ya/tidak), INTERRUPT setiap 2–4 detik dengan jarak tidak seragam (ya/tidak), payoff menjawab hook dan CTA hanya satu (ya/tidak).
 
 Prioritaskan hook 1-3 detik dan satu pesan kuat. Visual premium dan natural, bisa diimplementasikan hanya dengan Remotion, React, TypeScript, CSS, dan SVG.
 

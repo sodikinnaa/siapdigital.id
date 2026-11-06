@@ -130,6 +130,28 @@
               <button type="button" class="chip-toggle" data-style="Cinematic terminal UI" aria-pressed="false">Cinematic terminal UI</button>
             </div>
           </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="pf-structure">Struktur cerita</label>
+              <select id="pf-structure" name="structure">
+                <option value="explainer" selected>Edukasi / explainer</option>
+                <option value="retensi">Retensi / hiburan</option>
+                <option value="auto">Biarkan AI memilih</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="pf-hook">Jenis hook</label>
+              <select id="pf-hook" name="hook">
+                <option value="auto" selected>Biarkan AI memilih</option>
+                <option value="openloop">Open loop: “Alasan sebenarnya…”</option>
+                <option value="janji">Janji langsung: “… dalam 30 detik”</option>
+                <option value="negasi">Negasi: “Berhenti …”</option>
+                <option value="taruhan">Taruhan: “Kesalahan ini …”</option>
+                <option value="listicle">Listicle: “3 hal …”</option>
+              </select>
+            </div>
+          </div>
+          <p class="field-help">Edukasi: problem → stakes → solusi → cara kerja → payoff, dengan satu analogi. Retensi: hook → setup → beat → payoff/loop. Diadaptasi dari motion-skills (iart.ai, MIT).</p>
           <div class="field">
             <label for="pf-caption">Gaya caption</label>
             <select id="pf-caption" name="caption" aria-describedby="pf-caption-help">
@@ -164,10 +186,20 @@ Fakta dari pengguna (untuk verifikasi teks layar, jangan menambah klaim baru):
 CARA MEMBACA TXT:
 - Jadikan bagian DESIGN TOKENS (palet, font, ukuran, safe area, motion) konstanta di satu file, misalnya src/theme.ts.
 - Pakai SEGMEN VOICE-OVER (S1..Sn) sebagai dasar timing. Ukur durasi audio asli. Bila word alignment tidak tersedia, bagi durasi tiap segmen secara proporsional terhadap jumlah katanya, beri jeda wajar di tanda titik, lalu durasi PART = jumlah durasi segmen yang dirujuknya. Simpan timing di src/data/captions.ts agar mudah disesuaikan.
-- Terjemahkan field STORYBOARD (TEKS_LAYAR, SUBTITLE, LAYOUT, KOMPONEN, MASUK/KELUAR dalam frame, TRANSISI) apa adanya. Subtitle memakai field SUBTITLE, bukan ejaan pelafalan.
+- Terjemahkan field STORYBOARD (BEAT, TEKS_LAYAR, SUBTITLE, LAYOUT, KOMPONEN, MASUK/KELUAR dalam frame, TRANSISI, INTERRUPT) apa adanya. Subtitle memakai field SUBTITLE, bukan ejaan pelafalan.
 - Bangun komponen reusable sesuai bagian KOMPONEN &amp; ASET.
 - Abaikan efek suara bila filenya tidak dilampirkan; jangan memakai logo resmi yang tidak disediakan.
 - Bila TXT bertentangan dengan aturan teknis di prompt ini, aturan teknis yang berlaku; sebutkan penyesuaiannya di laporan.
+
+TEKNIK ANIMASI (aturan determinisme wajib; resep lain boleh disesuaikan):
+- Semua nilai animasi dihitung dari useCurrentFrame() lewat interpolate/spring. Jangan memakai Date.now(), Math.random() (pakai random(seed) dari remotion bila perlu acak), setTimeout/setInterval, CSS transition/animation, atau library animasi berbasis waktu (GSAP, Framer Motion). Ini mencegah frame meloncat atau berkedip saat render.
+- Hook: teks hook sudah terlihat di frame 0; boleh pop skala 0,9 → 1, bukan fade dari hitam.
+- INTERRUPT dieksekusi tepat di awal PART yang merujuknya. Punch-in = skala 100% → 110–112% dengan spring (damping ±12, stiffness ±200), origin sedikit di atas tengah.
+- Kinetic typography: utamakan mask reveal (pembungkus overflow hidden, teks translateY 110% → 0). Stagger per baris 2–3 frame, per kata 1–2 frame, per huruf 1 frame; easing ease-out (Easing.bezier(0.16, 1, 0.3, 1)); total kemunculan teks maksimal ±24 frame. Blur hanya kecil dan singkat karena berat dirender.
+- Diagram: tampilkan bertahap node → garis → label. Garis digambar lewat stroke-dashoffset dengan pathLength=1. Elemen yang sedang dibahas penuh, lainnya opacity 0,35. Tahan tiap langkah 15–45 frame.
+- Loop: bila TXT meminta, frame terakhir dibuat mendekati komposisi frame pertama.
+- Elemen penting berada di kotak aman tengah 900×1400 selain margin safe area dari TXT.
+- Jika lingkungan memungkinkan, render frame diam (npx remotion still) di frame hook, tengah, dan terakhir sebelum render penuh; periksa teks terpotong, keterbacaan hook, dan safe area; laporkan hasilnya dengan jujur.
 
 CAPTION &amp; ELEMEN PENDUKUNG (rekomendasi agar video lebih menarik; sesuaikan bila bertentangan dengan storyboard atau design tokens):
 - Gaya caption: [GAYA CAPTION]
