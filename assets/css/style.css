@@ -161,6 +161,7 @@ h3 { font-size: 1.2rem; margin: 0 0 .5rem; }
 .hub-tools-head h2 { margin-top: 0; font-size: clamp(1.5rem, 3vw, 2rem); }
 .card p { margin: 0; color: var(--muted); }
 .card .btn-row { margin-top: auto; padding-top: .5rem; }
+.card > .badge { align-self: flex-start; }
 
 .app-mark {
   flex: none; width: 4rem; height: 4rem; border-radius: 16px; display: grid; place-items: center;
