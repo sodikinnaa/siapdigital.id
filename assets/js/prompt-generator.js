@@ -1,12 +1,12 @@
-// Generator prompt ReelForge (versi situs, turunan V5.4) untuk ChatGPT dan Claude.
+// Generator prompt video Reels (turunan ReelForge V5.4) untuk ChatGPT dan Claude.
 // Template prompt dibaca dari <textarea> di halaman (satu sumber, tetap terbaca tanpa JS).
 // Tidak ada permintaan jaringan: isian hanya disimpan di localStorage browser ini agar
 // terbawa antara halaman ChatGPT dan Claude. Fungsi murni diekspor untuk pengujian (Node).
 (function () {
   var STORAGE_KEY = 'reelforge-prompt-v1';
-  var FIELDS = ['topic', 'duration', 'description', 'facts', 'terms', 'audience', 'cta', 'style', 'caption', 'structure', 'hook'];
+  var FIELDS = ['topic', 'duration', 'description', 'facts', 'terms', 'audience', 'cta', 'style', 'caption', 'structure', 'hook', 'output'];
   var REQUIRED = ['topic', 'description'];
-  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, facts: 1500, terms: 500, audience: 200, cta: 200, style: 300, caption: 10, structure: 10, hook: 10 };
+  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, facts: 1500, terms: 500, audience: 200, cta: 200, style: 300, caption: 10, structure: 10, hook: 10, output: 10 };
   // Preset caption diadaptasi dari claude-shorts (MIT, Daniel Agrici); posisi disesuaikan dengan safe area Reels.
   var CAPTIONS = {
     bold: {
@@ -42,6 +42,12 @@
     listicle: 'Listicle, misalnya "3 … yang … (nomor 3 paling …)"; siapkan rujukan ke depan.'
   };
 
+  var OUTPUTS = {
+    both: '- Render video final menjadi MP4 (H.264 + AAC, yuv420p, 1080x1920, 30 FPS) bernama [NAMA MP4] dan berikan sebagai file yang bisa diunduh. Jalankan npm ci, npx remotion browser ensure, lalu render.\n- Berikan juga ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest) bernama [NAMA ZIP].\n- Bila render MP4 tidak memungkinkan di lingkunganmu, jelaskan alasannya dengan jujur dan tetap berikan ZIP.',
+    mp4: '- Render video final menjadi MP4 (H.264 + AAC, yuv420p, 1080x1920, 30 FPS) bernama [NAMA MP4] dan berikan sebagai file yang bisa diunduh. Jalankan npm ci, npx remotion browser ensure, lalu render.\n- Bila render tidak memungkinkan di lingkunganmu, jelaskan alasannya dengan jujur dan berikan ZIP project lengkap [NAMA ZIP] sebagai cadangan.',
+    zip: '- Satu ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest) bernama [NAMA ZIP], siap dirender di laptop dengan npm ci lalu npx remotion render.\n- Jangan hanya mengirim teks/kode apabila fasilitas pembuatan ZIP tersedia.'
+  };
+
   // Acuan kecepatan bicara Cartesia (dari contoh tutorial: 92 kata ≈ 41 detik).
   var WORDS_PER_SECOND_LOW = 2.0;
   var WORDS_PER_SECOND_HIGH = 2.2;
@@ -59,7 +65,7 @@
     return value == null ? '' : String(value).trim();
   }
 
-  // Angka 5–180 dibulatkan; selain itu kembali ke 20 detik (sama dengan ReelForge).
+  // Angka 5–180 dibulatkan; selain itu kembali ke 20 detik (sama dengan prompt asal).
   function seconds(value) {
     var s = Number(text(value));
     return isFinite(s) && s >= 5 && s <= 180 ? Math.round(s) : 20;
@@ -97,11 +103,12 @@
       style: text(raw.style) || 'modern premium',
       caption: CAPTIONS[text(raw.caption)] ? text(raw.caption) : 'bold',
       structure: STRUCTURES[text(raw.structure)] ? text(raw.structure) : 'explainer',
-      hook: HOOKS[text(raw.hook)] ? text(raw.hook) : 'auto'
+      hook: HOOKS[text(raw.hook)] ? text(raw.hook) : 'auto',
+      output: OUTPUTS[text(raw.output)] ? text(raw.output) : 'both'
     };
   }
 
-  var PLACEHOLDER = /\[(STRUKTUR|JENIS HOOK|GAYA CAPTION SINGKAT|GAYA CAPTION|ISI TOPIK|ISI DESKRIPSI|ISI FAKTA|ISI ISTILAH|ISI AUDIENS|ISI CTA|DURASI|ANGGARAN KATA|NAMA FILE|NAMA ZIP)\]/g;
+  var PLACEHOLDER = /\[(OUTPUT|NAMA MP4|STRUKTUR|JENIS HOOK|GAYA CAPTION SINGKAT|GAYA CAPTION|ISI TOPIK|ISI DESKRIPSI|ISI FAKTA|ISI ISTILAH|ISI AUDIENS|ISI CTA|DURASI|ANGGARAN KATA|NAMA FILE|NAMA ZIP)\]/g;
 
   // Satu kali jalan dengan fungsi pengganti: teks pengguna tidak diganti ulang dan pola $ tidak ditafsirkan.
   function fillTemplate(template, v) {
@@ -110,9 +117,10 @@
       'ISI AUDIENS': v.audience, 'ISI CTA': v.cta, 'DURASI': v.duration, 'ANGGARAN KATA': v.budget,
       'STRUKTUR': STRUCTURES[v.structure], 'JENIS HOOK': HOOKS[v.hook],
       'GAYA CAPTION': CAPTIONS[v.caption].spec, 'GAYA CAPTION SINGKAT': CAPTIONS[v.caption].name,
-      'NAMA FILE': 'motion_graphic_' + v.slug + '.txt', 'NAMA ZIP': 'remotion_reels_' + v.slug + '.zip'
+      'NAMA FILE': 'motion_graphic_' + v.slug + '.txt', 'NAMA MP4': 'reels_' + v.slug + '.mp4', 'OUTPUT': '', 'NAMA ZIP': 'remotion_reels_' + v.slug + '.zip'
     };
-    return String(template).replace(PLACEHOLDER, function (_, key) { return map[key]; });
+    var withOutput = String(template).split('[OUTPUT]').join(OUTPUTS[v.output]);
+    return withOutput.replace(PLACEHOLDER, function (_, key) { return map[key]; });
   }
 
   function buildPrompt(kind, template, raw) {
@@ -140,6 +148,7 @@
     if (clean.caption && !CAPTIONS[clean.caption]) delete clean.caption;
     if (clean.structure && !STRUCTURES[clean.structure]) delete clean.structure;
     if (clean.hook && !HOOKS[clean.hook]) delete clean.hook;
+    if (clean.output && !OUTPUTS[clean.output]) delete clean.output;
     return clean;
   }
 
@@ -173,7 +182,8 @@
     EXAMPLE: EXAMPLE,
     CAPTIONS: CAPTIONS,
     STRUCTURES: STRUCTURES,
-    HOOKS: HOOKS
+    HOOKS: HOOKS,
+    OUTPUTS: OUTPUTS
   };
 
   if (typeof module === 'object' && module.exports) {
@@ -195,11 +205,12 @@
   var copyLabel = copyBtn.textContent;
   var resetTimer = null;
 
-  function field(k) { return form.elements[k]; }
+  var stored = {};
+  function field(k) { return form.elements[k] || null; }
 
   function current() {
     var data = {};
-    FIELDS.forEach(function (k) { data[k] = field(k).value; });
+    FIELDS.forEach(function (k) { var el = field(k); if (el) data[k] = el.value; else if (typeof stored[k] === 'string') data[k] = stored[k]; });
     return data;
   }
 
@@ -239,7 +250,7 @@
   }
 
   function fill(data) {
-    FIELDS.forEach(function (k) { if (typeof data[k] === 'string') field(k).value = data[k]; });
+    FIELDS.forEach(function (k) { if (typeof data[k] === 'string') { stored[k] = data[k]; if (field(k)) field(k).value = data[k]; } });
   }
 
   function copied() {
@@ -279,7 +290,8 @@
   });
 
   document.getElementById('prompt-reset').addEventListener('click', function () {
-    FIELDS.forEach(function (k) { field(k).value = k === 'duration' ? '20' : ({ caption: 'bold', structure: 'explainer', hook: 'auto' }[k] || ''); });
+    stored = {};
+    FIELDS.forEach(function (k) { if (!field(k)) return; field(k).value = k === 'duration' ? '20' : ({ caption: 'bold', structure: 'explainer', hook: 'auto', output: 'both' }[k] || ''); });
     forget();
     markInvalid([]);
     render();

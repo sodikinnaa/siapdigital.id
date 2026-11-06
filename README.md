@@ -11,7 +11,7 @@ Situs resmi Siap Digital: katalog aplikasi, informasi produk, panduan bergambar,
 - Ketentuan Layanan: `terms/`
 - Katalog panduan: `panduan/`
 - Panduan transfer akun kampus ke Gmail: `panduan/transfer-konten-google/`
-- Tutorial Remotion (ReelForge: ChatGPT → Cartesia → Claude → render MP4): `panduan/remotion-reelforge/`
+- Tutorial Remotion (ChatGPT → Cartesia → Claude → MP4/ZIP): `panduan/remotion-reelforge/`
 - Generator prompt ChatGPT: `panduan/remotion-reelforge/prompt-chatgpt/`
 - Generator prompt Claude: `panduan/remotion-reelforge/prompt-claude/`
 

@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Generator Prompt ChatGPT untuk Naskah Reels — Siap Digital</title>
-  <meta name="description" content="Isi topik, durasi, dan gaya video, lalu salin prompt ChatGPT ReelForge untuk membuat storyboard TXT dan teks voice-over final video Reels.">
+  <meta name="description" content="Isi topik, durasi, dan gaya video, lalu salin prompt ChatGPT untuk membuat storyboard TXT dan teks voice-over final video Reels.">
   <meta name="theme-color" content="#0f1b33">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Siap Digital">
   <meta property="og:locale" content="id_ID">
   <meta property="og:title" content="Generator Prompt ChatGPT: Storyboard &amp; Voice-over Reels">
-  <meta property="og:description" content="Isi topik, durasi, dan gaya video, lalu salin prompt ChatGPT ReelForge untuk membuat storyboard TXT dan teks voice-over final video Reels.">
+  <meta property="og:description" content="Isi topik, durasi, dan gaya video, lalu salin prompt ChatGPT untuk membuat storyboard TXT dan teks voice-over final video Reels.">
   <meta property="og:url" content="https://siapdigital.id/panduan/remotion-reelforge/prompt-chatgpt/">
   <meta property="og:image" content="https://siapdigital.id/assets/img/panduan/remotion-reelforge/thumb-prompt-chatgpt.jpg">
   <meta property="og:image:type" content="image/jpeg">
@@ -57,7 +57,7 @@
           <p class="lead">Isi detail video sekali, lalu salin prompt untuk ChatGPT. Hasilnya file TXT berformat <strong>spesifikasi siap eksekusi</strong> untuk Claude dan <strong>teks voice-over final</strong> sesuai anggaran durasi.</p>
           <ol class="prompt-steps" aria-label="Urutan prompt">
             <li><a href="./" aria-current="page"><span class="ps-no" aria-hidden="true">1</span><span><strong>ChatGPT</strong><small>Storyboard + voice-over</small></span></a></li>
-            <li><a href="../prompt-claude/"><span class="ps-no" aria-hidden="true">2</span><span><strong>Claude</strong><small>Project Remotion ZIP</small></span></a></li>
+            <li><a href="../prompt-claude/"><span class="ps-no" aria-hidden="true">2</span><span><strong>Claude</strong><small>Video MP4 atau ZIP</small></span></a></li>
           </ol>
         </div>
         <aside class="hero-panel" aria-labelledby="butuh-heading">
@@ -237,7 +237,7 @@ INTERRUPT: jenis perubahan visual di awal PART (punch-in, potongan, diagram munc
 CATATAN_REMOTION: hal teknis yang perlu diperhatikan
 
 === E. KOMPONEN &amp; ASET ===
-Daftar komponen reusable (nama, fungsi, props). Komponen yang disarankan bila cocok: HookOverlay, Captions, ProgressBar. Ikon digambar sebagai SVG geometris sederhana. Jangan memakai logo resmi kecuali filenya disediakan. Tanpa efek suara kecuali filenya disediakan. Hindari efek berat (blur besar, bayangan besar, ratusan partikel) agar render di Google Colab tetap cepat.
+Daftar komponen reusable (nama, fungsi, props). Komponen yang disarankan bila cocok: HookOverlay, Captions, ProgressBar. Ikon digambar sebagai SVG geometris sederhana. Jangan memakai logo resmi kecuali filenya disediakan. Tanpa efek suara kecuali filenya disediakan. Hindari efek berat (blur besar, bayangan besar, ratusan partikel) agar render tetap cepat.
 
 === F. PELAFALAN ===
 Tabel istilah: tulisan di layar → cara diucapkan di VO.
@@ -249,7 +249,7 @@ Audio Cartesia adalah acuan akhir. Durasi tiap PART dihitung dari segmen yang di
 Satu paragraf bersih tanpa nomor segmen, timestamp, atau arahan. Harus sama persis dengan gabungan S1 sampai Sn.
 
 === I. CATATAN UNTUK CLAUDE ===
-Singkat saja: gunakan audio asli Cartesia, jangan buat voice baru, ikuti design tokens dan field storyboard. Untuk hal teknis (dependency, font, render), prompt teknis ReelForge untuk Claude yang berlaku bila bertentangan dengan file ini.
+Singkat saja: gunakan audio asli Cartesia, jangan buat voice baru, ikuti design tokens dan field storyboard. Untuk hal teknis (dependency, font, render), prompt teknis untuk Claude yang berlaku bila bertentangan dengan file ini.
 
 === J. SUMBER ===
 Daftar sumber fakta yang dipakai.
@@ -289,11 +289,11 @@ OUTPUT:
           </li>
           <li>
             <h3>Salin dan kirim ke ChatGPT</h3>
-            <p>Bila fakta kurang, ChatGPT bertanya dulu. Setelah itu ia membuat <code>motion_graphic_[topik].txt</code> (segmen VO, design tokens, storyboard berfield baku, checklist) dan menampilkan <strong>FULL TEXT VOICE-OVER FINAL</strong>. Lihat <a href="../#langkah-20">langkah 20–21</a>.</p>
+            <p>Bila fakta kurang, ChatGPT bertanya dulu. Setelah itu ia membuat <code>motion_graphic_[topik].txt</code> (segmen VO, design tokens, storyboard berfield baku, checklist) dan menampilkan <strong>FULL TEXT VOICE-OVER FINAL</strong>. Lihat <a href="../#langkah-16">langkah 16–17</a>.</p>
           </li>
           <li>
             <h3>Ubah jadi suara di Cartesia</h3>
-            <p>Tempel teks voice-over di Cartesia, pilih suara bahasa Indonesia, lalu unduh audionya. Lihat <a href="../#langkah-22">langkah 22–24</a>.</p>
+            <p>Tempel teks voice-over di Cartesia, pilih suara bahasa Indonesia, lalu unduh audionya. Lihat <a href="../#langkah-18">langkah 18–20</a>.</p>
           </li>
         </ol>
       </div>
@@ -303,8 +303,8 @@ OUTPUT:
       <div class="container">
         <div class="card next-step">
           <span class="eyebrow">Langkah berikutnya</span>
-          <h2 id="lanjut-heading">Prompt Claude untuk project Remotion</h2>
-          <p>Sudah punya file TXT dari ChatGPT dan audio dari Cartesia? Buat project Remotion dengan Claude. Isian di halaman ini ikut terbawa.</p>
+          <h2 id="lanjut-heading">Prompt Claude untuk video Remotion</h2>
+          <p>Sudah punya file TXT dari ChatGPT dan audio dari Cartesia? Minta Claude membuat videonya: MP4, ZIP, atau keduanya. Isian di halaman ini ikut terbawa.</p>
           <div class="btn-row">
             <a class="btn btn-primary" href="../prompt-claude/">Lanjut ke prompt Claude →</a>
             <a class="btn btn-secondary" href="../">Baca tutorial lengkap</a>

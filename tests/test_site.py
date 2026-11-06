@@ -83,15 +83,13 @@ REMOTION_PAGE = "panduan/remotion-reelforge/index.html"
 REMOTION_IMG_DIR = "assets/img/panduan/remotion-reelforge"
 REMOTION_COVER = REMOTION_IMG_DIR + "/sampul-remotion-reelforge.jpg"
 REMOTION_SERVICE_URLS = {
-    "https://colab.research.google.com/",
+    "https://nodejs.org/",
     "https://chatgpt.com/",
     "https://claude.ai/",
     "https://www.cartesia.ai/",
 }
-REELFORGE_NOTEBOOK_URL = "https://colab.research.google.com/drive/1jjNd_7Rx0eOxNXgsuxftZmg6bxrzBcDN?usp=sharing"
 
 ALLOWED_EXTERNAL = REMOTION_SERVICE_URLS | {
-    REELFORGE_NOTEBOOK_URL,
     "https://github.com/sodikinnaa/siapdigital.id/issues",
     GOOGLE_TRANSFER_URL,
     GEMINI_WA_URL,
@@ -500,22 +498,45 @@ class RemotionTutorialTests(unittest.TestCase):
         return [a.get("content") for t, a in self.page.tags
                 if t == "meta" and (a.get("property") == key or a.get("name") == key)]
 
-    def test_thirty_numbered_steps_in_eight_sections(self):
-        for n in range(1, 31):
+    def test_numbered_steps_in_seven_sections(self):
+        for n in range(1, 27):
             with self.subTest(step=n):
                 self.assertIn(f"langkah-{n}", self.page.ids)
-        self.assertNotIn("langkah-31", self.page.ids)
-        sections = ("colab", "chatgpt", "claude", "cartesia", "naskah", "voice", "remotion", "render")
+        self.assertNotIn("langkah-27", self.page.ids)
+        sections = ("chatgpt", "claude", "cartesia", "naskah", "voice", "video", "render-lokal")
         toc = [h for t, a in self.page.tags if t == "a" for h in [a.get("href", "")] if h.startswith("#")]
         for sec in sections:
             with self.subTest(section=sec):
                 self.assertIn(sec, self.page.ids)
                 self.assertIn("#" + sec, toc, "daftar isi menautkan setiap bagian")
 
+    def test_reelforge_and_colab_removed(self):
+        for bad in ("ReelForge", "Colab", "colab.research.google.com", "trycloudflare"):
+            with self.subTest(bad=bad):
+                self.assertNotIn(bad, self.html)
+        for name in ("01-colab-runtime-menu", "05-reelforge-studio", "27-reelforge-master-prompt",
+                     "36-reelforge-prompt-claude", "42-reelforge-video-siap"):
+            with self.subTest(image=name):
+                self.assertFalse((ROOT / REMOTION_IMG_DIR / f"{name}.webp").exists())
+
+    def test_generator_steps_and_output_choice(self):
+        targets = [resolve(REMOTION_PAGE, h)[0] for _, _, h in self.page.links]
+        for slug in ("prompt-chatgpt", "prompt-claude"):
+            with self.subTest(slug=slug):
+                self.assertIn(f"panduan/remotion-reelforge/{slug}/index.html", targets)
+        step21 = self.html.split('id="langkah-21"', 1)[1].split("</li>", 1)[0]
+        for phrase in ("Output dari Claude", "MP4 + ZIP", "MP4 saja", "ZIP project saja"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, step21)
+        for cmd in ("npm ci", "npx remotion render src/index.ts MainReel out.mp4"):
+            with self.subTest(cmd=cmd):
+                self.assertIn(cmd, self.html)
+        self.assertEqual(self.html.count('<pre class="code-block">'), 3)
+
     def test_every_screenshot_used_exactly_once(self):
         srcs = [resolve(REMOTION_PAGE, i["src"])[0] for i in self.page.imgs if i["src"].endswith(".webp")]
         files = sorted(f"{REMOTION_IMG_DIR}/{f.name}" for f in (ROOT / REMOTION_IMG_DIR).glob("*.webp"))
-        self.assertEqual(len(files), 42)
+        self.assertEqual(len(files), 34)
         self.assertEqual(sorted(srcs), files)
         # Setiap tangkapan layar dapat dibuka dalam ukuran penuh.
         hrefs = {resolve(REMOTION_PAGE, h)[0] for t, a, h in self.page.links if t == "a"}
@@ -524,22 +545,10 @@ class RemotionTutorialTests(unittest.TestCase):
     def test_no_personal_data_in_markup(self):
         self.assertEqual(re.findall(r"[\w.+-]+@[\w-]+\.[\w.]+", self.html), [])
         # Nama akun di tangkapan layar ("sodikin"/"sodikinn"), bukan nama pemilik repo GitHub.
-        for bad in (r"semeruexpose", r"\bsodikinn?\b", r"aguzza", r"trycloudflare\.com/"):
+        for bad in (r"semeruexpose", r"\bsodikinn?\b", r"aguzza"):
             with self.subTest(bad=bad):
                 self.assertIsNone(re.search(bad, self.html))
         self.assertIn("sudah kami buramkan", self.html)
-        # Satu-satunya tautan Drive/Colab spesifik adalah notebook ReelForge resmi.
-        drive_links = re.findall(r'https://colab\.research\.google\.com/drive/[^"\s<]*', self.html)
-        self.assertTrue(drive_links)
-        self.assertEqual(set(drive_links), {REELFORGE_NOTEBOOK_URL})
-
-    def test_notebook_link_in_hero_and_first_step(self):
-        hero = self.html.split('<section class="hero">', 1)[1].split("</section>", 1)[0]
-        step1 = self.html.split('id="langkah-1"', 1)[1].split("</li>", 1)[0]
-        for where, block in (("hero", hero), ("langkah-1", step1)):
-            with self.subTest(where=where):
-                self.assertIn(f'href="{REELFORGE_NOTEBOOK_URL}" target="_blank" rel="noopener"', block)
-        self.assertIn(">Buka notebook ReelForge</a>", step1)
 
     def test_screenshots_carry_no_metadata_chunks(self):
         for f in (ROOT / REMOTION_IMG_DIR).glob("*.webp"):
@@ -569,8 +578,8 @@ class RemotionTutorialTests(unittest.TestCase):
                 self.assertEqual(a.get("rel"), "noopener")
 
     def test_safety_warnings_kept(self):
-        for phrase in ("Siapa pun yang memiliki URL tunnel", "Jangan bagikan link-nya",
-                       "batas penggunaan per 5 jam", "1080×1920"):
+        for phrase in ("batas penggunaan per 5 jam", "1080×1920", "<code>npm ci</code> menjalankan kode",
+                       "tetap memberi ZIP"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.html)
         self.assertEqual(self.html.count('class="callout warn"'), 2)
@@ -583,8 +592,8 @@ PROMPT_PAGES = {
 PROMPT_JS = "assets/js/prompt-generator.js"
 # SHA-256 template prompt versi situs (turunan ReelForge V5.4); berubah hanya jika template sengaja diganti.
 PROMPT_TEMPLATE_SHA256 = {
-    "gpt": "fda1f6b42588eb66f9475cb7dc05047a72b41289bf9f48a4bbe0afd3185f25cc",
-    "claude": "0d29bc4913d7cd39182de02b18cfca6ecf81b7be3ca2defc2703e3823092267e",
+    "gpt": "2b3199c455173ae21173664c87136744a63b39a51864b668e2615b396c522720",
+    "claude": "63cc48f67540ee0e945d851784bf1d3f4472f63e1a8185fe5d507e2c2ea98146",
 }
 
 
@@ -611,7 +620,7 @@ def py_slug(value):
     return s or "video"
 
 
-def py_build_prompt(kind, template, raw, captions, structures, hooks):
+def py_build_prompt(kind, template, raw, captions, structures, hooks, outputs):
     """Implementasi acuan buildPrompt (generator versi situs). captions: preset {kunci: {name, spec}}."""
     g = lambda k: str(raw.get(k, "")).strip()
     sec = py_seconds(g("duration"))
@@ -623,6 +632,8 @@ def py_build_prompt(kind, template, raw, captions, structures, hooks):
     slug = py_slug(g("topic"))
     v["NAMA FILE"] = f"motion_graphic_{slug}.txt"
     v["NAMA ZIP"] = f"remotion_reels_{slug}.zip"
+    v["NAMA MP4"] = f"reels_{slug}.mp4"
+    template = template.replace("[OUTPUT]", outputs[g("output") if g("output") in outputs else "both"])
     cap = g("caption") if g("caption") in captions else "bold"
     v["GAYA CAPTION SINGKAT"] = captions[cap]["name"]
     v["GAYA CAPTION"] = captions[cap]["spec"]
@@ -656,7 +667,7 @@ class PromptGeneratorTests(unittest.TestCase):
                        "[STRUKTUR]", "[JENIS HOOK]", "BEAT:", "INTERRUPT:", "sejak frame pertama"):
             with self.subTest(marker=marker):
                 self.assertIn(marker, gpt)
-        for marker in ("CARA MEMBACA TXT", "[NAMA ZIP]", "[ISI FAKTA]", "src/data/captions.ts", "MainReel",
+        for marker in ("CARA MEMBACA TXT", "[OUTPUT]", "KOMPATIBILITAS RENDER", "[ISI FAKTA]", "src/data/captions.ts", "MainReel",
                        "CAPTION & ELEMEN PENDUKUNG (rekomendasi", "[GAYA CAPTION]", "createTikTokStyleCaptions",
                        "calculateMetadata", "HookOverlay", "ProgressBar", "TEKNIK ANIMASI", "useCurrentFrame()",
                        "CSS transition/animation", "mask reveal", "stroke-dashoffset", "npx remotion still", "900×1400",
@@ -665,6 +676,9 @@ class PromptGeneratorTests(unittest.TestCase):
                 self.assertIn(marker, claude)
         # Template lama memakai "15-20 detik" sebagai penanda durasi; versi ini memakai [DURASI].
         self.assertNotIn("15-20 detik", gpt + claude)
+        for bad in ("ReelForge", "Colab"):
+            with self.subTest(bad=bad):
+                self.assertNotIn(bad, gpt + claude)
 
     def test_form_and_output_markup(self):
         for kind, p in self.pages.items():
@@ -685,6 +699,9 @@ class PromptGeneratorTests(unittest.TestCase):
                     self.assertEqual(len([1 for t, a in p.tags if t == "label" and a.get("for") == field["id"]]), 1)
                 [sel] = [a for t, a in p.tags if t == "select" and a.get("name") == "caption"]
                 options = [a.get("value") for t, a in p.tags if t == "option"]
+                if kind == "claude":
+                    self.assertEqual(options[:3], ["both", "mp4", "zip"])
+                    options = options[3:]
                 self.assertEqual(options, ["explainer", "retensi", "auto", "auto", "openloop", "janji", "negasi",
                                            "taruhan", "listicle", "bold", "bounce", "clean", "auto"])
                 self.assertIn("motion-skills (iart.ai, MIT)", self.html[kind])
@@ -764,6 +781,9 @@ class PromptGeneratorTests(unittest.TestCase):
             {"topic": "A", "description": "B", "structure": "retensi", "hook": "negasi"},
             {"topic": "A", "description": "B", "structure": "auto", "hook": "listicle"},
             {"topic": "A", "description": "B", "structure": "zzz", "hook": "zzz"},
+            {"topic": "Hermes Agent", "description": "B", "output": "mp4"},
+            {"topic": "Hermes Agent", "description": "B", "output": "zip"},
+            {"topic": "Hermes Agent", "description": "B", "output": "[ISI CTA]"},
         ]
         templates = {k: prompt_template(rel) for k, rel in PROMPT_PAGES.items()}
         script = (
@@ -776,7 +796,7 @@ class PromptGeneratorTests(unittest.TestCase):
             " g.hasStyle('Premium dark tech, neon', 'premium DARK tech')];"
             "out.missing = [g.missingRequired({}), g.missingRequired({topic: ' ', description: 'x'})];"
             "out.sanitize = g.sanitize({topic: 5, description: 'y'.repeat(2000), evil: 'x'});"
-            "out.captions = g.CAPTIONS; out.structures = g.STRUCTURES; out.hooks = g.HOOKS;"
+            "out.captions = g.CAPTIONS; out.structures = g.STRUCTURES; out.hooks = g.HOOKS; out.outputs = g.OUTPUTS;"
             "out.badcap = g.sanitize({caption: 'x', topic: 't'});"
             "console.log(JSON.stringify(out));"
         )
@@ -787,11 +807,17 @@ class PromptGeneratorTests(unittest.TestCase):
         for kind in ("gpt", "claude"):
             for i, c in enumerate(cases):
                 with self.subTest(kind=kind, case=i):
-                    self.assertEqual(r[kind][i], py_build_prompt(kind, templates[kind], c, r["captions"], r["structures"], r["hooks"]))
+                    self.assertEqual(r[kind][i], py_build_prompt(kind, templates[kind], c, r["captions"], r["structures"], r["hooks"], r["outputs"]))
         self.assertEqual(sorted(r["captions"]), ["auto", "bold", "bounce", "clean"])
         self.assertIn("#FFD700", r["captions"]["bold"]["spec"])
         self.assertEqual(r["badcap"], {"topic": "t"})
         self.assertEqual(sorted(r["structures"]), ["auto", "explainer", "retensi"])
+        self.assertEqual(sorted(r["outputs"]), ["both", "mp4", "zip"])
+        out_zip = r["claude"][cases.index({"topic": "Hermes Agent", "description": "B", "output": "zip"})]
+        out_mp4 = r["claude"][cases.index({"topic": "Hermes Agent", "description": "B", "output": "mp4"})]
+        self.assertIn("remotion_reels_hermes_agent.zip", out_zip)
+        self.assertNotIn(" reels_hermes_agent.mp4", out_zip)
+        self.assertIn(" reels_hermes_agent.mp4", out_mp4)
         self.assertEqual(sorted(r["hooks"]), ["auto", "janji", "listicle", "negasi", "openloop", "taruhan"])
         self.assertIn("Topik: Rp $& 10", r["dollar"], "pola $ dari pengguna tidak ditafsirkan")
         self.assertEqual(r["extra"], ["100–110 kata", "40–44 kata", "hermes_agent", "video"])
