@@ -130,6 +130,16 @@
               <button type="button" class="chip-toggle" data-style="Cinematic terminal UI" aria-pressed="false">Cinematic terminal UI</button>
             </div>
           </div>
+          <div class="field">
+            <label for="pf-caption">Gaya caption</label>
+            <select id="pf-caption" name="caption" aria-describedby="pf-caption-help">
+              <option value="bold" selected>Bold: kapital tegas, kata aktif kuning</option>
+              <option value="bounce">Bounce: memantul, warna bergantian</option>
+              <option value="clean">Clean: minimalis, fade halus</option>
+              <option value="auto">Biarkan Claude memilih</option>
+            </select>
+            <p class="field-help" id="pf-caption-help">Bold cocok untuk edukasi, Bounce untuk hiburan, Clean untuk nada profesional. Preset diadaptasi dari claude-shorts (MIT).</p>
+          </div>
           <p class="form-note">Isian tersimpan otomatis di browser ini saja, tidak dikirim ke server, dan ikut terpakai di halaman prompt ChatGPT.</p>
         </form>
 
@@ -158,6 +168,14 @@ CARA MEMBACA TXT:
 - Bangun komponen reusable sesuai bagian KOMPONEN &amp; ASET.
 - Abaikan efek suara bila filenya tidak dilampirkan; jangan memakai logo resmi yang tidak disediakan.
 - Bila TXT bertentangan dengan aturan teknis di prompt ini, aturan teknis yang berlaku; sebutkan penyesuaiannya di laporan.
+
+CAPTION &amp; ELEMEN PENDUKUNG (rekomendasi agar video lebih menarik; sesuaikan bila bertentangan dengan storyboard atau design tokens):
+- Gaya caption: [GAYA CAPTION]
+- Simpan caption di src/data/captions.ts dengan format per kata { text, startMs, endMs } (per frasa bila per kata tidak memungkinkan). Kelompokkan jadi halaman dengan createTikTokStyleCaptions dari @remotion/captions (versi sama dengan remotion) dan sorot kata yang sedang diucapkan. Dengan format ini timing bisa diganti timestamp asli tanpa mengubah komponen.
+- Hitung durationInFrames dari panjang file audio lewat calculateMetadata pada &lt;Composition&gt;, bukan angka tetap.
+- HookOverlay pada ±3,5 detik pertama: teks hook besar dari PART 1 di zona atas, muncul cepat lalu memudar.
+- ProgressBar tipis (±4 px) di tepi bawah, warna aksen, maju mengikuti frame.
+- Caption, hook, dan progress bar tidak boleh menutupi teks layar utama.
 
 KETENTUAN:
 - Gunakan React + TypeScript + Remotion, animasi frame-based (spring/interpolate), SVG/CSS, visual premium mengikuti storyboard; bukan slideshow teks.

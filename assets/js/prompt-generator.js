@@ -4,9 +4,29 @@
 // terbawa antara halaman ChatGPT dan Claude. Fungsi murni diekspor untuk pengujian (Node).
 (function () {
   var STORAGE_KEY = 'reelforge-prompt-v1';
-  var FIELDS = ['topic', 'duration', 'description', 'facts', 'terms', 'audience', 'cta', 'style'];
+  var FIELDS = ['topic', 'duration', 'description', 'facts', 'terms', 'audience', 'cta', 'style', 'caption'];
   var REQUIRED = ['topic', 'description'];
-  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, facts: 1500, terms: 500, audience: 200, cta: 200, style: 300 };
+  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, facts: 1500, terms: 500, audience: 200, cta: 200, style: 300, caption: 10 };
+  // Preset caption diadaptasi dari claude-shorts (MIT, Daniel Agrici); posisi disesuaikan dengan safe area Reels.
+  var CAPTIONS = {
+    bold: {
+      name: 'Bold (kapital tegas, kata aktif disorot kuning)',
+      spec: 'Bold. Huruf kapital, 2–3 kata per halaman (gabung kata dalam 800 ms), ±72 px, teks putih dengan kata aktif kuning #FFD700, outline hitam 3 px, posisi ±420 px dari bawah. Masuk dengan pop spring (mass 1, damping 12, stiffness 200). Font tebal dari design tokens.'
+    },
+    bounce: {
+      name: 'Bounce (memantul, warna bergantian)',
+      spec: 'Bounce. Huruf kapital, 1–2 kata per halaman (gabung kata dalam 600 ms), ±84 px, warna halaman bergantian dari palet aksen (atau cyan, magenta, lime, kuning, oranye, pink), outline hitam 4 px, posisi ±420 px dari bawah. Skala memantul 70% → ±120% → 100% (spring mass 1, damping 8, stiffness 180).'
+    },
+    clean: {
+      name: 'Clean (minimalis, fade halus)',
+      spec: 'Clean. Huruf asli (tanpa kapital paksa), 3–5 kata per halaman (gabung kata dalam 1500 ms), ±56 px, teks putih dengan kata aktif sedikit lebih redup (#E0E0E0), bayangan lembut, posisi ±420 px dari bawah. Muncul dengan fade 6 frame.'
+    },
+    auto: {
+      name: 'dipilih Claude sesuai nada video (tegas, memantul, atau bersih)',
+      spec: 'Pilih sendiri yang paling cocok dengan nada video: Bold (kapital, sorot kata aktif), Bounce (memantul, warna bergantian), atau Clean (minimalis, fade halus). Tetap di atas ±420 px dari bawah dan tidak menutupi teks layar.'
+    }
+  };
+
   // Acuan kecepatan bicara Cartesia (dari contoh tutorial: 92 kata ≈ 41 detik).
   var WORDS_PER_SECOND_LOW = 2.0;
   var WORDS_PER_SECOND_HIGH = 2.2;
@@ -59,17 +79,19 @@
       duration: durationLabel(raw.duration),
       budget: wordBudget(raw.duration),
       slug: slug(raw.topic),
-      style: text(raw.style) || 'modern premium'
+      style: text(raw.style) || 'modern premium',
+      caption: CAPTIONS[text(raw.caption)] ? text(raw.caption) : 'bold'
     };
   }
 
-  var PLACEHOLDER = /\[(ISI TOPIK|ISI DESKRIPSI|ISI FAKTA|ISI ISTILAH|ISI AUDIENS|ISI CTA|DURASI|ANGGARAN KATA|NAMA FILE|NAMA ZIP)\]/g;
+  var PLACEHOLDER = /\[(GAYA CAPTION SINGKAT|GAYA CAPTION|ISI TOPIK|ISI DESKRIPSI|ISI FAKTA|ISI ISTILAH|ISI AUDIENS|ISI CTA|DURASI|ANGGARAN KATA|NAMA FILE|NAMA ZIP)\]/g;
 
   // Satu kali jalan dengan fungsi pengganti: teks pengguna tidak diganti ulang dan pola $ tidak ditafsirkan.
   function fillTemplate(template, v) {
     var map = {
       'ISI TOPIK': v.topic, 'ISI DESKRIPSI': v.description, 'ISI FAKTA': v.facts, 'ISI ISTILAH': v.terms,
       'ISI AUDIENS': v.audience, 'ISI CTA': v.cta, 'DURASI': v.duration, 'ANGGARAN KATA': v.budget,
+      'GAYA CAPTION': CAPTIONS[v.caption].spec, 'GAYA CAPTION SINGKAT': CAPTIONS[v.caption].name,
       'NAMA FILE': 'motion_graphic_' + v.slug + '.txt', 'NAMA ZIP': 'remotion_reels_' + v.slug + '.zip'
     };
     return String(template).replace(PLACEHOLDER, function (_, key) { return map[key]; });
@@ -97,6 +119,7 @@
     FIELDS.forEach(function (k) {
       if (typeof data[k] === 'string') clean[k] = data[k].slice(0, MAX_LENGTH[k]);
     });
+    if (clean.caption && !CAPTIONS[clean.caption]) delete clean.caption;
     return clean;
   }
 
@@ -127,7 +150,8 @@
     sanitize: sanitize,
     toggleStyle: toggleStyle,
     hasStyle: hasStyle,
-    EXAMPLE: EXAMPLE
+    EXAMPLE: EXAMPLE,
+    CAPTIONS: CAPTIONS
   };
 
   if (typeof module === 'object' && module.exports) {
@@ -215,6 +239,7 @@
   }
 
   form.addEventListener('input', function () { save(render()); });
+  form.addEventListener('change', function () { save(render()); });
   form.addEventListener('submit', function (e) { e.preventDefault(); });
 
   chips.forEach(function (chip) {
@@ -232,7 +257,7 @@
   });
 
   document.getElementById('prompt-reset').addEventListener('click', function () {
-    FIELDS.forEach(function (k) { field(k).value = k === 'duration' ? '20' : ''; });
+    FIELDS.forEach(function (k) { field(k).value = k === 'duration' ? '20' : (k === 'caption' ? 'bold' : ''); });
     forget();
     markInvalid([]);
     render();

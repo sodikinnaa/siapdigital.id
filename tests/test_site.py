@@ -583,8 +583,8 @@ PROMPT_PAGES = {
 PROMPT_JS = "assets/js/prompt-generator.js"
 # SHA-256 template prompt versi situs (turunan ReelForge V5.4); berubah hanya jika template sengaja diganti.
 PROMPT_TEMPLATE_SHA256 = {
-    "gpt": "ff96a60410861f442f4068ddd1c811f432dac69f94d2b6fbc93bda5b9dc0a69d",
-    "claude": "19b72e67368ad2ecf21f5af2dc271b6fdc03ff225b680e657dce70b9ae0d8849",
+    "gpt": "f42a3637206a96dbd250ed8070bc550ba11e0c176919e104a8a5aeab3a1c24da",
+    "claude": "70c09df196844b5cfcd47ff24c67c758fcbe61b24d0b1e7f996a12f4481e211e",
 }
 
 
@@ -611,8 +611,8 @@ def py_slug(value):
     return s or "video"
 
 
-def py_build_prompt(kind, template, raw):
-    """Implementasi acuan buildPrompt (generator versi situs)."""
+def py_build_prompt(kind, template, raw, captions):
+    """Implementasi acuan buildPrompt (generator versi situs). captions: preset {kunci: {name, spec}}."""
     g = lambda k: str(raw.get(k, "")).strip()
     sec = py_seconds(g("duration"))
     v = {"ISI TOPIK": g("topic") or "[ISI TOPIK]", "ISI DESKRIPSI": g("description") or "[ISI DESKRIPSI]",
@@ -623,8 +623,12 @@ def py_build_prompt(kind, template, raw):
     slug = py_slug(g("topic"))
     v["NAMA FILE"] = f"motion_graphic_{slug}.txt"
     v["NAMA ZIP"] = f"remotion_reels_{slug}.zip"
+    cap = g("caption") if g("caption") in captions else "bold"
+    v["GAYA CAPTION SINGKAT"] = captions[cap]["name"]
+    v["GAYA CAPTION"] = captions[cap]["spec"]
     style = g("style") or "modern premium"
-    body = re.sub(r"\[(" + "|".join(map(re.escape, v)) + r")\]", lambda m: v[m.group(1)], template)
+    keys = sorted(v, key=len, reverse=True)
+    body = re.sub(r"\[(" + "|".join(map(re.escape, keys)) + r")\]", lambda m: v[m.group(1)], template)
     head = (f"Topik: {v['ISI TOPIK']}\nDeskripsi: {v['ISI DESKRIPSI']}\nAudiens: {v['ISI AUDIENS']}\nCTA: {v['ISI CTA']}\n")
     if kind == "gpt":
         return (f"KONFIGURASI VIDEO\n{head}Durasi: {v['DURASI']} (anggaran voice-over {v['ANGGARAN KATA']})\n"
@@ -645,10 +649,13 @@ class PromptGeneratorTests(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(tpl.encode("utf-8")).hexdigest(), PROMPT_TEMPLATE_SHA256[kind])
         gpt, claude = prompt_template(PROMPT_PAGES["gpt"]), prompt_template(PROMPT_PAGES["claude"])
         for marker in ("[ISI TOPIK]", "[ISI FAKTA]", "[ISI ISTILAH]", "[ANGGARAN KATA]", "[NAMA FILE]",
-                       "ATURAN FAKTA", "=== C. SEGMEN VOICE-OVER ===", "=== K. CHECKLIST ===", "Gunakan Python"):
+                       "ATURAN FAKTA", "=== C. SEGMEN VOICE-OVER ===", "=== K. CHECKLIST ===", "Gunakan Python",
+                       "[GAYA CAPTION SINGKAT]", "HookOverlay, Captions, ProgressBar"):
             with self.subTest(marker=marker):
                 self.assertIn(marker, gpt)
         for marker in ("CARA MEMBACA TXT", "[NAMA ZIP]", "[ISI FAKTA]", "src/data/captions.ts", "MainReel",
+                       "CAPTION & ELEMEN PENDUKUNG (rekomendasi", "[GAYA CAPTION]", "createTikTokStyleCaptions",
+                       "calculateMetadata", "HookOverlay", "ProgressBar",
                        "ATURAN WAJIB STABILITAS FONT"):
             with self.subTest(marker=marker):
                 self.assertIn(marker, claude)
@@ -672,6 +679,10 @@ class PromptGeneratorTests(unittest.TestCase):
                 for name in ("topic", "duration", "description", "facts", "terms", "audience", "cta", "style"):
                     [field] = [a for t, a in p.tags if a.get("name") == name and t in ("input", "textarea")]
                     self.assertEqual(len([1 for t, a in p.tags if t == "label" and a.get("for") == field["id"]]), 1)
+                [sel] = [a for t, a in p.tags if t == "select" and a.get("name") == "caption"]
+                options = [a.get("value") for t, a in p.tags if t == "option"]
+                self.assertEqual(options, ["bold", "bounce", "clean", "auto"])
+                self.assertIn("claude-shorts (MIT)", self.html[kind])
                 for name in ("topic", "description"):
                     self.assertIn("required", [a for t, a in p.tags if a.get("name") == name and t != "meta"][0])
 
@@ -740,7 +751,10 @@ class PromptGeneratorTests(unittest.TestCase):
             {"topic": "A", "duration": "", "description": "B"},
             {"topic": "Hermes Agent", "duration": "50", "description": "Pengenalan",
              "facts": "- Fakta 1\n- Fakta 2 [ISI CTA]", "terms": "agentic = e-jen-tik", "cta": "Kunjungi profil"},
-            {"topic": "Café Ünïcode!!", "duration": "12.6", "description": "x"},
+            {"topic": "Café Ünïcode!!", "duration": "12.6", "description": "x", "caption": "bounce"},
+            {"topic": "A", "description": "B", "caption": "clean"},
+            {"topic": "A", "description": "B", "caption": "auto"},
+            {"topic": "A", "description": "B", "caption": "evil"},
         ]
         templates = {k: prompt_template(rel) for k, rel in PROMPT_PAGES.items()}
         script = (
@@ -753,6 +767,8 @@ class PromptGeneratorTests(unittest.TestCase):
             " g.hasStyle('Premium dark tech, neon', 'premium DARK tech')];"
             "out.missing = [g.missingRequired({}), g.missingRequired({topic: ' ', description: 'x'})];"
             "out.sanitize = g.sanitize({topic: 5, description: 'y'.repeat(2000), evil: 'x'});"
+            "out.captions = g.CAPTIONS;"
+            "out.badcap = g.sanitize({caption: 'x', topic: 't'});"
             "console.log(JSON.stringify(out));"
         )
         payload = json.dumps({"cases": cases, "templates": templates})
@@ -762,7 +778,10 @@ class PromptGeneratorTests(unittest.TestCase):
         for kind in ("gpt", "claude"):
             for i, c in enumerate(cases):
                 with self.subTest(kind=kind, case=i):
-                    self.assertEqual(r[kind][i], py_build_prompt(kind, templates[kind], c))
+                    self.assertEqual(r[kind][i], py_build_prompt(kind, templates[kind], c, r["captions"]))
+        self.assertEqual(sorted(r["captions"]), ["auto", "bold", "bounce", "clean"])
+        self.assertIn("#FFD700", r["captions"]["bold"]["spec"])
+        self.assertEqual(r["badcap"], {"topic": "t"})
         self.assertIn("Topik: Rp $& 10", r["dollar"], "pola $ dari pengguna tidak ditafsirkan")
         self.assertEqual(r["extra"], ["100–110 kata", "40–44 kata", "hermes_agent", "video"])
         self.assertEqual(r["toggle"], ["Line Art", "Neon", True])
