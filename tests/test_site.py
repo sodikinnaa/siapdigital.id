@@ -89,7 +89,10 @@ REMOTION_SERVICE_URLS = {
     "https://www.cartesia.ai/",
 }
 
+COLAB_NOTEBOOK_URL = "https://colab.research.google.com/drive/1jjNd_7Rx0eOxNXgsuxftZmg6bxrzBcDN?usp=sharing"
+
 ALLOWED_EXTERNAL = REMOTION_SERVICE_URLS | {
+    COLAB_NOTEBOOK_URL,
     "https://github.com/sodikinnaa/siapdigital.id/issues",
     GOOGLE_TRANSFER_URL,
     GEMINI_WA_URL,
@@ -498,26 +501,42 @@ class RemotionTutorialTests(unittest.TestCase):
         return [a.get("content") for t, a in self.page.tags
                 if t == "meta" and (a.get("property") == key or a.get("name") == key)]
 
-    def test_numbered_steps_in_seven_sections(self):
-        for n in range(1, 29):
+    def test_numbered_steps_in_eight_sections(self):
+        for n in range(1, 35):
             with self.subTest(step=n):
                 self.assertIn(f"langkah-{n}", self.page.ids)
-        self.assertNotIn("langkah-29", self.page.ids)
-        sections = ("chatgpt", "claude", "cartesia", "naskah", "voice", "video", "render-lokal")
+        self.assertNotIn("langkah-35", self.page.ids)
+        sections = ("chatgpt", "claude", "cartesia", "naskah", "voice", "video", "render-lokal", "render-colab")
         toc = [h for t, a in self.page.tags if t == "a" for h in [a.get("href", "")] if h.startswith("#")]
         for sec in sections:
             with self.subTest(section=sec):
                 self.assertIn(sec, self.page.ids)
                 self.assertIn("#" + sec, toc, "daftar isi menautkan setiap bagian")
 
-    def test_reelforge_and_colab_removed(self):
-        for bad in ("ReelForge", "Colab", "colab.research.google.com", "trycloudflare"):
+    def test_colab_is_an_optional_alternative_to_local_export(self):
+        # Tutorial memakai nama "Render Studio"; ReelForge dan tunnel mentah tidak muncul di teks.
+        for bad in ("ReelForge", "trycloudflare"):
             with self.subTest(bad=bad):
                 self.assertNotIn(bad, self.html)
-        for name in ("01-colab-runtime-menu", "05-reelforge-studio", "27-reelforge-master-prompt",
-                     "36-reelforge-prompt-claude", "42-reelforge-video-siap"):
+        self.assertIn("Render Studio Siap Digital", self.html)
+        for name in ("05-reelforge-studio", "27-reelforge-master-prompt", "36-reelforge-prompt-claude", "42-reelforge-video-siap"):
             with self.subTest(image=name):
                 self.assertFalse((ROOT / REMOTION_IMG_DIR / f"{name}.webp").exists())
+        # Satu-satunya tautan Drive/Colab spesifik adalah notebook resmi, selalu dibuka di tab baru.
+        drive_links = re.findall(r'https://colab\.research\.google\.com/drive/[^"\s<]*', self.html)
+        self.assertTrue(drive_links)
+        self.assertEqual(set(drive_links), {COLAB_NOTEBOOK_URL})
+        for a in (a for t, a in self.page.tags if t == "a" and a.get("href") == COLAB_NOTEBOOK_URL):
+            self.assertEqual((a.get("target"), a.get("rel")), ("_blank", "noopener"))
+        # Opsi B: enam langkah (29-34), dibuka dengan tombol notebook, ditutup dengan unduhan MP4.
+        step29 = self.html.split('id="langkah-29"', 1)[1].split("</li>", 1)[0]
+        self.assertIn(">Buka notebook Render Studio</a>", step29)
+        self.assertIn("GPU T4", step29)
+        step34 = self.html.split('id="langkah-34"', 1)[1].split("</li>", 1)[0]
+        self.assertIn("Unduh MP4", step34)
+        step23 = self.html.split('id="langkah-23"', 1)[1].split("</li>", 1)[0]
+        self.assertIn("langkah 24–28", step23)
+        self.assertIn("langkah 29–34", step23)
 
     def test_generator_steps_and_output_choice(self):
         targets = [resolve(REMOTION_PAGE, h)[0] for _, _, h in self.page.links]
@@ -541,7 +560,7 @@ class RemotionTutorialTests(unittest.TestCase):
     def test_every_screenshot_used_exactly_once(self):
         srcs = [resolve(REMOTION_PAGE, i["src"])[0] for i in self.page.imgs if i["src"].endswith(".webp")]
         files = sorted(f"{REMOTION_IMG_DIR}/{f.name}" for f in (ROOT / REMOTION_IMG_DIR).glob("*.webp"))
-        self.assertEqual(len(files), 36)
+        self.assertEqual(len(files), 43)
         self.assertEqual(sorted(srcs), files)
         # Setiap tangkapan layar dapat dibuka dalam ukuran penuh.
         hrefs = {resolve(REMOTION_PAGE, h)[0] for t, a, h in self.page.links if t == "a"}
@@ -584,10 +603,10 @@ class RemotionTutorialTests(unittest.TestCase):
 
     def test_safety_warnings_kept(self):
         for phrase in ("batas penggunaan per 5 jam", "1080×1920", "<code>npm install</code> menjalankan kode",
-                       "tetap memberi ZIP"):
+                       "tetap memberi ZIP", "Siapa pun yang memiliki URL studio", "Tetap jalankan"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.html)
-        self.assertEqual(self.html.count('class="callout warn"'), 2)
+        self.assertEqual(self.html.count('class="callout warn"'), 4)
 
 
 PROMPT_PAGES = {
@@ -753,6 +772,20 @@ class PromptGeneratorTests(unittest.TestCase):
                 self.assertEqual(meta("twitter:image"), [SITE_URL + thumb])
                 self.assertEqual((meta("og:image:width"), meta("og:image:height")), (["1200"], ["675"]))
                 self.assertTrue(meta("og:image:alt")[0].startswith("Thumbnail generator prompt"))
+
+    def test_claude_page_offers_laptop_and_colab_for_zip(self):
+        rel = PROMPT_PAGES["claude"]
+        self.assertIn("ekspor-zip", self.pages["claude"].ids)
+        links = [(resolve(rel, h), h) for _, _, h in self.pages["claude"].links]
+        targets = [(r[0], r[1]) for r, _ in links]
+        self.assertIn((REMOTION_PAGE, "render-lokal"), targets)
+        self.assertIn((REMOTION_PAGE, "render-colab"), targets)
+        tutorial_ids = parse(REMOTION_PAGE).ids
+        self.assertLessEqual({"render-lokal", "render-colab"}, tutorial_ids)
+        [a] = [a for t, a in self.pages["claude"].tags if t == "a" and a.get("href") == COLAB_NOTEBOOK_URL]
+        self.assertEqual((a.get("target"), a.get("rel")), ("_blank", "noopener"))
+        # Halaman ChatGPT tidak membahas ekspor ZIP.
+        self.assertNotIn("ekspor-zip", self.pages["gpt"].ids)
 
     def test_script_only_on_generator_pages(self):
         for rel in PAGES:

@@ -10,7 +10,7 @@
   <meta property="og:site_name" content="Siap Digital">
   <meta property="og:locale" content="id_ID">
   <meta property="og:title" content="Tutorial Remotion: Dari Ide sampai Reels Siap Tayang">
-  <meta property="og:description" content="28 langkah bergambar membuat video Reels dengan ChatGPT, Cartesia, Claude, dan Remotion. Hasilnya MP4 siap upload atau ZIP project.">
+  <meta property="og:description" content="34 langkah bergambar membuat video Reels dengan ChatGPT, Cartesia, Claude, dan Remotion. Hasilnya MP4 siap upload atau ZIP project.">
   <meta property="og:url" content="https://siapdigital.id/panduan/remotion-reelforge/">
   <meta property="og:image" content="https://siapdigital.id/assets/img/panduan/remotion-reelforge/sampul-remotion-reelforge.jpg">
   <meta property="og:image:type" content="image/jpeg">
@@ -57,10 +57,10 @@
         <aside class="hero-panel" aria-labelledby="ringkas-heading">
           <h2 id="ringkas-heading">Sekilas</h2>
           <ol>
-            <li>Level <strong>pemula</strong>, sekitar <strong>40 menit</strong>, 28 langkah bergambar (5 terakhir opsional).</li>
+            <li>Level <strong>pemula</strong>, sekitar <strong>40 menit</strong>, 34 langkah bergambar (11 terakhir opsional: pilih Opsi A atau B).</li>
             <li>Hasil: video vertikal <strong>1080×1920 (9:16)</strong>, siap diunggah ke Reels.</li>
             <li>Prompt disusun otomatis lewat <strong>generator prompt</strong> di situs ini.</li>
-            <li>Pilih <strong>MP4 langsung dari Claude</strong>, atau ekspor ZIP sendiri di laptop.</li>
+            <li>Pilih <strong>MP4 langsung dari Claude</strong>, atau ubah ZIP jadi MP4 di laptop atau Google Colab.</li>
           </ol>
         </aside>
       </div>
@@ -94,7 +94,7 @@
           <li>
             <span class="flow-label">04 · Publish</span>
             <h3>Reels</h3>
-            <p>Unggah MP4, atau ekspor ZIP di laptop dulu</p>
+            <p>Unggah MP4, atau ubah ZIP jadi MP4 di laptop atau Colab</p>
           </li>
         </ol>
         <div class="btn-row">
@@ -108,7 +108,7 @@
       <div class="container">
         <div class="section-head">
           <h2 id="persiapan-heading">Yang perlu disiapkan</h2>
-          <p>ChatGPT, Claude, dan Cartesia bisa dicoba dengan akun gratis, dan cara mendaftarnya ada di tutorial ini. Node.js hanya perlu bila Claude hanya memberi ZIP dan Anda mengekspornya sendiri.</p>
+          <p>ChatGPT, Claude, dan Cartesia bisa dicoba dengan akun gratis, dan cara mendaftarnya ada di tutorial ini. Node.js atau Google Colab hanya diperlukan bila Claude hanya memberi ZIP.</p>
         </div>
         <ul class="principles requirements">
           <li>
@@ -129,7 +129,11 @@
           </li>
           <li>
             <h3><a href="https://nodejs.org/" target="_blank" rel="noopener">Node.js (opsional)</a></h3>
-            <p>Untuk mengekspor ZIP menjadi MP4 di laptop bila Claude tidak bisa merender.</p>
+            <p>Hanya untuk Opsi A: mengekspor ZIP di laptop.</p>
+          </li>
+          <li>
+            <h3><a href="https://colab.research.google.com/drive/1jjNd_7Rx0eOxNXgsuxftZmg6bxrzBcDN?usp=sharing" target="_blank" rel="noopener">Google Colab (opsional)</a></h3>
+            <p>Opsi B: render ZIP tanpa instalasi di laptop. Butuh akun Google.</p>
           </li>
         </ul>
       </div>
@@ -148,7 +152,8 @@
           <li><a href="#naskah"><span class="toc-part">Bagian 4</span><span class="toc-title">Buat naskah dan voice-over dengan ChatGPT</span><span class="toc-steps">Langkah 15–17</span></a></li>
           <li><a href="#voice"><span class="toc-part">Bagian 5</span><span class="toc-title">Buat voice-over bahasa Indonesia di Cartesia</span><span class="toc-steps">Langkah 18–20</span></a></li>
           <li><a href="#video"><span class="toc-part">Bagian 6</span><span class="toc-title">Buat video dengan Claude</span><span class="toc-steps">Langkah 21–23</span></a></li>
-          <li><a href="#render-lokal"><span class="toc-part">Bagian 7</span><span class="toc-title">Ekspor ZIP menjadi MP4 di laptop</span><span class="toc-steps">Langkah 24–28</span></a></li>
+          <li><a href="#render-lokal"><span class="toc-part">Bagian 7</span><span class="toc-title">Opsi A: ekspor ZIP menjadi MP4 di laptop</span><span class="toc-steps">Langkah 24–28</span></a></li>
+          <li><a href="#render-colab"><span class="toc-part">Bagian 8</span><span class="toc-title">Opsi B: render ZIP di Google Colab</span><span class="toc-steps">Langkah 29–34</span></a></li>
         </ol>
       </div>
     </section>
@@ -545,7 +550,7 @@
             <div class="guide-text">
               <span class="step-no" aria-hidden="true">23</span>
               <h3>Unduh hasilnya</h3>
-              <p>Tunggu Claude selesai. Jika Claude berhasil merender, unduh <code>reels_[topik].mp4</code> dan langsung unggah ke Instagram Reels. Jika Claude hanya memberi ZIP, unduh <code>remotion_reels_[topik].zip</code> lalu ekspor sendiri di laptop (langkah 24–28).</p>
+              <p>Tunggu Claude selesai. Jika Claude berhasil merender, unduh <code>reels_[topik].mp4</code> dan langsung unggah ke Instagram Reels. Jika Claude hanya memberi ZIP, unduh <code>remotion_reels_[topik].zip</code> lalu ubah jadi MP4 dengan salah satu cara: di laptop (langkah 24–28) atau di Google Colab tanpa instalasi apa pun (langkah 29–34).</p>
               <div class="callout warn"><p><strong>Perhatian:</strong> Paket Free Claude memiliki batas penggunaan per 5 jam. Jika kena batas sebelum selesai, tunggu reset lalu minta Claude melanjutkan.</p></div>
               <p class="step-note">Render MP4 bergantung pada lingkungan Claude. Bila Claude tidak bisa merender, ia diminta menjelaskan alasannya dan tetap memberi ZIP.</p>
             </div>
@@ -562,8 +567,8 @@
       <div class="container">
         <div class="section-head">
           <span class="eyebrow">Bagian 7 · Langkah 24–28</span>
-          <h2 id="render-lokal-heading">Ekspor ZIP menjadi MP4 di laptop</h2>
-          <p>Lewati bagian ini jika Claude sudah memberi MP4. Di paket Free, sandbox Claude biasanya tidak punya akses internet, jadi Claude hanya bisa memberi ZIP. Ekspornya cukup beberapa perintah di terminal.</p>
+          <h2 id="render-lokal-heading">Opsi A: ekspor ZIP menjadi MP4 di laptop</h2>
+          <p>Lewati bagian ini jika Claude sudah memberi MP4, atau jika Anda memilih Opsi B (Google Colab). Di paket Free, sandbox Claude biasanya tidak punya akses internet, jadi Claude hanya bisa memberi ZIP. Ekspor di laptop cukup beberapa perintah di terminal.</p>
         </div>
 
         <ol class="guide-steps" start="24">
@@ -628,12 +633,108 @@ npx remotion studio</code></pre>
         <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
       </div>
     </section>
+    <section class="section section-alt" id="render-colab" aria-labelledby="render-colab-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 8 · Langkah 29–34</span>
+          <h2 id="render-colab-heading">Opsi B: render ZIP di Google Colab</h2>
+          <p>Tanpa instal apa pun di laptop. Render berjalan di server Google Colab lewat <strong>Render Studio Siap Digital</strong>, dan Anda cukup mengunggah ZIP lalu mengunduh MP4. Butuh akun Google. Bagian ini juga opsional.</p>
+        </div>
+
+        <ol class="guide-steps" start="29">
+          <li class="guide-step" id="langkah-29">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">29</span>
+              <h3>Buka notebook dan pilih GPU</h3>
+              <p>Buka notebook Render Studio di Google Colab. Pada menu atas klik <strong>Runtime</strong>, lalu pilih <strong>Ubah jenis runtime</strong>. Pilih <strong>Python 3</strong> dan akselerator <strong>GPU T4</strong>, lalu klik <strong>Simpan</strong>.</p>
+              <a class="btn btn-primary" href="https://colab.research.google.com/drive/1jjNd_7Rx0eOxNXgsuxftZmg6bxrzBcDN?usp=sharing" target="_blank" rel="noopener">Buka notebook Render Studio</a>
+              <div class="callout"><p><strong>Tips:</strong> GPU T4 mempercepat encoding. Jika kuota GPU habis, pilih CPU: render tetap jalan tetapi lebih lambat.</p></div>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/01-colab-runtime-menu.webp"><img src="../../assets/img/panduan/remotion-reelforge/01-colab-runtime-menu.webp" width="1400" height="758" alt="Google Colab: Menu Runtime → Ubah jenis runtime" loading="lazy" decoding="async"></a>
+                <figcaption>Menu Runtime → Ubah jenis runtime</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/remotion-reelforge/02-colab-pilih-gpu-t4.webp"><img src="../../assets/img/panduan/remotion-reelforge/02-colab-pilih-gpu-t4.webp" width="1400" height="758" alt="Google Colab: Akselerator hardware: GPU T4" loading="lazy" decoding="async"></a>
+                <figcaption>Akselerator hardware: GPU T4</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-30">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">30</span>
+              <h3>Jalankan sel pertama</h3>
+              <p>Klik tombol <strong>▶</strong> di sebelah kiri <strong>sel paling atas</strong> (yang berjudul <em>Render Studio Siap Digital</em>). Saat muncul peringatan <em>Notebook ini tidak ditulis oleh Google</em>, klik <strong>Tetap jalankan</strong>. Sel lain di bawahnya tidak perlu dijalankan.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Peringatan itu muncul untuk semua notebook buatan orang lain, dan menampilkan email pembuat notebook. Jalankan hanya notebook dari sumber yang Anda percaya.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/03-colab-peringatan-notebook.webp"><img src="../../assets/img/panduan/remotion-reelforge/03-colab-peringatan-notebook.webp" width="1400" height="758" alt="Google Colab: Klik Tetap jalankan pada peringatan" loading="lazy" decoding="async"></a>
+              <figcaption>Klik Tetap jalankan pada peringatan</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-31">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">31</span>
+              <h3>Tunggu setup dan buka Render Studio</h3>
+              <p>Log akan menampilkan proses instalasi Node.js, Chromium, FFmpeg, dan pembuatan tunnel; ini memakan beberapa menit. Setelah muncul tombol <strong>Buka Render Studio Siap Digital</strong>, klik tombol tersebut. Halaman Render Studio terbuka di tab baru, dan panel <strong>Status server</strong> menunjukkan GPU yang terdeteksi.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Siapa pun yang memiliki URL studio bisa mengaksesnya. Jangan bagikan link-nya, dan biarkan tab Colab tetap terbuka selama bekerja.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/47-render-studio-beranda.webp"><img src="../../assets/img/panduan/remotion-reelforge/47-render-studio-beranda.webp" width="1400" height="764" alt="Render Studio: Beranda Render Studio dengan status server" loading="lazy" decoding="async"></a>
+              <figcaption>Beranda Render Studio dengan status server</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-32">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">32</span>
+              <h3>Upload ZIP dan mulai render</h3>
+              <p>Pada kartu render, klik <strong>Pilih atau seret file ZIP</strong> dan pilih ZIP dari Claude (maksimal 50 MB). Biarkan mode render <strong>Auto</strong>, centang konfirmasi ZIP tepercaya, lalu klik <strong>Upload &amp; Render MP4</strong>.</p>
+              <p class="step-note">ZIP dari Claude biasanya tanpa package-lock.json. Render Studio otomatis memakai npm install, jadi tidak perlu diubah.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/48-render-studio-upload-zip.webp"><img src="../../assets/img/panduan/remotion-reelforge/48-render-studio-upload-zip.webp" width="1400" height="764" alt="Render Studio: ZIP terpilih, konfirmasi dicentang, siap dirender" loading="lazy" decoding="async"></a>
+              <figcaption>ZIP terpilih, konfirmasi dicentang, siap dirender</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-33">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">33</span>
+              <h3>Tunggu proses render</h3>
+              <p>Panel kanan menampilkan tahap, persentase, kecepatan, sisa waktu, dan log. Instalasi dependency di awal bisa memakan beberapa menit. Video 50 detik (±1.500 frame) biasanya selesai dalam 5–8 menit.</p>
+              <div class="callout"><p><strong>Tips:</strong> Jika GPU tidak bisa dipakai, studio otomatis beralih ke CPU dan menuliskannya di log.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/49-render-studio-render-berjalan.webp"><img src="../../assets/img/panduan/remotion-reelforge/49-render-studio-render-berjalan.webp" width="1400" height="764" alt="Render Studio: Render berjalan, dengan sisa waktu dan log" loading="lazy" decoding="async"></a>
+              <figcaption>Render berjalan, dengan sisa waktu dan log</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-34">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">34</span>
+              <h3>Putar dan unduh MP4</h3>
+              <p>Setelah 100%, muncul bagian <strong>Video siap diputar</strong>. Putar untuk mengecek hasilnya, lalu klik <strong>Unduh MP4</strong> dan unggah ke Instagram Reels.</p>
+              <p class="step-note">Tampilan studio bisa sedikit berbeda dari tangkapan layar jika notebook diperbarui.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/remotion-reelforge/50-render-studio-video-siap.webp"><img src="../../assets/img/panduan/remotion-reelforge/50-render-studio-video-siap.webp" width="1400" height="764" alt="Render Studio: Video siap diputar dan diunduh" loading="lazy" decoding="async"></a>
+              <figcaption>Video siap diputar dan diunduh</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
 
     <section class="section section-alt" id="tanya-jawab" aria-labelledby="faq-heading">
       <div class="narrow">
         <h2 id="faq-heading">Tanya jawab</h2>
         <h3>Claude tidak memberi MP4. Apa yang harus dilakukan?</h3>
-        <p>Minta Claude memberi ZIP project (atau pilih output ZIP di generator), lalu render di laptop dengan langkah 24–28.</p>
+        <p>Minta Claude memberi ZIP project (atau pilih output ZIP di generator), lalu render di laptop dengan langkah 24–28 (laptop) atau 29–34 (Google Colab).</p>
+        <h3>Render Studio di Colab tidak bisa dibuka lagi.</h3>
+        <p>Tunnel mati saat runtime Colab berhenti atau terputus. Jalankan ulang sel pertama untuk mendapat URL baru, lalu unggah ZIP lagi.</p>
+        <h3>Di Colab muncul pesan Notebook ini tidak ditulis oleh Google. Aman?</h3>
+        <p>Peringatan itu muncul untuk semua notebook buatan orang lain. Notebook ini menjalankan server render di sesi Colab Anda sendiri. Jalankan hanya notebook dari sumber yang Anda percaya, dan hanya unggah ZIP yang Anda buat sendiri.</p>
         <h3>Render di laptop gagal. Apa yang dicek?</h3>
         <p>Pastikan terminal dibuka di folder yang berisi <code>package.json</code> dan Node.js versi LTS sudah terpasang. Jika ZIP tidak berisi package-lock.json, pakai npm install, bukan npm ci. Jika error menyebut dependency atau TypeScript, kirim pesan error-nya ke Claude dan minta ZIP yang sudah diperbaiki.</p>
         <h3>Subtitle tidak sinkron dengan suara.</h3>
