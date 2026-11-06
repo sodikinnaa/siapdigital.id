@@ -671,6 +671,24 @@ class PromptGeneratorTests(unittest.TestCase):
         tutorial_targets = [resolve(REMOTION_PAGE, h)[0] for _, _, h in parse(REMOTION_PAGE).links]
         self.assertIn(PROMPT_PAGES["claude"], tutorial_targets)
 
+    def test_thumbnails_on_hub_and_as_og_image(self):
+        hub = parse(GUIDE_HUB)
+        hub_imgs = [resolve(GUIDE_HUB, i["src"])[0] for i in hub.imgs]
+        hub_links = [resolve(GUIDE_HUB, h)[0] for _, _, h in hub.links]
+        self.assertIn("generator-prompt", hub.ids)
+        for kind, slug in (("gpt", "chatgpt"), ("claude", "claude")):
+            thumb = f"{REMOTION_IMG_DIR}/thumb-prompt-{slug}.jpg"
+            meta = lambda key: [a.get("content") for t, a in self.pages[kind].tags
+                                if t == "meta" and (a.get("property") == key or a.get("name") == key)]
+            with self.subTest(kind=kind):
+                self.assertEqual(image_size(ROOT / thumb), (1200, 675))
+                self.assertIn(thumb, hub_imgs)
+                self.assertIn(PROMPT_PAGES[kind], hub_links)
+                self.assertEqual(meta("og:image"), [SITE_URL + thumb])
+                self.assertEqual(meta("twitter:image"), [SITE_URL + thumb])
+                self.assertEqual((meta("og:image:width"), meta("og:image:height")), (["1200"], ["675"]))
+                self.assertTrue(meta("og:image:alt")[0].startswith("Thumbnail generator prompt"))
+
     def test_script_only_on_generator_pages(self):
         for rel in PAGES:
             has = any(s.endswith("prompt-generator.js") for s in parse(rel).scripts)
