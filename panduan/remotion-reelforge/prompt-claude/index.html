@@ -244,15 +244,28 @@ Project harus bisa dirender di lingkunganmu sendiri maupun di laptop pengguna (N
 ATURAN WAJIB STABILITAS FONT &amp; MENCEGAH delayRender() TIMEOUT:
 - Project dirender oleh Chrome Headless Shell, baik di lingkunganmu maupun di laptop pengguna (kadang hanya 2 vCPU). Jangan mengandalkan font jaringan, CDN, atau Google Fonts runtime.
 - Pilih font sistem yang pasti tersedia, ATAU sertakan file WOFF2/TTF/OTF lokal yang valid di public/fonts/. Jika menggunakan Inter, pastikan file Inter benar-benar ada dan dapat diakses lewat staticFile('fonts/...').
-- Jika butuh loadFont() dari @remotion/fonts, deklarasikan paket yang sesuai versinya dalam package.json dan package-lock.json; pastikan pemanggilan mengikuti dokumentasi versi Remotion yang digunakan. Jangan menambahkan dependency hanya untuk font jika tidak diperlukan.
-- Utamakan registrasi font yang deterministik sekali di tingkat modul atau @font-face untuk aset lokal; hindari memulai pemuatan ulang di tiap render atau tiap perubahan frame.
-- Hindari delayRender() manual untuk font bila tidak diperlukan. Jika terpaksa memakai delayRender(), pastikan handle selalu diselesaikan dengan continueRender() pada sukses dan cancelRender() saat gagal, tanpa promise menggantung; cleanup/unmount juga harus ditangani dengan benar.
+- JANGAN memanggil delayRender() atau loadFont() dari @remotion/fonts di tingkat modul (saat file di-import). Di Remotion 4.x handle seperti itu bisa kehilangan timer-nya, sehingga render gagal di tengah jalan dengan "A delayRender() ... was called but not cleared" walau font sudah termuat. Jangan memberi timeoutInMilliseconds khusus untuk font.
+- Untuk font lokal, pakai pola ini apa adanya di src/fonts.ts (sesuaikan nama file, weight, dan format), lalu panggil useFontsReady() sekali di baris pertama komponen komposisi utama:
+  import {useEffect, useState} from 'react';
+  import {cancelRender, continueRender, delayRender, staticFile} from 'remotion';
+  export const FONT_FAMILY = 'ReelFont';
+  const FILES = [{file: 'fonts/NamaFont-Bold.ttf', weight: '700', format: 'truetype'}];
+  const fontsReady: Promise&lt;void&gt; = typeof FontFace === 'undefined' ? Promise.resolve() : Promise.all(FILES.map(async ({file, weight, format}) =&gt; {
+    const face = new FontFace(FONT_FAMILY, `url('${staticFile(file)}') format('${format}')`, {weight});
+    await face.load();
+    (document.fonts as unknown as {add: (f: FontFace) =&gt; void}).add(face);
+  })).then(() =&gt; undefined);
+  export const useFontsReady = () =&gt; {
+    const [handle] = useState(() =&gt; delayRender('Memuat font lokal'));
+    useEffect(() =&gt; { fontsReady.then(() =&gt; continueRender(handle)).catch((err) =&gt; cancelRender(err)); }, [handle]);
+  };
+  Pemuatan file tetap terjadi sekali di tingkat modul, tetapi delayRender hanya dipanggil di dalam komponen. Setiap delayRender lain juga wajib diakhiri continueRender() saat berhasil dan cancelRender() saat gagal, tanpa promise menggantung.
 - Jangan menempatkan proses load font di komponen per-frame, loop, atau useEffect yang berulang. Jangan melakukan fetch font dari localhost/CDN di setiap frame.
 - Pastikan semua path font dan nama font-family konsisten serta tersedia ketika dijalankan di Chromium headless. Gunakan font fallback yang aman jika font khusus tidak wajib.
 - Cek semua async initialization, gambar, dan font agar tidak ada delayRender handle yang tertahan. Jangan sekadar menaikkan timeout untuk menutupi sumber masalah.
 - Uji minimal awal, tengah, akhir video, dan render penuh bila runtime mendukung. Catat apakah pengujian sungguhan berhasil; jangan mengarang klaim.
 - Project sebaiknya dapat dirender dengan opsi --timeout=120000 sebagai batas toleransi, TETAPI semua font/aset harus tetap dapat selesai dimuat dengan benar tanpa timeout panjang.
-- Bila font pernah gagal dengan pesan `A delayRender() ... was called but not cleared`, perbaiki akar masalahnya: verifikasi asset, loading sekali, penyelesaian/cancel handle dan tidak ada loading ulang per-frame.
+- Bila font pernah gagal dengan pesan `A delayRender() ... was called but not cleared`, perbaiki akar masalahnya: pindahkan delayRender dari tingkat modul ke useFontsReady() seperti pola di atas, verifikasi file font, dan pastikan tidak ada pemuatan ulang per frame.
 
 PETUNJUK EKSPOR:
 Bila membuat ZIP, pastikan ZIP memuat seluruh font lokal di public/fonts/ (jika digunakan), voice-over asli, source, README.md, package.json (dan package-lock.json bila ada). Jangan sertakan node_modules. Desain harus tetap konsisten tanpa bergantung pada internet saat video di-render.
