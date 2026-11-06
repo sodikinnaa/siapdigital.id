@@ -156,7 +156,9 @@ h3 { font-size: 1.2rem; margin: 0 0 .5rem; }
 /* wrap: di kartu sempit (~360px) badge nowrap tidak muat di samping ikon, jadi turun ke bawah */
 .card-top { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem; }
 /* .doc .card h2 mengalahkan .doc h2 (apps/index.html memakai main.doc) */
-.card h2, .card h3, .doc .card h2 { font-size: 1.2rem; margin: 0 0 .4rem; }
+.card h2, .card h3, .doc .card h2, .doc .card h3 { font-size: 1.2rem; margin: 0 0 .4rem; }
+.hub-tools-head { margin-top: clamp(2.5rem, 6vw, 4rem); }
+.hub-tools-head h2 { margin-top: 0; font-size: clamp(1.5rem, 3vw, 2rem); }
 .card p { margin: 0; color: var(--muted); }
 .card .btn-row { margin-top: auto; padding-top: .5rem; }
 
