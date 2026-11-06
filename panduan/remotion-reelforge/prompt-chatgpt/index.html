@@ -54,7 +54,7 @@
           </nav>
           <span class="eyebrow">Tutorial Remotion · Alat 1 dari 2</span>
           <h1>Generator prompt ChatGPT</h1>
-          <p class="lead">Isi detail video sekali, lalu salin prompt untuk ChatGPT. Hasilnya <strong>storyboard TXT</strong> dan <strong>teks voice-over final</strong> yang siap diubah jadi suara di Cartesia.</p>
+          <p class="lead">Isi detail video sekali, lalu salin prompt untuk ChatGPT. Hasilnya file TXT berformat <strong>spesifikasi siap eksekusi</strong> untuk Claude dan <strong>teks voice-over final</strong> sesuai anggaran durasi.</p>
           <ol class="prompt-steps" aria-label="Urutan prompt">
             <li><a href="./" aria-current="page"><span class="ps-no" aria-hidden="true">1</span><span><strong>ChatGPT</strong><small>Storyboard + voice-over</small></span></a></li>
             <li><a href="../prompt-claude/"><span class="ps-no" aria-hidden="true">2</span><span><strong>Claude</strong><small>Project Remotion ZIP</small></span></a></li>
@@ -64,7 +64,7 @@
           <h2 id="butuh-heading">Yang Anda butuhkan</h2>
           <ol>
             <li>Akun <strong>ChatGPT</strong> (gratis cukup).</li>
-            <li>Topik video dan <strong>fitur yang benar-benar ada</strong>.</li>
+            <li>3–5 <strong>fakta dari sumber resmi</strong> tentang topik video.</li>
             <li>Sekitar <strong>5 menit</strong> untuk mengisi dan menyalin.</li>
           </ol>
         </aside>
@@ -89,13 +89,23 @@
             <div class="field">
               <label for="pf-duration">Target durasi <span class="opt">(detik)</span></label>
               <input id="pf-duration" name="duration" type="number" min="5" max="180" step="1" value="20" inputmode="numeric" aria-describedby="pf-duration-help">
-              <p class="field-help" id="pf-duration-help">5–180, misalnya 15, 20, atau 45.</p>
+              <p class="field-help" id="pf-duration-help">5–180 detik. Anggaran voice-over: 20 detik ≈ 40–44 kata.</p>
             </div>
           </div>
           <div class="field">
             <label for="pf-description">Deskripsi / fitur produk <span class="req">(wajib)</span></label>
             <textarea id="pf-description" name="description" maxlength="1000" rows="3" placeholder="Apa produk ini dan fitur apa yang benar-benar dimiliki?" required aria-describedby="pf-description-help"></textarea>
             <p class="field-help" id="pf-description-help">Tulis fitur yang benar-benar ada. Prompt melarang ChatGPT mengarang fitur atau klaim.</p>
+          </div>
+          <div class="field">
+            <label for="pf-facts">Fakta &amp; sumber <span class="opt">(sangat disarankan)</span></label>
+            <textarea id="pf-facts" name="facts" maxlength="1500" rows="4" placeholder="Satu fakta per baris, misalnya:&#10;- Dibuat oleh … (link resmi)&#10;- Bisa …&#10;- Bedanya dengan chatbot biasa: …" aria-describedby="pf-facts-help"></textarea>
+            <p class="field-help" id="pf-facts-help">3–5 fakta dari sumber resmi. Kalau kosong atau kurang, ChatGPT diminta bertanya dulu, bukan menebak.</p>
+          </div>
+          <div class="field">
+            <label for="pf-terms">Istilah &amp; pelafalan <span class="opt">(opsional)</span></label>
+            <input id="pf-terms" name="terms" type="text" maxlength="500" autocomplete="off" placeholder="Contoh: AI = ei-ai, agentic = e-jen-tik" aria-describedby="pf-terms-help">
+            <p class="field-help" id="pf-terms-help">Cara mengucapkan istilah asing di voice-over. Teks layar tetap memakai tulisan aslinya.</p>
           </div>
           <div class="field-row">
             <div class="field">
@@ -134,31 +144,86 @@
           <label class="sr-only" for="prompt-output">Teks prompt chatgpt siap salin</label>
           <textarea class="prompt-text" id="prompt-output" readonly spellcheck="false" rows="18">ROLE: CREATIVE DIRECTOR &amp; REELS SCRIPTWRITER
 
-Buat satu file TXT production-ready untuk video Instagram Reels yang akan dikerjakan di Claude menggunakan Remotion.
+Buat satu file TXT production-ready untuk video Instagram Reels. File ini akan dieksekusi Claude menjadi project Remotion, jadi tulis sebagai SPESIFIKASI yang bisa langsung diubah menjadi kode, bukan sekadar ide.
 
 INPUT:
 Topik: [ISI TOPIK]
-Penjelasan / sumber fitur: [ISI DESKRIPSI]
+Penjelasan: [ISI DESKRIPSI]
+Fakta &amp; sumber:
+[ISI FAKTA]
+Istilah &amp; pelafalan: [ISI ISTILAH]
 Audiens: [ISI AUDIENS]
 CTA: [ISI CTA]
-Target durasi: 15-20 detik; 1080x1920; 30 FPS; Bahasa Indonesia.
+Target durasi: [DURASI]; 1080x1920; 30 FPS; Bahasa Indonesia.
 
-WAJIB DI FILE TXT:
-A. Brief: tujuan, pesan utama, konsep, palet warna HEX, font, estetika.
-B. Storyboard per PART: timestamp estimasi, tujuan, exact voice-over, teks layar, komposisi, animasi dan transisi, efek suara, catatan teknis Remotion.
-C. Aset: komponen SVG/CSS yang perlu dibuat dan aset opsional.
-D. Aturan timing: waktu storyboard hanya estimasi; audio Cartesia adalah acuan akhir; safe area Reels; jangan potong narasi.
-E. FULL TEXT VOICE-OVER FINAL: satu paragraf bersih tanpa timestamp / arahan. Harus sama persis dengan gabungan voice-over per part, agar dapat langsung ditempel ke Cartesia.
-F. INSTRUKSI UNTUK CLAUDE: gunakan file audio asli Cartesia, jangan buat voice baru, sinkronkan visual dan subtitle dengan audio, output project Remotion source lengkap dalam ZIP.
+ATURAN FAKTA:
+- Pakai hanya fakta dari Penjelasan dan Fakta &amp; sumber. Jangan mengarang fitur, angka, nama pembuat, atau klaim.
+- Nama produk bisa ambigu. Jika fakta belum cukup untuk durasi ini, JANGAN menebak: ajukan maksimal 3 pertanyaan singkat dulu dan tunggu jawaban sebelum membuat file.
+- Cantumkan sumber yang dipakai di bagian J. SUMBER.
 
-Prioritaskan hook 1-3 detik, satu pesan kuat, visual premium dan natural; jangan mengarang fitur atau klaim produk. Sesuaikan jumlah kata agar durasi realistis mendekati 15-20 detik; bila lebih, ringkas naskah sebelum final. Angka target durasi di konfigurasi adalah pilihan pengguna dan mengutamakan kecocokan audio final.
+ANGGARAN KATA:
+- Acuan kecepatan Cartesia ±2,2 kata/detik. Target [DURASI] = [ANGGARAN KATA] voice-over total, termasuk CTA.
+- Cantumkan jumlah kata per segmen, per PART, total, dan estimasi durasi (total kata ÷ 2,2). Bila di luar anggaran, revisi naskah sebelum final.
+
+STRUKTUR FILE TXT (pakai judul bagian persis seperti ini):
+
+=== A. BRIEF ===
+Tujuan, satu pesan utama, konsep, audiens, nada bicara.
+
+=== B. DESIGN TOKENS ===
+- Palet HEX dengan peran: latar, permukaan, primer, aksen, teks, teks redup.
+- Font: system-ui/sans-serif, atau font lokal yang filenya ikut disertakan. Tanpa Google Fonts atau CDN.
+- Ukuran minimum: judul 72 px, teks layar 48 px, subtitle 40 px.
+- Safe area 1080x1920 (perkiraan UI Reels): atas 250 px, bawah 400 px, kanan 150 px, kiri 60 px.
+- Motion: durasi masuk/keluar dalam frame (30 FPS), easing atau spring, jeda antar elemen.
+
+=== C. SEGMEN VOICE-OVER ===
+Pecah voice-over menjadi segmen bernomor S1, S2, ... (satu kalimat atau frasa per segmen), dengan jumlah kata tiap segmen. Tulis VO persis seperti diucapkan: angka, singkatan, dan istilah asing dieja sesuai bagian F.
+
+=== D. STORYBOARD ===
+Setiap PART memakai field baku berikut:
+PART: nomor dan nama
+SEGMEN: S.. sampai S.. (waktu PART mengikuti segmen, bukan detik)
+ESTIMASI: detik mulai sampai selesai (perkiraan saja)
+TUJUAN:
+TEKS_LAYAR: maksimal 2 baris, 22 karakter per baris
+SUBTITLE: teks tampilan per segmen (memakai tulisan asli istilah, bukan ejaan pelafalan)
+LAYOUT: posisi elemen di dalam safe area
+KOMPONEN: nama komponen dari bagian E beserta props
+MASUK / KELUAR: animasi dan durasinya dalam frame
+TRANSISI: ke PART berikutnya
+CATATAN_REMOTION: hal teknis yang perlu diperhatikan
+
+=== E. KOMPONEN &amp; ASET ===
+Daftar komponen reusable (nama, fungsi, props). Ikon digambar sebagai SVG geometris sederhana. Jangan memakai logo resmi kecuali filenya disediakan. Tanpa efek suara kecuali filenya disediakan. Hindari efek berat (blur besar, bayangan besar, ratusan partikel) agar render di Google Colab tetap cepat.
+
+=== F. PELAFALAN ===
+Tabel istilah: tulisan di layar → cara diucapkan di VO.
+
+=== G. ATURAN TIMING ===
+Audio Cartesia adalah acuan akhir. Durasi tiap PART dihitung dari segmen yang dirujuk. Jangan potong narasi; CTA tidak boleh terpotong.
+
+=== H. FULL TEXT VOICE-OVER FINAL ===
+Satu paragraf bersih tanpa nomor segmen, timestamp, atau arahan. Harus sama persis dengan gabungan S1 sampai Sn.
+
+=== I. CATATAN UNTUK CLAUDE ===
+Singkat saja: gunakan audio asli Cartesia, jangan buat voice baru, ikuti design tokens dan field storyboard. Untuk hal teknis (dependency, font, render), prompt teknis ReelForge untuk Claude yang berlaku bila bertentangan dengan file ini.
+
+=== J. SUMBER ===
+Daftar sumber fakta yang dipakai.
+
+=== K. CHECKLIST ===
+Total kata, estimasi durasi, gabungan segmen sama dengan full text (ya/tidak), semua TEKS_LAYAR maksimal 22 karakter per baris (ya/tidak).
+
+Prioritaskan hook 1-3 detik dan satu pesan kuat. Visual premium dan natural, bisa diimplementasikan hanya dengan Remotion, React, TypeScript, CSS, dan SVG.
+
+SEBELUM FINAL:
+Gunakan Python untuk memastikan gabungan S1 sampai Sn sama persis dengan FULL TEXT, menghitung kata, dan memeriksa panjang TEKS_LAYAR. Perbaiki bila ada yang gagal, lalu tulis file.
 
 OUTPUT:
-1. Buat file TXT bernama motion_graphic_[topik].txt yang dapat diunduh.
-2. Tampilkan kembali hanya FULL TEXT VOICE-OVER FINAL terpisah di chat agar bisa disalin ke Cartesia.
-3. Pastikan tidak ada perbedaan kalimat antara storyboard, full text dalam TXT, dan teks yang ditampilkan di chat.
-
-Tambahan: tentukan rekomendasi visual dan animasi yang dapat diimplementasikan tanpa library eksternal di luar Remotion, React, TypeScript, CSS dan SVG. Sertakan instruksi Claude agar package.json dan package-lock.json konsisten serta semua aset lokal.</textarea>
+1. File TXT yang dapat diunduh bernama [NAMA FILE].
+2. Tampilkan kembali hanya FULL TEXT VOICE-OVER FINAL di chat agar bisa disalin ke Cartesia.
+3. Tidak boleh ada perbedaan kalimat antara segmen, full text di TXT, dan teks di chat.</textarea>
           <noscript><p class="prompt-note">JavaScript nonaktif: salin teks di atas, lalu ganti penanda <code>[ISI TOPIK]</code>, <code>[ISI DESKRIPSI]</code>, <code>[ISI AUDIENS]</code>, dan <code>[ISI CTA]</code> secara manual.</p></noscript>
           <div class="prompt-actions">
             <button type="button" class="btn btn-copy" id="prompt-copy" hidden data-js-only>Salin prompt</button>
@@ -177,12 +242,12 @@ Tambahan: tentukan rekomendasi visual dan animasi yang dapat diimplementasikan t
         </div>
         <ol class="principles how-steps">
           <li>
-            <h3>Isi detail video</h3>
-            <p>Topik dan deskripsi wajib diisi. Pilih gaya visual atau tulis sendiri.</p>
+            <h3>Isi detail dan fakta</h3>
+            <p>Topik dan deskripsi wajib. Isi juga fakta dan sumber resminya agar ChatGPT tidak menebak, serta pelafalan istilah asing bila ada.</p>
           </li>
           <li>
             <h3>Salin dan kirim ke ChatGPT</h3>
-            <p>ChatGPT membuat file <code>motion_graphic_[topik].txt</code> dan menampilkan <strong>FULL TEXT VOICE-OVER FINAL</strong>. Lihat <a href="../#langkah-20">langkah 20–21</a>.</p>
+            <p>Bila fakta kurang, ChatGPT bertanya dulu. Setelah itu ia membuat <code>motion_graphic_[topik].txt</code> (segmen VO, design tokens, storyboard berfield baku, checklist) dan menampilkan <strong>FULL TEXT VOICE-OVER FINAL</strong>. Lihat <a href="../#langkah-20">langkah 20–21</a>.</p>
           </li>
           <li>
             <h3>Ubah jadi suara di Cartesia</h3>
