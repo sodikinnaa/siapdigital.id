@@ -350,6 +350,25 @@ code {
 .guide-card { padding: 0; overflow: hidden; gap: 0; }
 .guide-card > img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--paper-2); border-bottom: 1px solid var(--line); }
 .guide-card-body { display: flex; flex-direction: column; gap: .75rem; flex: 1; padding: 1.5rem; }
+/* Beranda: maksimal tiga kartu panduan per baris, sisanya daftar ringkas di bawah */
+@media (min-width: 640px) { .catalogue-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .catalogue-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.catalogue-3 .guide-card p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.catalogue-3 .guide-card .btn-row { margin-top: auto; padding-top: .25rem; }
+.guide-more { display: grid; gap: 1rem; margin-top: 2.25rem; }
+.guide-more-title { margin: 0; font-size: 1.15rem; }
+.guide-more-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr)); }
+.guide-more-item {
+  display: flex; align-items: center; gap: 1rem; padding: .75rem; border: 1px solid var(--line); border-radius: var(--radius);
+  background: #fff; color: var(--ink); text-decoration: none; transition: border-color .2s, box-shadow .2s;
+}
+.guide-more-item:hover { border-color: var(--teal-600); box-shadow: 0 10px 22px -18px rgba(15, 27, 51, .6); color: var(--ink); }
+.guide-more-item img { flex: none; width: 7.5rem; aspect-ratio: 16 / 9; height: auto; object-fit: cover; border-radius: 8px; }
+.guide-more-text { display: grid; gap: .2rem; min-width: 0; }
+.guide-more-text strong { font-family: var(--serif); color: var(--navy-900); line-height: 1.3; }
+.guide-more-text span { color: var(--muted); font-size: .9rem; }
+.guide-more-arrow { margin-left: auto; color: var(--teal-700); font-weight: 700; }
+.guide-more > .btn { justify-self: start; }
 /* .card .guide-meta mengalahkan .doc ul / .doc li (panduan/index.html memakai main.doc) */
 .card .guide-meta { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; margin: 0; padding: 0; }
 .card .guide-meta li { margin: 0; }
