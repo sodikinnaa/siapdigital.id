@@ -29,6 +29,7 @@ PAGES = [
     "panduan/remotion-reelforge/prompt-chatgpt/index.html",
     "panduan/remotion-reelforge/prompt-claude/index.html",
     "panduan/hermes-agent/index.html",
+    "panduan/windows-cloud-lab/index.html",
 ]
 
 # Target navigasi utama (relatif terhadap root) dan halaman yang seharusnya aria-current.
@@ -46,6 +47,7 @@ NAV_CURRENT = {
     "panduan/remotion-reelforge/prompt-chatgpt/index.html": "panduan/index.html",
     "panduan/remotion-reelforge/prompt-claude/index.html": "panduan/index.html",
     "panduan/hermes-agent/index.html": "panduan/index.html",
+    "panduan/windows-cloud-lab/index.html": "panduan/index.html",
 }
 
 WEB_URL = "https://eduquest.siapdigital.id/"
@@ -104,7 +106,18 @@ HERMES_SERVICE_URLS = {
     "https://login.tailscale.com/",
     "https://tailscale.com/download",
 }
-ALLOWED_EXTERNAL = REMOTION_SERVICE_URLS | HERMES_SERVICE_URLS | {
+WINLAB_PAGE = "panduan/windows-cloud-lab/index.html"
+WINLAB_IMG_DIR = "assets/img/panduan/windows-cloud-lab"
+WINLAB_COVER = WINLAB_IMG_DIR + "/sampul-windows-cloud-lab.jpg"
+WINLAB_URL = "https://winlab.siapdigital.id/"
+WINLAB_SERVICE_URLS = {
+    WINLAB_URL,
+    "https://github.com/sodikinnaa/rdp-generator",
+    "https://github.com/",
+    "https://login.tailscale.com/",
+    "https://tailscale.com/download",
+}
+ALLOWED_EXTERNAL = REMOTION_SERVICE_URLS | HERMES_SERVICE_URLS | WINLAB_SERVICE_URLS | {
     COLAB_NOTEBOOK_URL,
     "https://github.com/sodikinnaa/siapdigital.id/issues",
     GOOGLE_TRANSFER_URL,
@@ -330,7 +343,7 @@ class SiteTests(unittest.TestCase):
                             self.assertTrue((ROOT / local).is_file()
                                             or (ROOT / local / "index.html").is_file(), url)
                         else:
-                            self.assertIn(url, (WEB_URL, AILAB_URL))
+                            self.assertIn(url, (WEB_URL, AILAB_URL, WINLAB_URL))
                 self.assertNotIn("market://", text)
 
     def test_primary_ctas_play_web_and_tester_signup(self):
@@ -690,8 +703,82 @@ class HermesTutorialTests(unittest.TestCase):
         self.assertEqual(self.html.count('class="callout warn"'), 4)
 
 
+class WinlabTutorialTests(unittest.TestCase):
+    def setUp(self):
+        self.page = parse(WINLAB_PAGE)
+        self.html = (ROOT / WINLAB_PAGE).read_text(encoding="utf-8")
+
+    def meta(self, key):
+        return [a.get("content") for t, a in self.page.tags
+                if t == "meta" and (a.get("property") == key or a.get("name") == key)]
+
+    def test_numbered_steps_in_eight_sections(self):
+        for n in range(1, 30):
+            with self.subTest(step=n):
+                self.assertIn(f"langkah-{n}", self.page.ids)
+        self.assertNotIn("langkah-30", self.page.ids)
+        toc = [a.get("href", "") for t, a in self.page.tags if t == "a"]
+        for sec in ("buka-winlab", "token-github", "repository", "tailscale", "pemulihan",
+                    "buat-komputer", "konsol-web", "rdp-hp"):
+            with self.subTest(section=sec):
+                self.assertIn(sec, self.page.ids)
+                self.assertIn("#" + sec, toc)
+
+    def test_every_screenshot_used_exactly_once(self):
+        srcs = [resolve(WINLAB_PAGE, i["src"])[0] for i in self.page.imgs if i["src"].endswith(".webp")]
+        files = sorted(f"{WINLAB_IMG_DIR}/{f.name}" for f in (ROOT / WINLAB_IMG_DIR).glob("*.webp"))
+        self.assertEqual(len(files), 35)
+        self.assertEqual(sorted(srcs), files)
+
+    def test_screenshots_sized_and_free_of_metadata(self):
+        phones = 0
+        for f in (ROOT / WINLAB_IMG_DIR).glob("*.webp"):
+            with self.subTest(image=f.name):
+                self.assertEqual(webp_chunks(f.read_bytes()), [b"VP8 "])
+                w, h = image_size(f)
+                if f.name.split("-", 2)[1] == "hp":
+                    phones += 1
+                    self.assertLess(w, h)
+                    self.assertLessEqual(w, 340)
+                else:
+                    self.assertEqual(w, 1400)
+        self.assertEqual(phones, 13)
+        # Tangkapan layar HP memakai kelas khusus agar tidak membentang selebar kolom.
+        self.assertEqual(self.html.count('class="guide-shot guide-shot-phone"'), phones)
+
+    def test_no_secrets_or_personal_data_in_markup(self):
+        self.assertEqual(re.findall(r"[\w.+-]+@[\w-]+\.[\w.]+", self.html), [])
+        for bad in (r"ghp_[A-Za-z0-9]{6}", r"tskey-auth-[A-Za-z0-9]", r"wakdondin", r"\bsodikinn?\b"):
+            with self.subTest(bad=bad):
+                self.assertIsNone(re.search(bad, self.html))
+        self.assertIn("sudah kami buramkan", self.html)
+
+    def test_cover_used_as_thumbnail_and_og_image(self):
+        self.assertIn(WINLAB_COVER, [resolve(WINLAB_PAGE, i["src"])[0] for i in self.page.imgs])
+        self.assertEqual(self.meta("og:image"), [SITE_URL + WINLAB_COVER])
+        self.assertEqual(self.meta("og:url"), [SITE_URL + "panduan/windows-cloud-lab/"])
+        self.assertEqual(image_size(ROOT / WINLAB_COVER), (1200, 675))
+        for page in ("index.html", GUIDE_HUB):
+            with self.subTest(page=page):
+                self.assertIn(WINLAB_COVER, [resolve(page, i["src"])[0] for i in parse(page).imgs])
+
+    def test_service_links_open_safely(self):
+        external = [a for t, a in self.page.tags if t == "a" and a.get("href") in WINLAB_SERVICE_URLS]
+        self.assertEqual({a["href"] for a in external}, WINLAB_SERVICE_URLS)
+        for a in external:
+            with self.subTest(href=a["href"]):
+                self.assertEqual((a.get("target"), a.get("rel")), ("_blank", "noopener"))
+
+    def test_safety_and_cost_warnings_kept(self):
+        for phrase in ("dapat menimbulkan biaya", "bukan <em>API access token</em>", "tidak bisa memulihkan kunci",
+                       "Jangan gunakan perangkat bersama", "Revoke", "MagicDNS"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, self.html)
+        self.assertEqual(self.html.count('class="callout warn"'), 4)
+
+
 class LightboxTests(unittest.TestCase):
-    GUIDES = ("panduan/transfer-konten-google/index.html", REMOTION_PAGE, HERMES_PAGE)
+    GUIDES = ("panduan/transfer-konten-google/index.html", REMOTION_PAGE, HERMES_PAGE, WINLAB_PAGE)
 
     def test_script_only_on_pages_with_screenshots(self):
         for rel in PAGES:

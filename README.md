@@ -15,6 +15,7 @@ Situs resmi Siap Digital: katalog aplikasi, informasi produk, panduan bergambar,
 - Generator prompt ChatGPT: `panduan/remotion-reelforge/prompt-chatgpt/`
 - Generator prompt Claude: `panduan/remotion-reelforge/prompt-claude/`
 - Tutorial Hermes Agent (Codespace AI Lab → Tailscale → CLIProxyAPI → Hermes): `panduan/hermes-agent/`
+- Tutorial Windows Cloud Lab (Windows di Codespaces → browser / RDP di HP): `panduan/windows-cloud-lab/`
 
 Website: https://sodikinnaa.github.io/siapdigital.id/
 

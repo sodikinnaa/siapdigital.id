@@ -294,6 +294,9 @@ code {
 
 /* Panduan: beberapa tangkapan layar per langkah, catatan di dalam langkah */
 .guide-media { display: grid; gap: 1.25rem; min-width: 0; }
+/* Tangkapan layar HP (potret): lebar dibatasi, dua gambar berdampingan */
+.guide-shot-phone { justify-self: center; width: 100%; max-width: 16rem; }
+.guide-media:has(> .guide-shot-phone) { grid-template-columns: repeat(auto-fit, minmax(min(8.5rem, 100%), 1fr)); gap: .9rem; }
 /* Dua tangkapan layar: teks langkah tetap terlihat saat gambar digulir (desktop) */
 @media (min-width: 861px) {
   .guide-step:has(> .guide-media) > .guide-text { position: sticky; top: 5.5rem; }
