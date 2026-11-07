@@ -450,6 +450,52 @@ code {
 .promo-card h2, .promo-card p { margin: 0; }
 @media (max-width: 520px) { .promo-card .btn { justify-self: stretch; } }
 
+/* Penampil gambar tutorial (lightbox): layar penuh, geser untuk pindah gambar */
+.js .guide-shot a { cursor: zoom-in; }
+html.lightbox-open { overflow: hidden; }
+.lightbox {
+  width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  background: #0a1224; color: #e9edf5;
+}
+.lightbox[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+.lightbox::backdrop { background: rgba(10, 18, 36, .85); }
+.lightbox-bar { display: flex; align-items: center; gap: .75rem; padding: .6rem max(1rem, env(safe-area-inset-right)) .6rem max(1rem, env(safe-area-inset-left)); }
+.lightbox-counter { margin: 0 auto 0 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.lightbox-full { color: #8fd8cf; font-size: .92rem; font-weight: 600; }
+.lightbox-full:hover { color: #fff; }
+.lightbox-btn {
+  display: inline-grid; place-items: center; width: 2.9rem; height: 2.9rem; padding: 0; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, .12); color: #fff; cursor: pointer;
+}
+.lightbox-btn svg { width: 1.35rem; height: 1.35rem; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.lightbox-btn:hover { background: rgba(255, 255, 255, .24); }
+.lightbox-btn:disabled { opacity: .3; cursor: default; }
+.lightbox :focus-visible { outline: 3px solid #8fd8cf; outline-offset: 3px; }
+.lightbox-stage { position: relative; display: grid; place-items: center; min-height: 0; padding: 0 4.25rem; touch-action: pan-y pinch-zoom; overflow: hidden; }
+.lightbox-img {
+  max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 10px;
+  user-select: none; -webkit-user-select: none; transition: transform .2s ease-out;
+}
+.lightbox-img.slide-next { animation: lb-in-next .26s ease-out; }
+.lightbox-img.slide-prev { animation: lb-in-prev .26s ease-out; }
+@keyframes lb-in-next { from { opacity: .3; transform: translateX(48px); } to { opacity: 1; transform: none; } }
+@keyframes lb-in-prev { from { opacity: .3; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
+.lightbox-prev, .lightbox-next { position: absolute; top: 50%; translate: 0 -50%; }
+.lightbox-prev { left: .75rem; }
+.lightbox-next { right: .75rem; }
+.lightbox-info { padding: .75rem 1rem max(1rem, env(safe-area-inset-bottom)); text-align: center; }
+.lightbox-info p { margin: 0 auto; max-width: 48rem; }
+.lightbox-step { font-weight: 700; color: #fff; }
+.lightbox-caption { color: #c9d1e2; font-size: .95rem; }
+.lightbox-hint { margin-top: .35rem !important; color: #8d9ab5; font-size: .8rem; }
+@media (max-width: 640px) {
+  .lightbox-stage { padding: 0 .5rem; }
+  .lightbox-prev, .lightbox-next { top: auto; bottom: .5rem; translate: none; background: rgba(10, 18, 36, .7); }
+  .lightbox-full { display: none; }
+}
+@media (hover: hover) and (pointer: fine) { .lightbox-hint { display: none; } }
+@media (prefers-reduced-motion: reduce) { .lightbox-img { transition: none; } }
+
 /* Popup iklan: kartu di tengah (desktop), bottom sheet (ponsel) */
 .promo-dialog {
   width: min(100% - 2rem, 25rem); max-width: none; max-height: calc(100dvh - 2rem);

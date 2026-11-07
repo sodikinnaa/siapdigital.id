@@ -690,6 +690,29 @@ class HermesTutorialTests(unittest.TestCase):
         self.assertEqual(self.html.count('class="callout warn"'), 4)
 
 
+class LightboxTests(unittest.TestCase):
+    GUIDES = ("panduan/transfer-konten-google/index.html", REMOTION_PAGE, HERMES_PAGE)
+
+    def test_script_only_on_pages_with_screenshots(self):
+        for rel in PAGES:
+            with self.subTest(page=rel):
+                page = parse(rel)
+                has = any(s.endswith("lightbox.js") for s in page.scripts)
+                self.assertEqual(has, rel in self.GUIDES)
+                if has:
+                    # Tautan gambar tetap menjadi fallback tanpa JS.
+                    self.assertIn('class="guide-shot"', (ROOT / rel).read_text(encoding="utf-8"))
+
+    def test_js_static_safety(self):
+        js = (ROOT / "assets/js/lightbox.js").read_text(encoding="utf-8")
+        for need in ("showModal", "ArrowRight", "ArrowLeft", "pointerdown", "pointerup", "HTMLDialogElement"):
+            with self.subTest(need=need):
+                self.assertIn(need, js)
+        for bad in ("innerHTML", "fetch(", "eval(", "localStorage"):
+            with self.subTest(bad=bad):
+                self.assertNotIn(bad, js)
+
+
 PROMPT_PAGES = {
     "gpt": "panduan/remotion-reelforge/prompt-chatgpt/index.html",
     "claude": "panduan/remotion-reelforge/prompt-claude/index.html",
