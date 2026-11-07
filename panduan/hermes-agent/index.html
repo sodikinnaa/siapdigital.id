@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tutorial Hermes Agent: Lab AI Pribadi di GitHub Codespace — Siap Digital</title>
+  <meta name="description" content="Tutorial bergambar memasang Hermes Agent dan CLIProxyAPI di GitHub Codespace lewat Codespace AI Lab: token GitHub dan Tailscale, setup satu klik, login model Antigravity, lalu chat dengan Hermes.">
+  <meta name="theme-color" content="#0f1b33">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Siap Digital">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:title" content="Tutorial Hermes Agent: Lab AI Pribadi di GitHub Codespace">
+  <meta property="og:description" content="28 langkah bergambar memasang Hermes Agent dan CLIProxyAPI di GitHub Codespace lewat Codespace AI Lab, tanpa terminal.">
+  <meta property="og:url" content="https://siapdigital.id/panduan/hermes-agent/">
+  <meta property="og:image" content="https://siapdigital.id/assets/img/panduan/hermes-agent/sampul-hermes-agent.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Sampul tutorial: alur GitHub, Tailscale, CLIProxyAPI, dan Hermes Agent">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tutorial Hermes Agent: Lab AI Pribadi di GitHub Codespace">
+  <meta name="twitter:description" content="Pasang Hermes Agent dan CLIProxyAPI di GitHub Codespace dengan satu klik, lalu ajak Hermes chat.">
+  <meta name="twitter:image" content="https://siapdigital.id/assets/img/panduan/hermes-agent/sampul-hermes-agent.jpg">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="../../assets/js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#konten">Lewati ke konten</a>
+
+  <header class="site-header">
+    <nav class="container nav" aria-label="Navigasi utama">
+      <a class="brand" href="../../"><span class="brand-mark" aria-hidden="true">S</span>Siap Digital</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../../">Beranda</a></li>
+        <li><a href="../../apps/">Aplikasi</a></li>
+        <li><a href="../" aria-current="page">Panduan</a></li>
+        <li><a href="../../privacy/">Privasi</a></li>
+        <li><a href="../../terms/">Ketentuan</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="konten">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Panduan · Agen AI</span>
+          <h1>Hermes Agent siap chat, tanpa terminal.</h1>
+          <p class="lead">Pasang <strong>Hermes Agent</strong> dan <strong>CLIProxyAPI</strong> di GitHub Codespace Anda lewat <strong>Codespace AI Lab</strong>, buka secara privat dengan <strong>Tailscale</strong>, lalu sambungkan model AI dari akun Anda sendiri.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="#langkah-1">Mulai dari langkah 1</a>
+            <a class="btn btn-secondary" href="https://ailab.siapdigital.id/" target="_blank" rel="noopener">Buka Codespace AI Lab ↗</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-labelledby="ringkas-heading">
+          <h2 id="ringkas-heading">Sekilas</h2>
+          <ol>
+            <li>Level <strong>pemula</strong>, sekitar <strong>20 menit</strong>, 28 langkah bergambar.</li>
+            <li>Cukup <strong>browser</strong> dan aplikasi <strong>Tailscale</strong>. Tidak perlu terminal, gh, atau ssh.</li>
+            <li>Hasil: dashboard <strong>Hermes Agent</strong> yang hanya bisa dibuka dari perangkat Anda.</li>
+            <li>Model AI diambil dari akun Anda sendiri lewat <strong>CLIProxyAPI</strong>.</li>
+          </ol>
+        </aside>
+      </div>
+      <figure class="container guide-cover">
+        <img src="../../assets/img/panduan/hermes-agent/sampul-hermes-agent.jpg" width="1200" height="675" alt="Sampul tutorial: dashboard Codespace AI Lab dan Hermes Agent yang siap chat" fetchpriority="high" decoding="async">
+      </figure>
+    </section>
+
+    <section class="section section-alt" id="alur" aria-labelledby="alur-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="alur-heading">Alur produksi</h2>
+          <p>Empat tahap, semuanya dari browser.</p>
+        </div>
+        <ol class="flow">
+          <li>
+            <span class="flow-label">01 · Akun</span>
+            <h3>Token GitHub &amp; Tailscale</h3>
+            <p>Dua token untuk membuat Codespace dan membuka akses privat</p>
+          </li>
+          <li>
+            <span class="flow-label">02 · Setup</span>
+            <h3>Codespace AI Lab</h3>
+            <p>Satu klik memasang Hermes, CLIProxyAPI, dan Tailscale</p>
+          </li>
+          <li>
+            <span class="flow-label">03 · Model</span>
+            <h3>CLIProxyAPI</h3>
+            <p>Login Antigravity dengan akun Google untuk mendapat model AI</p>
+          </li>
+          <li>
+            <span class="flow-label">04 · Chat</span>
+            <h3>Hermes Agent</h3>
+            <p>Pilih model, lalu ajak Hermes chat dari dashboard</p>
+          </li>
+        </ol>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="https://ailab.siapdigital.id/" target="_blank" rel="noopener">Buka Codespace AI Lab ↗</a>
+          <a class="btn btn-secondary" href="https://github.com/sodikinnaa/codespace-ai-lab" target="_blank" rel="noopener">Kode sumber di GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="persiapan" aria-labelledby="persiapan-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="persiapan-heading">Yang perlu disiapkan</h2>
+          <p>Siapkan akun berikut sebelum mulai. Pembuatan token GitHub dan Tailscale dijelaskan di tutorial ini.</p>
+        </div>
+        <ul class="principles requirements">
+          <li>
+            <h3><a href="https://github.com/" target="_blank" rel="noopener">Akun GitHub</a></h3>
+            <p>Untuk membuat token dan menjalankan Codespace. Siapkan minimal satu repository milik Anda.</p>
+          </li>
+          <li>
+            <h3><a href="https://login.tailscale.com/" target="_blank" rel="noopener">Akun Tailscale</a></h3>
+            <p>Untuk membuat API access token. Layanan hanya bisa dibuka dari perangkat di tailnet Anda.</p>
+          </li>
+          <li>
+            <h3><a href="https://tailscale.com/download" target="_blank" rel="noopener">Aplikasi Tailscale</a></h3>
+            <p>Pasang di laptop atau HP yang dipakai membuka Hermes, lalu login dengan akun Tailscale yang sama.</p>
+          </li>
+          <li>
+            <h3>Akun Google</h3>
+            <p>Untuk login Antigravity di CLIProxyAPI, sumber model AI Hermes.</p>
+          </li>
+          <li>
+            <h3>Browser desktop</h3>
+            <p>Chrome atau Edge. Hindari perangkat bersama karena token disimpan di browser.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="daftar-isi" aria-labelledby="daftar-isi-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="daftar-isi-heading">Daftar isi</h2>
+          <p>Token, alamat email, dan URL login di tangkapan layar sudah kami buramkan.</p>
+        </div>
+        <ol class="guide-toc">
+          <li><a href="#buka-ailab"><span class="toc-part">Bagian 1</span><span class="toc-title">Buka Codespace AI Lab</span><span class="toc-steps">Langkah 1–2</span></a></li>
+          <li><a href="#token-github"><span class="toc-part">Bagian 2</span><span class="toc-title">Buat token GitHub</span><span class="toc-steps">Langkah 3–6</span></a></li>
+          <li><a href="#token-tailscale"><span class="toc-part">Bagian 3</span><span class="toc-title">Buat token Tailscale</span><span class="toc-steps">Langkah 7–10</span></a></li>
+          <li><a href="#setup"><span class="toc-part">Bagian 4</span><span class="toc-title">Buat Codespace dan pasang AI tools</span><span class="toc-steps">Langkah 11–15</span></a></li>
+          <li><a href="#model"><span class="toc-part">Bagian 5</span><span class="toc-title">Sambungkan model AI lewat CLIProxyAPI</span><span class="toc-steps">Langkah 16–23</span></a></li>
+          <li><a href="#chat"><span class="toc-part">Bagian 6</span><span class="toc-title">Pilih model dan mulai chat</span><span class="toc-steps">Langkah 24–28</span></a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="buka-ailab" aria-labelledby="buka-ailab-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 1 · Langkah 1–2</span>
+          <h2 id="buka-ailab-heading">Buka Codespace AI Lab</h2>
+          <p>Codespace AI Lab adalah dashboard web yang memasang Hermes Agent dan CLIProxyAPI di GitHub Codespace Anda. Tidak perlu terminal.</p>
+        </div>
+
+        <ol class="guide-steps" start="1">
+          <li class="guide-step" id="langkah-1">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">1</span>
+              <h3>Buka situs Codespace AI Lab</h3>
+              <p>Buka <a href="https://ailab.siapdigital.id/" target="_blank" rel="noopener">ailab.siapdigital.id</a>, lalu klik <strong>Buka Dashboard</strong> (atau <strong>Mulai sekarang</strong>).</p>
+              <a class="btn btn-primary" href="https://ailab.siapdigital.id/" target="_blank" rel="noopener">Buka Codespace AI Lab ↗</a>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/01-ailab-beranda.webp"><img src="../../assets/img/panduan/hermes-agent/01-ailab-beranda.webp" width="1400" height="763" alt="Codespace AI Lab: Beranda Codespace AI Lab" loading="lazy" decoding="async"></a>
+              <figcaption>Beranda Codespace AI Lab</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-2">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">2</span>
+              <h3>Buka dialog Hubungkan akun</h3>
+              <p>Saat pertama kali masuk dashboard, dialog <strong>Hubungkan akun</strong> muncul. Jika tidak, klik <strong>Pengaturan</strong> di kanan atas. Dialog ini meminta dua token: GitHub dan Tailscale.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Kedua token disimpan tanpa enkripsi di browser ini dan tetap ada setelah browser ditutup. Jangan gunakan perangkat bersama.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/02-ailab-hubungkan-akun.webp"><img src="../../assets/img/panduan/hermes-agent/02-ailab-hubungkan-akun.webp" width="1400" height="763" alt="Codespace AI Lab: Dialog Hubungkan akun" loading="lazy" decoding="async"></a>
+              <figcaption>Dialog Hubungkan akun</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="token-github" aria-labelledby="token-github-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 2 · Langkah 3–6</span>
+          <h2 id="token-github-heading">Buat token GitHub</h2>
+          <p>Token classic dengan scope <strong>codespace</strong> dan <strong>repo</strong> dipakai untuk membuat dan mengelola Codespace Anda.</p>
+        </div>
+
+        <ol class="guide-steps" start="3">
+          <li class="guide-step" id="langkah-3">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">3</span>
+              <h3>Klik buat token GitHub</h3>
+              <p>Di dialog, klik link <strong>buat token GitHub</strong>. Halaman <em>New personal access token (classic)</em> terbuka dengan nama dan scope yang sudah diisi. Atur <strong>Expiration</strong> sesuai kebutuhan.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/03-github-token-baru.webp"><img src="../../assets/img/panduan/hermes-agent/03-github-token-baru.webp" width="1400" height="763" alt="GitHub: Form token classic, scope repo sudah tercentang" loading="lazy" decoding="async"></a>
+              <figcaption>Form token classic, scope repo sudah tercentang</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-4">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">4</span>
+              <h3>Pastikan scope codespace tercentang, lalu Generate token</h3>
+              <p>Gulir ke bawah dan pastikan <strong>codespace</strong> juga tercentang. Klik <strong>Generate token</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/04-github-token-scope.webp"><img src="../../assets/img/panduan/hermes-agent/04-github-token-scope.webp" width="1400" height="763" alt="GitHub: Scope codespace tercentang" loading="lazy" decoding="async"></a>
+              <figcaption>Scope codespace tercentang</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-5">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">5</span>
+              <h3>Salin token</h3>
+              <p>Token yang diawali <code>ghp_</code> hanya tampil sekali. Klik ikon salin di sebelahnya.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Token ini sama dengan kata sandi akun GitHub Anda. Jangan kirim ke siapa pun atau tampilkan di screenshot. Jika bocor, klik <strong>Delete</strong> dan buat token baru.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/05-github-token-salin.webp"><img src="../../assets/img/panduan/hermes-agent/05-github-token-salin.webp" width="1400" height="763" alt="GitHub: Token baru (diburamkan)" loading="lazy" decoding="async"></a>
+              <figcaption>Token baru (diburamkan)</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-6">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">6</span>
+              <h3>Tempel dan simpan token GitHub</h3>
+              <p>Kembali ke dialog, tempel token di kolom <strong>1. GitHub token</strong>, lalu klik <strong>Periksa dan simpan</strong>. Jika valid, label berubah menjadi centang dengan username GitHub Anda.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/06-ailab-github-tersimpan.webp"><img src="../../assets/img/panduan/hermes-agent/06-ailab-github-tersimpan.webp" width="1400" height="763" alt="Codespace AI Lab: Token GitHub tersimpan" loading="lazy" decoding="async"></a>
+              <figcaption>Token GitHub tersimpan</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section" id="token-tailscale" aria-labelledby="token-tailscale-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 3 · Langkah 7–10</span>
+          <h2 id="token-tailscale-heading">Buat token Tailscale</h2>
+          <p>Tailscale membuat Hermes dan CLIProxyAPI hanya bisa dibuka dari perangkat Anda sendiri, tanpa port publik.</p>
+        </div>
+
+        <ol class="guide-steps" start="7">
+          <li class="guide-step" id="langkah-7">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">7</span>
+              <h3>Buka halaman Keys Tailscale</h3>
+              <p>Di dialog, klik link <strong>halaman Keys Tailscale</strong> (login atau daftar dulu jika belum punya akun). Gulir ke bagian <strong>API access tokens</strong>, lalu klik <strong>Generate access token…</strong></p>
+              <div class="callout"><p><strong>Tips:</strong> Yang dibutuhkan adalah <strong>API access token</strong>, bukan <em>Auth key</em>.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/07-tailscale-keys.webp"><img src="../../assets/img/panduan/hermes-agent/07-tailscale-keys.webp" width="1400" height="763" alt="Tailscale: Halaman Keys di konsol Tailscale" loading="lazy" decoding="async"></a>
+              <figcaption>Halaman Keys di konsol Tailscale</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-8">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">8</span>
+              <h3>Isi deskripsi dan masa berlaku</h3>
+              <p>Isi <strong>Description</strong>, misalnya <code>ailab</code>, dan jumlah hari masa berlaku (1–90 hari). Klik <strong>Generate access token</strong>.</p>
+              <div class="callout"><p><strong>Tips:</strong> Setelah token kedaluwarsa, dashboard memberi peringatan dan Anda perlu membuat token baru.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/08-tailscale-buat-token.webp"><img src="../../assets/img/panduan/hermes-agent/08-tailscale-buat-token.webp" width="1400" height="763" alt="Tailscale: Dialog Generate API access token" loading="lazy" decoding="async"></a>
+              <figcaption>Dialog Generate API access token</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-9">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">9</span>
+              <h3>Salin token Tailscale</h3>
+              <p>Token diawali <code>tskey-api-</code> dan hanya tampil sekali. Klik ikon salin, lalu <strong>Done</strong>.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Perlakukan token ini seperti kata sandi. Jika bocor, klik <strong>Revoke</strong> di halaman Keys.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/09-tailscale-token-salin.webp"><img src="../../assets/img/panduan/hermes-agent/09-tailscale-token-salin.webp" width="1400" height="763" alt="Tailscale: Token baru (diburamkan)" loading="lazy" decoding="async"></a>
+              <figcaption>Token baru (diburamkan)</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-10">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">10</span>
+              <h3>Tempel dan simpan token Tailscale</h3>
+              <p>Tempel di kolom <strong>2. Tailscale API access token</strong>, lalu klik <strong>Periksa dan simpan</strong>. Setelah keduanya tersimpan, tutup dialog.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/10-ailab-tailscale-tersimpan.webp"><img src="../../assets/img/panduan/hermes-agent/10-ailab-tailscale-tersimpan.webp" width="1400" height="763" alt="Codespace AI Lab: Kedua token sudah diisi" loading="lazy" decoding="async"></a>
+              <figcaption>Kedua token sudah diisi</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="setup" aria-labelledby="setup-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 4 · Langkah 11–15</span>
+          <h2 id="setup-heading">Buat Codespace dan pasang AI tools</h2>
+          <p>Dashboard membuat Codespace, lalu memasang Tailscale, Hermes Agent, dan CLIProxyAPI secara otomatis.</p>
+        </div>
+
+        <ol class="guide-steps" start="11">
+          <li class="guide-step" id="langkah-11">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">11</span>
+              <h3>Klik Buat Codespace</h3>
+              <p>Di dashboard, panel <strong>Ringkasan</strong> menampilkan jumlah Codespace Anda. Klik <strong>Buat Codespace</strong>.</p>
+              <div class="callout"><p><strong>Tips:</strong> Belum memasang Tailscale di perangkat ini? Pasang sekarang dan login dengan akun Tailscale yang sama. Tanpa itu, alamat Hermes tidak bisa dibuka.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/11-ailab-dashboard.webp"><img src="../../assets/img/panduan/hermes-agent/11-ailab-dashboard.webp" width="1400" height="763" alt="Codespace AI Lab: Dashboard Codespace AI Lab" loading="lazy" decoding="async"></a>
+              <figcaption>Dashboard Codespace AI Lab</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-12">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">12</span>
+              <h3>Pilih repository, lalu pasang</h3>
+              <p>Pilih <strong>Repository</strong> milik Anda, isi <strong>Branch</strong> bila perlu (kosong berarti <code>main</code>), lalu klik <strong>Buat dan pasang AI tools</strong>.</p>
+              <div class="callout"><p><strong>Tips:</strong> Codespace memakai mesin standar 2-core dan berhenti otomatis setelah 30 menit tidak dipakai. Untuk Codespace yang sudah ada, cukup klik <strong>Setup AI tools</strong> di kartunya.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/12-ailab-buat-codespace.webp"><img src="../../assets/img/panduan/hermes-agent/12-ailab-buat-codespace.webp" width="1400" height="763" alt="Codespace AI Lab: Dialog Buat Codespace" loading="lazy" decoding="async"></a>
+              <figcaption>Dialog Buat Codespace</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-13">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">13</span>
+              <h3>Tunggu proses pemasangan</h3>
+              <p>Kartu Codespace menampilkan progres per langkah, dari <em>Menyalakan Codespace</em> sampai <em>Memeriksa semua layanan</em>. Biasanya selesai dalam beberapa menit. Biarkan tab tetap terbuka.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/13-ailab-progres-setup.webp"><img src="../../assets/img/panduan/hermes-agent/13-ailab-progres-setup.webp" width="1400" height="763" alt="Codespace AI Lab: Progres Sedang memasang AI tools" loading="lazy" decoding="async"></a>
+              <figcaption>Progres Sedang memasang AI tools</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-14">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">14</span>
+              <h3>Setup selesai</h3>
+              <p>Semua langkah bercentang hijau. Kartu menampilkan <strong>IP Tailscale</strong>, tombol <strong>Buka Dashboard Hermes</strong>, serta username dan password Hermes. Gunakan tombol <strong>Lihat</strong> dan <strong>Salin</strong> untuk password.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/14-ailab-setup-selesai.webp"><img src="../../assets/img/panduan/hermes-agent/14-ailab-setup-selesai.webp" width="1400" height="763" alt="Codespace AI Lab: Status Selesai dengan IP Tailscale dan kredensial Hermes" loading="lazy" decoding="async"></a>
+              <figcaption>Status Selesai dengan IP Tailscale dan kredensial Hermes</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-15">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">15</span>
+              <h3>Coba login ke dashboard Hermes</h3>
+              <p>Klik <strong>Buka Dashboard Hermes</strong>, lalu masukkan username dan password dari kartu dan klik <strong>Sign in</strong>. Hermes belum bisa chat sebelum modelnya disambungkan di bagian berikutnya.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/15-hermes-login.webp"><img src="../../assets/img/panduan/hermes-agent/15-hermes-login.webp" width="1400" height="763" alt="Hermes Agent: Halaman Sign in Hermes Agent" loading="lazy" decoding="async"></a>
+              <figcaption>Halaman Sign in Hermes Agent</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section" id="model" aria-labelledby="model-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 5 · Langkah 16–23</span>
+          <h2 id="model-heading">Sambungkan model AI lewat CLIProxyAPI</h2>
+          <p>Hermes butuh model AI. CLIProxyAPI mengambil model dari akun Anda sendiri. Di tutorial ini kita memakai login <strong>Antigravity</strong> dengan akun Google.</p>
+        </div>
+
+        <ol class="guide-steps" start="16">
+          <li class="guide-step" id="langkah-16">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">16</span>
+              <h3>Salin kunci panel dan buka CLIProxyAPI</h3>
+              <p>Di kartu Codespace, bagian <strong>CLIProxyAPI</strong>, klik <strong>Salin</strong> pada <strong>Kunci panel</strong>. Lalu klik <strong>Buka Panel CLIProxyAPI</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/16-ailab-kunci-panel.webp"><img src="../../assets/img/panduan/hermes-agent/16-ailab-kunci-panel.webp" width="1400" height="763" alt="Codespace AI Lab: Bagian CLIProxyAPI di kartu Codespace" loading="lazy" decoding="async"></a>
+              <figcaption>Bagian CLIProxyAPI di kartu Codespace</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-17">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">17</span>
+              <h3>Login ke Management Center</h3>
+              <p>Tempel kunci panel di kolom <strong>Management Key</strong>, lalu klik <strong>Login</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/17-cliproxy-login.webp"><img src="../../assets/img/panduan/hermes-agent/17-cliproxy-login.webp" width="1400" height="763" alt="CLIProxyAPI: Halaman login CLI Proxy API Management Center" loading="lazy" decoding="async"></a>
+              <figcaption>Halaman login CLI Proxy API Management Center</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-18">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">18</span>
+              <h3>Buka OAuth Login, pilih Antigravity</h3>
+              <p>Di menu kiri, klik <strong>OAuth Login</strong>. Pada kartu <strong>Antigravity</strong>, klik tombol <strong>+</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/18-cliproxy-oauth.webp"><img src="../../assets/img/panduan/hermes-agent/18-cliproxy-oauth.webp" width="1400" height="763" alt="CLIProxyAPI: Daftar penyedia di OAuth Login" loading="lazy" decoding="async"></a>
+              <figcaption>Daftar penyedia di OAuth Login</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-19">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">19</span>
+              <h3>Klik Open Link</h3>
+              <p>Dialog <strong>Antigravity OAuth</strong> muncul. Klik <strong>Open Link</strong> untuk membuka halaman login Google di tab baru. Biarkan dialog ini tetap terbuka.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/19-cliproxy-antigravity.webp"><img src="../../assets/img/panduan/hermes-agent/19-cliproxy-antigravity.webp" width="1400" height="763" alt="CLIProxyAPI: Dialog Antigravity OAuth" loading="lazy" decoding="async"></a>
+              <figcaption>Dialog Antigravity OAuth</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-20">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">20</span>
+              <h3>Pilih akun Google dan klik Login</h3>
+              <p>Pilih akun Google yang ingin dipakai, lalu di halaman konfirmasi klik <strong>Login</strong>.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/hermes-agent/20-google-pilih-akun.webp"><img src="../../assets/img/panduan/hermes-agent/20-google-pilih-akun.webp" width="1400" height="763" alt="Akun Google: Pilih akun Google (daftar akun diburamkan)" loading="lazy" decoding="async"></a>
+                <figcaption>Pilih akun Google (daftar akun diburamkan)</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/hermes-agent/21-google-konfirmasi.webp"><img src="../../assets/img/panduan/hermes-agent/21-google-konfirmasi.webp" width="1400" height="763" alt="Akun Google: Konfirmasi login Google Antigravity" loading="lazy" decoding="async"></a>
+                <figcaption>Konfirmasi login Google Antigravity</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-21">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">21</span>
+              <h3>Salin URL dari address bar</h3>
+              <p>Browser lalu menampilkan <em>This site can’t be reached</em> di alamat <code>localhost</code>. Ini normal. Klik address bar dan salin <strong>seluruh</strong> URL-nya.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> URL ini berisi kode login akun Google Anda. Tempel hanya ke panel CLIProxyAPI milik Anda, jangan ke tempat lain.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/22-google-localhost.webp"><img src="../../assets/img/panduan/hermes-agent/22-google-localhost.webp" width="1400" height="763" alt="Akun Google: Halaman localhost refused to connect (URL diburamkan)" loading="lazy" decoding="async"></a>
+              <figcaption>Halaman localhost refused to connect (URL diburamkan)</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-22">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">22</span>
+              <h3>Tempel di Callback URL dan submit</h3>
+              <p>Kembali ke tab CLIProxyAPI. Tempel URL tadi di kolom <strong>Callback URL</strong>, lalu klik <strong>Submit Callback URL</strong>.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/hermes-agent/23-cliproxy-callback-tempel.webp"><img src="../../assets/img/panduan/hermes-agent/23-cliproxy-callback-tempel.webp" width="1400" height="763" alt="CLIProxyAPI: URL ditempel di Callback URL" loading="lazy" decoding="async"></a>
+                <figcaption>URL ditempel di Callback URL</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/hermes-agent/24-cliproxy-callback-terkirim.webp"><img src="../../assets/img/panduan/hermes-agent/24-cliproxy-callback-terkirim.webp" width="1400" height="763" alt="CLIProxyAPI: Callback terkirim, menunggu autentikasi" loading="lazy" decoding="async"></a>
+                <figcaption>Callback terkirim, menunggu autentikasi</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-23">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">23</span>
+              <h3>Autentikasi berhasil</h3>
+              <p>Muncul pesan <strong>Authentication successful!</strong> Kredensial Antigravity tersimpan di Auth Files CLIProxyAPI. Tutup dialog.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/25-cliproxy-berhasil.webp"><img src="../../assets/img/panduan/hermes-agent/25-cliproxy-berhasil.webp" width="1400" height="763" alt="CLIProxyAPI: Authentication successful" loading="lazy" decoding="async"></a>
+              <figcaption>Authentication successful</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="chat" aria-labelledby="chat-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 6 · Langkah 24–28</span>
+          <h2 id="chat-heading">Pilih model dan mulai chat</h2>
+          <p>Langkah terakhir: pilih model untuk Hermes, lalu coba chat.</p>
+        </div>
+
+        <ol class="guide-steps" start="24">
+          <li class="guide-step" id="langkah-24">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">24</span>
+              <h3>Perbarui daftar model aktif</h3>
+              <p>Kembali ke dashboard Codespace AI Lab. Di bagian <strong>Model aktif</strong>, klik <strong>Perbarui</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/26-ailab-perbarui-model.webp"><img src="../../assets/img/panduan/hermes-agent/26-ailab-perbarui-model.webp" width="1400" height="763" alt="Codespace AI Lab: Model aktif masih kosong sebelum diperbarui" loading="lazy" decoding="async"></a>
+              <figcaption>Model aktif masih kosong sebelum diperbarui</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-25">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">25</span>
+              <h3>Pilih model, lalu Sambungkan</h3>
+              <p>Daftar model dari Antigravity muncul. Di bagian <strong>Model AI Hermes</strong>, pilih model, misalnya <code>gemini-3.8-flash-high · antigravity</code>, lalu klik <strong>Sambungkan</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/27-ailab-pilih-model.webp"><img src="../../assets/img/panduan/hermes-agent/27-ailab-pilih-model.webp" width="1400" height="763" alt="Codespace AI Lab: Memilih model untuk Hermes" loading="lazy" decoding="async"></a>
+              <figcaption>Memilih model untuk Hermes</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-26">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">26</span>
+              <h3>Pastikan statusnya tersambung</h3>
+              <p>Label <strong>Model AI Hermes</strong> berubah menjadi <em>tersambung lewat CLIProxyAPI lokal</em> dan menampilkan nama model yang dipilih.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/28-ailab-model-tersambung.webp"><img src="../../assets/img/panduan/hermes-agent/28-ailab-model-tersambung.webp" width="1400" height="763" alt="Codespace AI Lab: Model tersambung" loading="lazy" decoding="async"></a>
+              <figcaption>Model tersambung</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-27">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">27</span>
+              <h3>Cek model di dashboard Hermes</h3>
+              <p>Buka dashboard Hermes, lalu menu <strong>Profiles</strong>. Pastikan profil <em>default</em> memakai model yang tadi dipilih.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/29-hermes-profil.webp"><img src="../../assets/img/panduan/hermes-agent/29-hermes-profil.webp" width="1400" height="763" alt="Hermes Agent: Menu Profiles di Hermes Agent" loading="lazy" decoding="async"></a>
+              <figcaption>Menu Profiles di Hermes Agent</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-28">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">28</span>
+              <h3>Coba chat dengan Hermes</h3>
+              <p>Buka menu <strong>Chat</strong> dan kirim pesan, misalnya <em>“halo, perkenalkan dirimu”</em>. Jika Hermes membalas, lab AI Anda sudah siap dipakai.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/hermes-agent/30-hermes-chat.webp"><img src="../../assets/img/panduan/hermes-agent/30-hermes-chat.webp" width="1400" height="763" alt="Hermes Agent: Hermes Agent membalas chat" loading="lazy" decoding="async"></a>
+              <figcaption>Hermes Agent membalas chat</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="tanya-jawab" aria-labelledby="faq-heading">
+      <div class="narrow">
+        <h2 id="faq-heading">Tanya jawab</h2>
+        <h3>Dashboard Hermes tidak bisa dibuka.</h3>
+        <p>Alamatnya memakai IP Tailscale (100.x.x.x), jadi hanya bisa dibuka dari perangkat yang menjalankan aplikasi Tailscale dengan akun yang sama. Pastikan Tailscale menyala, lalu muat ulang halaman. Pastikan juga Codespace sedang menyala.</p>
+        <h3>Codespace mati sendiri. Apakah harus setup ulang?</h3>
+        <p>Tidak. Codespace berhenti otomatis setelah 30 menit tidak dipakai. Klik Nyalakan di kartunya. Layanan kembali dengan IP dan password yang sama.</p>
+        <h3>Daftar Model aktif tetap kosong.</h3>
+        <p>Login penyedia di CLIProxyAPI belum selesai. Ulangi langkah OAuth Login dan pastikan muncul Authentication successful, lalu klik Perbarui lagi.</p>
+        <h3>Muncul peringatan token Tailscale hampir kedaluwarsa.</h3>
+        <p>Buat API access token baru di halaman Keys Tailscale, lalu tempel di Pengaturan → Hubungkan akun dan klik Periksa dan simpan.</p>
+        <h3>Selain Antigravity, penyedia apa yang bisa dipakai?</h3>
+        <p>Menurut halaman Codespace AI Lab, CLIProxyAPI bisa memakai model dari akun Claude, Codex, Gemini, atau Antigravity Anda. Langkahnya mirip: pilih penyedia di OAuth Login, selesaikan login, lalu perbarui model aktif. Gunakan sesuai ketentuan layanan masing-masing penyedia.</p>
+        <h3>Bagaimana menghapus semuanya?</h3>
+        <p>Hapus Codespace dari kartunya, klik Reset penyimpanan di dialog Hubungkan akun, lalu hapus token di GitHub (Delete) dan Tailscale (Revoke).</p>
+        <p class="step-note">Tampilan tiap layanan bisa berubah sewaktu-waktu. Tangkapan layar diambil pada November 2026.</p>
+      </div>
+    </section>
+  </main>
+
+  <a class="wa-float" href="https://wa.me/62895353557327?text=Halo%20Admin%20Siap%20Digital%2C%20saya%20ingin%20informasi%20lebih%20lanjut%20terkait%20website%20siapdigital.id." target="_blank" rel="noopener" aria-label="Chat WhatsApp Siap Digital untuk info website"><svg class="wa-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg><span class="wa-float-text">Info website</span></a>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p><strong>Siap Digital</strong></p>
+        <p>Studio aplikasi edukasi berbahasa Indonesia.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="../../apps/">Aplikasi</a></li>
+        <li><a href="../">Panduan</a></li>
+        <li><a href="../../privacy/">Kebijakan Privasi</a></li>
+        <li><a href="../../terms/">Ketentuan Layanan</a></li>
+        <li><a href="https://github.com/sodikinnaa/siapdigital.id/issues">Masukan</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

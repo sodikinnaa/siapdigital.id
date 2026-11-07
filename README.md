@@ -14,6 +14,7 @@ Situs resmi Siap Digital: katalog aplikasi, informasi produk, panduan bergambar,
 - Tutorial Remotion (ChatGPT → Cartesia → Claude → MP4/ZIP): `panduan/remotion-reelforge/`
 - Generator prompt ChatGPT: `panduan/remotion-reelforge/prompt-chatgpt/`
 - Generator prompt Claude: `panduan/remotion-reelforge/prompt-claude/`
+- Tutorial Hermes Agent (Codespace AI Lab → Tailscale → CLIProxyAPI → Hermes): `panduan/hermes-agent/`
 
 Website: https://sodikinnaa.github.io/siapdigital.id/
 
