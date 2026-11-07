@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tutorial Windows Cloud Lab: Komputer Windows di Browser dan HP — Siap Digital</title>
+  <meta name="description" content="Tutorial bergambar menyalakan komputer Windows di GitHub Codespaces dengan Windows Cloud Lab: token GitHub, auth key Tailscale, buat komputer, lalu buka lewat browser atau Remote Desktop di HP.">
+  <meta name="theme-color" content="#0f1b33">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Siap Digital">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:title" content="Tutorial Windows Cloud Lab: Komputer Windows di Browser dan HP">
+  <meta property="og:description" content="29 langkah bergambar menyalakan Windows Server di GitHub Codespaces lewat Windows Cloud Lab, lalu membukanya di browser atau Remote Desktop di HP.">
+  <meta property="og:url" content="https://siapdigital.id/panduan/windows-cloud-lab/">
+  <meta property="og:image" content="https://siapdigital.id/assets/img/panduan/windows-cloud-lab/sampul-windows-cloud-lab.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Sampul tutorial: desktop Windows di browser dan di HP lewat Windows Cloud Lab">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tutorial Windows Cloud Lab: Komputer Windows di Browser dan HP">
+  <meta name="twitter:description" content="Nyalakan Windows di GitHub Codespaces, lalu buka lewat browser atau Remote Desktop di HP.">
+  <meta name="twitter:image" content="https://siapdigital.id/assets/img/panduan/windows-cloud-lab/sampul-windows-cloud-lab.jpg">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="../../assets/js/main.js" defer></script>
+  <script src="../../assets/js/lightbox.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#konten">Lewati ke konten</a>
+
+  <header class="site-header">
+    <nav class="container nav" aria-label="Navigasi utama">
+      <a class="brand" href="../../"><span class="brand-mark" aria-hidden="true">S</span>Siap Digital</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../../">Beranda</a></li>
+        <li><a href="../../apps/">Aplikasi</a></li>
+        <li><a href="../" aria-current="page">Panduan</a></li>
+        <li><a href="../../privacy/">Privasi</a></li>
+        <li><a href="../../terms/">Ketentuan</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="konten">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Panduan · Remote Desktop</span>
+          <h1>Komputer Windows di browser dan HP Anda.</h1>
+          <p class="lead">Nyalakan <strong>Windows Server</strong> atau <strong>Windows 11</strong> di GitHub Codespaces lewat <strong>Windows Cloud Lab</strong>, hubungkan secara privat dengan <strong>Tailscale</strong>, lalu buka di <strong>browser</strong> atau <strong>Remote Desktop</strong> di HP.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="#langkah-1">Mulai dari langkah 1</a>
+            <a class="btn btn-secondary" href="https://winlab.siapdigital.id/" target="_blank" rel="noopener">Buka Windows Cloud Lab ↗</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-labelledby="ringkas-heading">
+          <h2 id="ringkas-heading">Sekilas</h2>
+          <ol>
+            <li>Level <strong>pemula</strong>, sekitar <strong>30 menit</strong>, 29 langkah bergambar.</li>
+            <li>Hasil: komputer <strong>Windows</strong> 4 vCPU · 16 GB RAM yang bisa dibuka dari browser atau HP.</li>
+            <li>Akses privat lewat <strong>Tailscale</strong>, tanpa port publik.</li>
+            <li>Berjalan di <strong>GitHub Codespaces</strong> Anda; pemakaian mengurangi kuota akun GitHub.</li>
+          </ol>
+        </aside>
+      </div>
+      <figure class="container guide-cover">
+        <img src="../../assets/img/panduan/windows-cloud-lab/sampul-windows-cloud-lab.jpg" width="1200" height="675" alt="Sampul tutorial: desktop Windows di browser dan di HP lewat Windows Cloud Lab" fetchpriority="high" decoding="async">
+      </figure>
+    </section>
+
+    <section class="section section-alt" id="alur" aria-labelledby="alur-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="alur-heading">Alur produksi</h2>
+          <p>Empat tahap, semuanya dari browser.</p>
+        </div>
+        <ol class="flow">
+          <li>
+            <span class="flow-label">01 · Akun</span>
+            <h3>GitHub &amp; Tailscale</h3>
+            <p>Token GitHub, repository, dan auth key Tailscale</p>
+          </li>
+          <li>
+            <span class="flow-label">02 · Mesin</span>
+            <h3>Windows Cloud Lab</h3>
+            <p>Buat komputer Windows di GitHub Codespaces</p>
+          </li>
+          <li>
+            <span class="flow-label">03 · Browser</span>
+            <h3>Konsol web</h3>
+            <p>Buka desktop Windows langsung di browser</p>
+          </li>
+          <li>
+            <span class="flow-label">04 · RDP</span>
+            <h3>Windows App</h3>
+            <p>Sambungkan dari HP atau laptop lewat Tailscale</p>
+          </li>
+        </ol>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="https://winlab.siapdigital.id/" target="_blank" rel="noopener">Buka Windows Cloud Lab ↗</a>
+          <a class="btn btn-secondary" href="https://github.com/sodikinnaa/rdp-generator" target="_blank" rel="noopener">Kode sumber di GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="persiapan" aria-labelledby="persiapan-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="persiapan-heading">Yang perlu disiapkan</h2>
+          <p>Siapkan akun berikut sebelum mulai. Pembuatan token GitHub dan auth key Tailscale dijelaskan di tutorial ini.</p>
+        </div>
+        <ul class="principles requirements">
+          <li>
+            <h3><a href="https://github.com/" target="_blank" rel="noopener">Akun GitHub</a></h3>
+            <p>Untuk token dan Codespaces. Siapkan satu repository khusus, misalnya repository privat yang kosong.</p>
+          </li>
+          <li>
+            <h3><a href="https://login.tailscale.com/" target="_blank" rel="noopener">Akun Tailscale</a></h3>
+            <p>Untuk auth key. Pastikan MagicDNS aktif di tailnet Anda.</p>
+          </li>
+          <li>
+            <h3><a href="https://tailscale.com/download" target="_blank" rel="noopener">Aplikasi Tailscale</a></h3>
+            <p>Pasang di HP atau laptop yang dipakai untuk membuka Windows, lalu login dengan akun yang sama.</p>
+          </li>
+          <li>
+            <h3>Windows App (opsional)</h3>
+            <p>Aplikasi Remote Desktop dari Microsoft untuk HP atau laptop. Tanpa aplikasi ini, Windows tetap bisa dibuka lewat konsol web.</p>
+          </li>
+          <li>
+            <h3>Browser desktop</h3>
+            <p>Chrome atau Edge. Hindari perangkat bersama karena kredensial disimpan di browser.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="daftar-isi" aria-labelledby="daftar-isi-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="daftar-isi-heading">Daftar isi</h2>
+          <p>Token, auth key, alamat email, dan nama akun di tangkapan layar sudah kami buramkan.</p>
+        </div>
+        <ol class="guide-toc">
+          <li><a href="#buka-winlab"><span class="toc-part">Bagian 1</span><span class="toc-title">Buka Windows Cloud Lab</span><span class="toc-steps">Langkah 1–2</span></a></li>
+          <li><a href="#token-github"><span class="toc-part">Bagian 2</span><span class="toc-title">Hubungkan akun GitHub</span><span class="toc-steps">Langkah 3–7</span></a></li>
+          <li><a href="#repository"><span class="toc-part">Bagian 3</span><span class="toc-title">Pilih repository</span><span class="toc-steps">Langkah 8–8</span></a></li>
+          <li><a href="#tailscale"><span class="toc-part">Bagian 4</span><span class="toc-title">Sambungkan Tailscale</span><span class="toc-steps">Langkah 9–13</span></a></li>
+          <li><a href="#pemulihan"><span class="toc-part">Bagian 5</span><span class="toc-title">Simpan kunci pemulihan</span><span class="toc-steps">Langkah 14–15</span></a></li>
+          <li><a href="#buat-komputer"><span class="toc-part">Bagian 6</span><span class="toc-title">Buat komputer Windows</span><span class="toc-steps">Langkah 16–19</span></a></li>
+          <li><a href="#konsol-web"><span class="toc-part">Bagian 7</span><span class="toc-title">Buka Windows di browser</span><span class="toc-steps">Langkah 20–20</span></a></li>
+          <li><a href="#rdp-hp"><span class="toc-part">Bagian 8</span><span class="toc-title">Sambungkan lewat Remote Desktop di HP</span><span class="toc-steps">Langkah 21–29</span></a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="buka-winlab" aria-labelledby="buka-winlab-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 1 · Langkah 1–2</span>
+          <h2 id="buka-winlab-heading">Buka Windows Cloud Lab</h2>
+          <p>Windows Cloud Lab menyalakan Windows Server atau Windows 11 di GitHub Codespaces. Semua pengaturan dilakukan dari dashboard web.</p>
+        </div>
+
+        <ol class="guide-steps" start="1">
+          <li class="guide-step" id="langkah-1">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">1</span>
+              <h3>Buka situs Windows Cloud Lab</h3>
+              <p>Buka <a href="https://winlab.siapdigital.id/" target="_blank" rel="noopener">winlab.siapdigital.id</a>, lalu klik <strong>Buka Dashboard</strong>.</p>
+              <a class="btn btn-primary" href="https://winlab.siapdigital.id/" target="_blank" rel="noopener">Buka Windows Cloud Lab ↗</a>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/01-winlab-beranda.webp"><img src="../../assets/img/panduan/windows-cloud-lab/01-winlab-beranda.webp" width="1400" height="763" alt="Windows Cloud Lab: Beranda Windows Cloud Lab" loading="lazy" decoding="async"></a>
+              <figcaption>Beranda Windows Cloud Lab</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-2">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">2</span>
+              <h3>Mulai wizard Siapkan ruang kerja</h3>
+              <p>Dashboard membuka wizard <strong>Siapkan ruang kerja</strong> dengan lima tahap: <strong>GitHub</strong>, <strong>Repository</strong>, <strong>Tailscale</strong>, <strong>Pemulihan</strong>, dan <strong>Ringkasan</strong>. Tahap pertama meminta GitHub token.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/02-winlab-siapkan-ruang-kerja.webp"><img src="../../assets/img/panduan/windows-cloud-lab/02-winlab-siapkan-ruang-kerja.webp" width="1400" height="763" alt="Windows Cloud Lab: Tahap 1: Hubungkan akun GitHub" loading="lazy" decoding="async"></a>
+              <figcaption>Tahap 1: Hubungkan akun GitHub</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="token-github" aria-labelledby="token-github-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 2 · Langkah 3–7</span>
+          <h2 id="token-github-heading">Hubungkan akun GitHub</h2>
+          <p>Token classic dengan scope <strong>repo</strong> dan <strong>codespace</strong> dipakai untuk membuat dan mengelola Codespace.</p>
+        </div>
+
+        <ol class="guide-steps" start="3">
+          <li class="guide-step" id="langkah-3">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">3</span>
+              <h3>Buka halaman token GitHub</h3>
+              <p>Klik <strong>Buka halaman resmi Personal Access Token</strong>. Di GitHub, klik <strong>Generate new token</strong>, lalu pilih <strong>Generate new token (classic)</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/03-github-token-baru-menu.webp"><img src="../../assets/img/panduan/windows-cloud-lab/03-github-token-baru-menu.webp" width="1400" height="763" alt="GitHub: Menu Generate new token (classic)" loading="lazy" decoding="async"></a>
+              <figcaption>Menu Generate new token (classic)</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-4">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">4</span>
+              <h3>Isi nama, masa berlaku, dan scope repo</h3>
+              <p>Isi <strong>Note</strong>, misalnya <code>winlab</code>, pilih <strong>Expiration</strong>, lalu centang <strong>repo</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/04-github-token-form.webp"><img src="../../assets/img/panduan/windows-cloud-lab/04-github-token-form.webp" width="1400" height="763" alt="GitHub: Form token classic dengan scope repo" loading="lazy" decoding="async"></a>
+              <figcaption>Form token classic dengan scope repo</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-5">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">5</span>
+              <h3>Centang codespace, lalu Generate token</h3>
+              <p>Gulir ke bawah, centang <strong>codespace</strong>, lalu klik <strong>Generate token</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/05-github-token-scope.webp"><img src="../../assets/img/panduan/windows-cloud-lab/05-github-token-scope.webp" width="1400" height="763" alt="GitHub: Scope codespace tercentang" loading="lazy" decoding="async"></a>
+              <figcaption>Scope codespace tercentang</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-6">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">6</span>
+              <h3>Salin token</h3>
+              <p>Token yang diawali <code>ghp_</code> hanya tampil sekali. Klik ikon salin di sebelahnya.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Token ini sama dengan kata sandi akun GitHub Anda. Jangan kirim ke siapa pun atau tampilkan di screenshot. Jika bocor, klik <strong>Delete</strong> dan buat token baru.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/06-github-token-salin.webp"><img src="../../assets/img/panduan/windows-cloud-lab/06-github-token-salin.webp" width="1400" height="763" alt="GitHub: Token baru (diburamkan)" loading="lazy" decoding="async"></a>
+              <figcaption>Token baru (diburamkan)</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-7">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">7</span>
+              <h3>Tempel dan verifikasi</h3>
+              <p>Kembali ke wizard, tempel token di kolom <strong>GitHub token</strong>, lalu klik <strong>Verifikasi GitHub</strong>. Setelah muncul <em>Terverifikasi sebagai</em> dan username Anda, klik <strong>Lanjut</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/07-winlab-github-terverifikasi.webp"><img src="../../assets/img/panduan/windows-cloud-lab/07-winlab-github-terverifikasi.webp" width="1400" height="763" alt="Windows Cloud Lab: Akun GitHub berhasil diverifikasi" loading="lazy" decoding="async"></a>
+              <figcaption>Akun GitHub berhasil diverifikasi</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section" id="repository" aria-labelledby="repository-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 3 · Langkah 8–8</span>
+          <h2 id="repository-heading">Pilih repository</h2>
+          <p>Codespace dibuat dari salah satu repository Anda.</p>
+        </div>
+
+        <ol class="guide-steps" start="8">
+          <li class="guide-step" id="langkah-8">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">8</span>
+              <h3>Pilih dan validasi repository</h3>
+              <p>Pilih repository di daftar (klik <strong>Muat ulang daftar</strong> bila belum muncul), lalu klik <strong>Validasi Repository</strong>. Pesan <em>Devcontainer belum ditemukan</em> itu normal: file penyiapannya dibuat saat Anda membuat komputer. Klik <strong>Lanjut</strong>.</p>
+              <div class="callout"><p><strong>Tips:</strong> Pakai repository khusus untuk Windows Cloud Lab, misalnya repository privat yang kosong. Saat membuat komputer, aplikasi ini akan menulis folder <code>.devcontainer</code> ke repository tersebut.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/08-winlab-pilih-repository.webp"><img src="../../assets/img/panduan/windows-cloud-lab/08-winlab-pilih-repository.webp" width="1400" height="763" alt="Windows Cloud Lab: Tahap 2: repository berhasil divalidasi" loading="lazy" decoding="async"></a>
+              <figcaption>Tahap 2: repository berhasil divalidasi</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="tailscale" aria-labelledby="tailscale-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 4 · Langkah 9–13</span>
+          <h2 id="tailscale-heading">Sambungkan Tailscale</h2>
+          <p>Tailscale membuat Windows hanya bisa dihubungi dari perangkat di tailnet Anda. Tahap ini memakai <strong>auth key</strong>.</p>
+        </div>
+
+        <ol class="guide-steps" start="9">
+          <li class="guide-step" id="langkah-9">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">9</span>
+              <h3>Buka halaman kunci Tailscale</h3>
+              <p>Di tahap <strong>Tailscale</strong>, klik <strong>Buat kunci di halaman resmi Tailscale</strong>. Login dulu jika diminta.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/09-winlab-tahap-tailscale.webp"><img src="../../assets/img/panduan/windows-cloud-lab/09-winlab-tahap-tailscale.webp" width="1400" height="763" alt="Windows Cloud Lab: Tahap 3: Siapkan jaringan Tailscale" loading="lazy" decoding="async"></a>
+              <figcaption>Tahap 3: Siapkan jaringan Tailscale</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-10">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">10</span>
+              <h3>Klik Generate auth key</h3>
+              <p>Di halaman <strong>Keys</strong>, pada bagian <strong>Auth keys</strong>, klik <strong>Generate auth key…</strong></p>
+              <div class="callout"><p><strong>Tips:</strong> Yang dibutuhkan di sini adalah <strong>auth key</strong> (diawali <code>tskey-auth-</code>), bukan <em>API access token</em>.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/10-tailscale-keys.webp"><img src="../../assets/img/panduan/windows-cloud-lab/10-tailscale-keys.webp" width="1400" height="763" alt="Tailscale: Halaman Keys di konsol Tailscale" loading="lazy" decoding="async"></a>
+              <figcaption>Halaman Keys di konsol Tailscale</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-11">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">11</span>
+              <h3>Atur auth key</h3>
+              <p>Isi <strong>Description</strong>, misalnya <code>winlab</code>. Aktifkan <strong>Reusable</strong> agar kunci bisa dipakai lebih dari satu mesin, atur masa berlaku (1–90 hari), lalu klik <strong>Generate key</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/11-tailscale-buat-auth-key.webp"><img src="../../assets/img/panduan/windows-cloud-lab/11-tailscale-buat-auth-key.webp" width="1400" height="763" alt="Tailscale: Dialog Generate auth key dengan Reusable aktif" loading="lazy" decoding="async"></a>
+              <figcaption>Dialog Generate auth key dengan Reusable aktif</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-12">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">12</span>
+              <h3>Salin auth key</h3>
+              <p>Kunci hanya tampil sekali. Klik ikon salin, lalu <strong>Done</strong>.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Siapa pun yang memegang auth key ini bisa memasukkan perangkat ke tailnet Anda. Jangan bagikan. Jika bocor, klik <strong>Revoke</strong> di halaman Keys.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/12-tailscale-auth-key-salin.webp"><img src="../../assets/img/panduan/windows-cloud-lab/12-tailscale-auth-key-salin.webp" width="1400" height="763" alt="Tailscale: Auth key baru (diburamkan)" loading="lazy" decoding="async"></a>
+              <figcaption>Auth key baru (diburamkan)</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-13">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">13</span>
+              <h3>Tempel kunci dan konfirmasi</h3>
+              <p>Tempel auth key di kolom <strong>Tailscale auth key</strong>. Centang <strong>Perangkat klien saya terhubung ke Tailnet yang sama</strong> dan <strong>MagicDNS aktif pada Tailnet dan perangkat klien saya</strong>, lalu klik <strong>Lanjut</strong>.</p>
+              <div class="callout"><p><strong>Tips:</strong> MagicDNS bisa dicek di menu <strong>DNS</strong> pada konsol Tailscale. Tanpa MagicDNS, nama komputer winlab tidak bisa ditemukan dari HP atau laptop Anda.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/13-winlab-tailscale-tersimpan.webp"><img src="../../assets/img/panduan/windows-cloud-lab/13-winlab-tailscale-tersimpan.webp" width="1400" height="763" alt="Windows Cloud Lab: Auth key terisi dan dua konfirmasi dicentang" loading="lazy" decoding="async"></a>
+              <figcaption>Auth key terisi dan dua konfirmasi dicentang</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section" id="pemulihan" aria-labelledby="pemulihan-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 5 · Langkah 14–15</span>
+          <h2 id="pemulihan-heading">Simpan kunci pemulihan</h2>
+          <p>Kunci pemulihan (master secret) dipakai untuk menurunkan password Windows. Kunci yang sama menghasilkan password yang sama.</p>
+        </div>
+
+        <ol class="guide-steps" start="14">
+          <li class="guide-step" id="langkah-14">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">14</span>
+              <h3>Buat dan simpan kunci pemulihan</h3>
+              <p>Klik <strong>Buat kunci acak</strong> (minimal 32 karakter), lalu <strong>Salin kunci</strong> dan simpan di tempat aman, misalnya password manager. Centang <strong>Saya sudah menyimpan kunci ini</strong>, lalu klik <strong>Lanjut</strong>.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Aplikasi tidak bisa memulihkan kunci yang hilang. Membuat kunci baru tidak mengembalikan password mesin lama.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/14-winlab-kunci-pemulihan.webp"><img src="../../assets/img/panduan/windows-cloud-lab/14-winlab-kunci-pemulihan.webp" width="1400" height="763" alt="Windows Cloud Lab: Tahap 4: Simpan kunci pemulihan" loading="lazy" decoding="async"></a>
+              <figcaption>Tahap 4: Simpan kunci pemulihan</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-15">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">15</span>
+              <h3>Periksa dan simpan sesi</h3>
+              <p>Tahap <strong>Ringkasan</strong> menampilkan akun GitHub, repository, serta status jaringan dan pemulihan. Klik <strong>Simpan sesi dan selesai</strong>.</p>
+              <div class="callout"><p><strong>Tips:</strong> Semua kredensial disimpan di browser ini sampai Anda menekan <strong>Reset sesi</strong>. Jangan gunakan perangkat bersama.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/15-winlab-ringkasan.webp"><img src="../../assets/img/panduan/windows-cloud-lab/15-winlab-ringkasan.webp" width="1400" height="763" alt="Windows Cloud Lab: Tahap 5: Ringkasan" loading="lazy" decoding="async"></a>
+              <figcaption>Tahap 5: Ringkasan</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="buat-komputer" aria-labelledby="buat-komputer-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 6 · Langkah 16–19</span>
+          <h2 id="buat-komputer-heading">Buat komputer Windows</h2>
+          <p>Dashboard membuat Codespace, lalu menyiapkan Windows di dalamnya.</p>
+        </div>
+
+        <ol class="guide-steps" start="16">
+          <li class="guide-step" id="langkah-16">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">16</span>
+              <h3>Klik Buat Komputer</h3>
+              <p>Dashboard menyapa Anda dan menampilkan daftar <strong>Komputer Anda</strong>. Klik <strong>Buat Komputer</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/16-winlab-dashboard.webp"><img src="../../assets/img/panduan/windows-cloud-lab/16-winlab-dashboard.webp" width="1400" height="763" alt="Windows Cloud Lab: Dashboard Windows Cloud Lab" loading="lazy" decoding="async"></a>
+              <figcaption>Dashboard Windows Cloud Lab</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-17">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">17</span>
+              <h3>Pilih sistem operasi dan kirim permintaan</h3>
+              <p>Isi <strong>Nama komputer</strong> (opsional), pilih <strong>Sistem operasi</strong>, misalnya <em>Windows Server 2022</em>, dan periksa spesifikasinya (4 vCPU · 16 GB RAM). Centang dua persetujuan, lalu klik <strong>Kirim permintaan</strong>.</p>
+              <div class="callout warn"><p><strong>Perhatian:</strong> Pemakaian Codespaces mengurangi kuota dan dapat menimbulkan biaya pada akun GitHub Anda. Matikan komputer bila tidak dipakai.</p></div>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/windows-cloud-lab/17-winlab-buat-komputer.webp"><img src="../../assets/img/panduan/windows-cloud-lab/17-winlab-buat-komputer.webp" width="1400" height="763" alt="Windows Cloud Lab: Dialog Buat komputer baru" loading="lazy" decoding="async"></a>
+                <figcaption>Dialog Buat komputer baru</figcaption>
+              </figure>
+              <figure class="guide-shot">
+                <a href="../../assets/img/panduan/windows-cloud-lab/18-winlab-kirim-permintaan.webp"><img src="../../assets/img/panduan/windows-cloud-lab/18-winlab-kirim-permintaan.webp" width="1400" height="763" alt="Windows Cloud Lab: Permintaan Codespace sedang dikirim" loading="lazy" decoding="async"></a>
+                <figcaption>Permintaan Codespace sedang dikirim</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-18">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">18</span>
+              <h3>Tunggu proses penyiapan</h3>
+              <p>Kartu komputer menampilkan progres: permintaan diterima, GitHub menyiapkan Codespace dan devcontainer, menunggu Codespace aktif, lalu worker menyiapkan Windows. Penyiapan pertama bisa memakan waktu cukup lama.</p>
+              <div class="callout"><p><strong>Tips:</strong> Status <em>Codespace aktif</em> belum berarti Windows siap. Tunggu sampai tombol <strong>Buka konsol web</strong> aktif.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/19-winlab-progres.webp"><img src="../../assets/img/panduan/windows-cloud-lab/19-winlab-progres.webp" width="1400" height="763" alt="Windows Cloud Lab: Progres penyiapan komputer rdpwin" loading="lazy" decoding="async"></a>
+              <figcaption>Progres penyiapan komputer rdpwin</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-19">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">19</span>
+              <h3>Komputer siap</h3>
+              <p>Setelah siap, kartu komputer menampilkan tombol <strong>Buka konsol web</strong> dan <strong>Panduan RDP</strong>.</p>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/20-winlab-komputer-siap.webp"><img src="../../assets/img/panduan/windows-cloud-lab/20-winlab-komputer-siap.webp" width="1400" height="765" alt="Windows Cloud Lab: Dua komputer aktif di dashboard" loading="lazy" decoding="async"></a>
+              <figcaption>Dua komputer aktif di dashboard</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section" id="konsol-web" aria-labelledby="konsol-web-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 7 · Langkah 20–20</span>
+          <h2 id="konsol-web-heading">Buka Windows di browser</h2>
+          <p>Cara tercepat: desktop Windows langsung di tab browser lewat noVNC.</p>
+        </div>
+
+        <ol class="guide-steps" start="20">
+          <li class="guide-step" id="langkah-20">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">20</span>
+              <h3>Klik Buka konsol web</h3>
+              <p>Klik <strong>Buka konsol web</strong>. Desktop Windows terbuka di tab baru dan bisa langsung dipakai dengan mouse dan keyboard.</p>
+              <div class="callout"><p><strong>Tips:</strong> Alamat konsol memakai nama MagicDNS, jadi perangkat ini juga harus terhubung ke Tailscale.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/21-windows-novnc.webp"><img src="../../assets/img/panduan/windows-cloud-lab/21-windows-novnc.webp" width="1400" height="765" alt="Windows di browser: Windows Server 2022 di browser lewat noVNC" loading="lazy" decoding="async"></a>
+              <figcaption>Windows Server 2022 di browser lewat noVNC</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+    <section class="section section-alt" id="rdp-hp" aria-labelledby="rdp-hp-heading">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Bagian 8 · Langkah 21–29</span>
+          <h2 id="rdp-hp-heading">Sambungkan lewat Remote Desktop di HP</h2>
+          <p>Untuk tampilan yang lebih lancar, sambungkan dengan aplikasi Remote Desktop. Contoh ini memakai Windows App di iPhone. Langkahnya mirip di Android dan laptop.</p>
+        </div>
+
+        <ol class="guide-steps" start="21">
+          <li class="guide-step" id="langkah-21">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">21</span>
+              <h3>Buka Panduan RDP</h3>
+              <p>Di kartu komputer, klik <strong>Panduan RDP</strong>. Catat <strong>Hostname RDP</strong> (diakhiri <code>:3389</code>), <strong>Username</strong> <code>WinAdmin</code>, dan <strong>Password</strong> (klik <strong>Tampilkan</strong> atau <strong>Salin password</strong>).</p>
+              <div class="callout"><p><strong>Tips:</strong> Password diturunkan dari kunci pemulihan. Jika login gagal, pastikan kunci pemulihan di Pengaturan sama dengan saat komputer dibuat.</p></div>
+            </div>
+            <figure class="guide-shot">
+              <a href="../../assets/img/panduan/windows-cloud-lab/22-winlab-panduan-rdp.webp"><img src="../../assets/img/panduan/windows-cloud-lab/22-winlab-panduan-rdp.webp" width="1400" height="765" alt="Windows Cloud Lab: Dialog Panduan RDP" loading="lazy" decoding="async"></a>
+              <figcaption>Dialog Panduan RDP</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-22">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">22</span>
+              <h3>Sambungkan HP ke Tailscale</h3>
+              <p>Buka aplikasi Tailscale di HP, login dengan akun yang sama, lalu ketuk <strong>Connect</strong>. Pastikan statusnya <strong>Connected</strong> dan komputer winlab muncul di daftar perangkat.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/23-hp-tailscale-putus.webp"><img src="../../assets/img/panduan/windows-cloud-lab/23-hp-tailscale-putus.webp" width="339" height="707" alt="Tailscale di HP: Tailscale belum tersambung" loading="lazy" decoding="async"></a>
+                <figcaption>Tailscale belum tersambung</figcaption>
+              </figure>
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/24-hp-tailscale-tersambung.webp"><img src="../../assets/img/panduan/windows-cloud-lab/24-hp-tailscale-tersambung.webp" width="339" height="707" alt="Tailscale di HP: Tailscale tersambung" loading="lazy" decoding="async"></a>
+                <figcaption>Tailscale tersambung</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-23">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">23</span>
+              <h3>Buka Windows App</h3>
+              <p>Buka <strong>Windows App</strong> dari Microsoft (pasang dulu dari App Store atau Play Store jika belum ada).</p>
+            </div>
+            <figure class="guide-shot guide-shot-phone">
+              <a href="../../assets/img/panduan/windows-cloud-lab/25-hp-cari-windows-app.webp"><img src="../../assets/img/panduan/windows-cloud-lab/25-hp-cari-windows-app.webp" width="340" height="736" alt="Windows App di HP: Mencari Windows App di iPhone" loading="lazy" decoding="async"></a>
+              <figcaption>Mencari Windows App di iPhone</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-24">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">24</span>
+              <h3>Tambah PC baru</h3>
+              <p>Di halaman <strong>Devices</strong>, ketuk <strong>+</strong>, lalu pilih <strong>PC</strong>.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/26-hp-windows-app-awal.webp"><img src="../../assets/img/panduan/windows-cloud-lab/26-hp-windows-app-awal.webp" width="339" height="707" alt="Windows App di HP: Halaman Saved PCs" loading="lazy" decoding="async"></a>
+                <figcaption>Halaman Saved PCs</figcaption>
+              </figure>
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/27-hp-menu-tambah.webp"><img src="../../assets/img/panduan/windows-cloud-lab/27-hp-menu-tambah.webp" width="339" height="707" alt="Windows App di HP: Menu Add, pilih PC" loading="lazy" decoding="async"></a>
+                <figcaption>Menu Add, pilih PC</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-25">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">25</span>
+              <h3>Isi PC Name dan tambahkan akun</h3>
+              <p>Tempel <strong>Hostname RDP</strong> di <strong>PC Name</strong>. Ketuk <strong>User Account</strong>, lalu <strong>Add User Account</strong>.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/28-hp-tambah-pc.webp"><img src="../../assets/img/panduan/windows-cloud-lab/28-hp-tambah-pc.webp" width="339" height="707" alt="Windows App di HP: Form Add PC" loading="lazy" decoding="async"></a>
+                <figcaption>Form Add PC</figcaption>
+              </figure>
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/29-hp-pilih-akun.webp"><img src="../../assets/img/panduan/windows-cloud-lab/29-hp-pilih-akun.webp" width="339" height="707" alt="Windows App di HP: Daftar User Account" loading="lazy" decoding="async"></a>
+                <figcaption>Daftar User Account</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-26">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">26</span>
+              <h3>Isi username dan password</h3>
+              <p>Isi <code>WinAdmin</code> dan password dari Panduan RDP, lalu ketuk <strong>Simpan</strong>.</p>
+            </div>
+            <figure class="guide-shot guide-shot-phone">
+              <a href="../../assets/img/panduan/windows-cloud-lab/30-hp-tambah-akun.webp"><img src="../../assets/img/panduan/windows-cloud-lab/30-hp-tambah-akun.webp" width="339" height="707" alt="Windows App di HP: Form Add User Account" loading="lazy" decoding="async"></a>
+              <figcaption>Form Add User Account</figcaption>
+            </figure>
+          </li>
+          <li class="guide-step" id="langkah-27">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">27</span>
+              <h3>Pilih akun, lalu simpan PC</h3>
+              <p>Pastikan <strong>WinAdmin</strong> tercentang, kembali ke form, lalu ketuk <strong>Simpan</strong>.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/31-hp-akun-terpilih.webp"><img src="../../assets/img/panduan/windows-cloud-lab/31-hp-akun-terpilih.webp" width="339" height="707" alt="Windows App di HP: Akun WinAdmin terpilih" loading="lazy" decoding="async"></a>
+                <figcaption>Akun WinAdmin terpilih</figcaption>
+              </figure>
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/32-hp-pc-dengan-akun.webp"><img src="../../assets/img/panduan/windows-cloud-lab/32-hp-pc-dengan-akun.webp" width="339" height="707" alt="Windows App di HP: Form Add PC sudah lengkap" loading="lazy" decoding="async"></a>
+                <figcaption>Form Add PC sudah lengkap</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-28">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">28</span>
+              <h3>Ketuk PC untuk menyambung</h3>
+              <p>PC baru muncul di <strong>Saved PCs</strong>. Ketuk untuk mulai menyambung.</p>
+            </div>
+            <div class="guide-media">
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/33-hp-pc-tersimpan.webp"><img src="../../assets/img/panduan/windows-cloud-lab/33-hp-pc-tersimpan.webp" width="339" height="707" alt="Windows App di HP: PC winlab tersimpan" loading="lazy" decoding="async"></a>
+                <figcaption>PC winlab tersimpan</figcaption>
+              </figure>
+              <figure class="guide-shot guide-shot-phone">
+                <a href="../../assets/img/panduan/windows-cloud-lab/34-hp-menyambung.webp"><img src="../../assets/img/panduan/windows-cloud-lab/34-hp-menyambung.webp" width="339" height="707" alt="Windows App di HP: Connecting ke hostname winlab" loading="lazy" decoding="async"></a>
+                <figcaption>Connecting ke hostname winlab</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="guide-step" id="langkah-29">
+            <div class="guide-text">
+              <span class="step-no" aria-hidden="true">29</span>
+              <h3>Windows siap dipakai dari HP</h3>
+              <p>Desktop Windows tampil di HP. Gunakan ikon kaca pembesar dan keyboard di bagian atas untuk zoom dan mengetik.</p>
+            </div>
+            <figure class="guide-shot guide-shot-phone">
+              <a href="../../assets/img/panduan/windows-cloud-lab/35-hp-desktop-windows.webp"><img src="../../assets/img/panduan/windows-cloud-lab/35-hp-desktop-windows.webp" width="339" height="707" alt="Windows App di HP: Desktop Windows Server 2022 di Windows App" loading="lazy" decoding="async"></a>
+              <figcaption>Desktop Windows Server 2022 di Windows App</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <a class="back-link" href="#daftar-isi">↑ Kembali ke daftar isi</a>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="tanya-jawab" aria-labelledby="faq-heading">
+      <div class="narrow">
+        <h2 id="faq-heading">Tanya jawab</h2>
+        <h3>Konsol web atau RDP tidak bisa tersambung.</h3>
+        <p>Pastikan perangkat Anda terhubung ke Tailscale dengan akun yang sama dan MagicDNS aktif. Pastikan juga komputer berstatus aktif dan tombol Buka konsol web sudah tersedia.</p>
+        <h3>Login RDP gagal padahal password sudah disalin.</h3>
+        <p>Password diturunkan dari kunci pemulihan. Jika Anda membuat kunci baru atau memakai browser lain, password ikut berubah. Masukkan kunci pemulihan yang lama di Pengaturan.</p>
+        <h3>Apakah ini benar-benar gratis?</h3>
+        <p>Windows Cloud Lab sendiri gratis dan open source, tetapi mesin berjalan di GitHub Codespaces milik Anda. Pemakaian Codespaces mengurangi kuota akun dan bisa menimbulkan biaya bila melewati kuota. Cek sisa kuota di pengaturan billing GitHub dan matikan komputer bila tidak dipakai.</p>
+        <h3>Versi Windows apa saja yang tersedia?</h3>
+        <p>Menurut situs Windows Cloud Lab: Windows Server 2022 (paling stabil), Windows Server 2019, Windows Server 2025, dan Windows 11. Windows Server di tangkapan layar adalah versi evaluasi.</p>
+        <h3>Bagaimana menghapus semuanya?</h3>
+        <p>Hapus komputer dari dashboard (Detail dan tindakan), klik Reset sesi di Pengaturan, lalu hapus token di GitHub (Delete) dan auth key di Tailscale (Revoke). Folder .devcontainer di repository bisa dihapus manual.</p>
+        <p class="step-note">Tampilan tiap layanan bisa berubah sewaktu-waktu. Tangkapan layar diambil pada November 2026.</p>
+      </div>
+    </section>
+  </main>
+
+  <a class="wa-float" href="https://wa.me/62895353557327?text=Halo%20Admin%20Siap%20Digital%2C%20saya%20ingin%20informasi%20lebih%20lanjut%20terkait%20website%20siapdigital.id." target="_blank" rel="noopener" aria-label="Chat WhatsApp Siap Digital untuk info website"><svg class="wa-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg><span class="wa-float-text">Info website</span></a>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p><strong>Siap Digital</strong></p>
+        <p>Studio aplikasi edukasi berbahasa Indonesia.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="../../apps/">Aplikasi</a></li>
+        <li><a href="../">Panduan</a></li>
+        <li><a href="../../privacy/">Kebijakan Privasi</a></li>
+        <li><a href="../../terms/">Ketentuan Layanan</a></li>
+        <li><a href="https://github.com/sodikinnaa/siapdigital.id/issues">Masukan</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
