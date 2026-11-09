@@ -242,30 +242,37 @@ KOMPATIBILITAS RENDER:
 Project harus bisa dirender di lingkunganmu sendiri maupun di laptop pengguna (Node.js 22 LTS di Windows, macOS, atau Linux) cukup dengan npm install (atau npm ci bila ada package-lock.json) lalu npx remotion render. Gunakan versi dependency Remotion/React/TypeScript yang konsisten; pastikan paket @remotion/* satu versi dengan remotion; bila package-lock.json disertakan, pastikan sinkron dengan package.json. Hindari CDN, API key, install script yang tidak perlu, dan jangan sertakan node_modules. Komposisi utama wajib MainReel.
 
 ATURAN WAJIB STABILITAS FONT &amp; MENCEGAH delayRender() TIMEOUT:
-- Project dirender oleh Chrome Headless Shell, baik di lingkunganmu maupun di laptop pengguna (kadang hanya 2 vCPU). Jangan mengandalkan font jaringan, CDN, atau Google Fonts runtime.
-- Pilih font sistem yang pasti tersedia, ATAU sertakan file WOFF2/TTF/OTF lokal yang valid di public/fonts/. Jika menggunakan Inter, pastikan file Inter benar-benar ada dan dapat diakses lewat staticFile('fonts/...').
-- JANGAN memanggil delayRender() atau loadFont() dari @remotion/fonts di tingkat modul (saat file di-import). Di Remotion 4.x handle seperti itu bisa kehilangan timer-nya, sehingga render gagal di tengah jalan dengan "A delayRender() ... was called but not cleared" walau font sudah termuat. Jangan memberi timeoutInMilliseconds khusus untuk font.
-- Untuk font lokal, pakai pola ini apa adanya di src/fonts.ts (sesuaikan nama file, weight, dan format), lalu panggil useFontsReady() sekali di baris pertama komponen komposisi utama:
+- Project dirender oleh Chrome Headless Shell, baik di lingkunganmu, di laptop pengguna, maupun di server render cloud (kadang hanya 2 vCPU). Jangan mengandalkan font jaringan, CDN, atau Google Fonts runtime.
+- DEFAULT: pakai font sistem saja, tanpa memuat file font sama sekali dan tanpa delayRender untuk font. Contoh: fontFamily: "Inter, 'Segoe UI', Roboto, 'Noto Sans', 'Liberation Sans', Arial, sans-serif" dengan fontWeight 800/900 untuk judul. Ini pilihan paling aman, terutama bila output ZIP.
+- Gunakan file font kustom HANYA bila file WOFF2/TTF/OTF asli benar-benar tersedia (diunggah pengguna atau bisa kamu sertakan utuh) di public/fonts/. Jangan pernah membuat file font palsu/placeholder dan jangan mereferensikan file font yang tidak ada di ZIP.
+- JANGAN memanggil delayRender() atau loadFont() dari @remotion/fonts di tingkat modul (saat file di-import). Di Remotion 4.x handle seperti itu bisa kehilangan timer-nya, sehingga render gagal di tengah jalan dengan "A delayRender() ... was called but not cleared" walau font sudah termuat.
+- Bila memakai font lokal, pakai pola ini apa adanya di src/fonts.ts (sesuaikan nama file, weight, dan format), lalu panggil useFontsReady() sekali di baris pertama komponen komposisi utama. Pola ini punya batas waktu 15 detik: bila font gagal atau tidak kunjung termuat, render tetap lanjut dengan font fallback, bukan menggantung sampai timeout:
   import {useEffect, useState} from 'react';
-  import {cancelRender, continueRender, delayRender, staticFile} from 'remotion';
+  import {continueRender, delayRender, staticFile} from 'remotion';
   export const FONT_FAMILY = 'ReelFont';
+  export const FONT_STACK = `${FONT_FAMILY}, 'Segoe UI', Roboto, 'Noto Sans', 'Liberation Sans', Arial, sans-serif`;
   const FILES = [{file: 'fonts/NamaFont-Bold.ttf', weight: '700', format: 'truetype'}];
   const fontsReady: Promise&lt;void&gt; = typeof FontFace === 'undefined' ? Promise.resolve() : Promise.all(FILES.map(async ({file, weight, format}) =&gt; {
     const face = new FontFace(FONT_FAMILY, `url('${staticFile(file)}') format('${format}')`, {weight});
     await face.load();
     (document.fonts as unknown as {add: (f: FontFace) =&gt; void}).add(face);
-  })).then(() =&gt; undefined);
+  })).then(() =&gt; undefined).catch((err) =&gt; console.warn('Font lokal gagal dimuat, memakai fallback', err));
+  const withTimeout = (p: Promise&lt;void&gt;, ms: number) =&gt; Promise.race([p, new Promise&lt;void&gt;((resolve) =&gt; setTimeout(resolve, ms))]);
   export const useFontsReady = () =&gt; {
     const [handle] = useState(() =&gt; delayRender('Memuat font lokal'));
-    useEffect(() =&gt; { fontsReady.then(() =&gt; continueRender(handle)).catch((err) =&gt; cancelRender(err)); }, [handle]);
+    useEffect(() =&gt; {
+      let done = false;
+      withTimeout(fontsReady, 15000).then(() =&gt; { if (!done) { done = true; continueRender(handle); } });
+      return () =&gt; { if (!done) { done = true; continueRender(handle); } };
+    }, [handle]);
   };
-  Pemuatan file tetap terjadi sekali di tingkat modul, tetapi delayRender hanya dipanggil di dalam komponen. Setiap delayRender lain juga wajib diakhiri continueRender() saat berhasil dan cancelRender() saat gagal, tanpa promise menggantung.
-- Jangan menempatkan proses load font di komponen per-frame, loop, atau useEffect yang berulang. Jangan melakukan fetch font dari localhost/CDN di setiap frame.
-- Pastikan semua path font dan nama font-family konsisten serta tersedia ketika dijalankan di Chromium headless. Gunakan font fallback yang aman jika font khusus tidak wajib.
+  Pemuatan file tetap terjadi sekali di tingkat modul, tetapi delayRender hanya dipanggil di dalam komponen, dan handle-nya PASTI dilepas (berhasil, gagal, atau lewat 15 detik). Setiap delayRender lain juga wajib diakhiri continueRender() di semua jalur, tanpa promise menggantung.
+- Jangan menempatkan proses load font di komponen per-frame, loop, Sequence yang berulang, atau useEffect yang berulang. Jangan melakukan fetch font dari localhost/CDN di setiap frame.
+- Pastikan semua path font dan nama font-family konsisten serta tersedia ketika dijalankan di Chromium headless. Selalu sertakan font fallback di fontFamily.
 - Cek semua async initialization, gambar, dan font agar tidak ada delayRender handle yang tertahan. Jangan sekadar menaikkan timeout untuk menutupi sumber masalah.
 - Uji minimal awal, tengah, akhir video, dan render penuh bila runtime mendukung. Catat apakah pengujian sungguhan berhasil; jangan mengarang klaim.
 - Project sebaiknya dapat dirender dengan opsi --timeout=120000 sebagai batas toleransi, TETAPI semua font/aset harus tetap dapat selesai dimuat dengan benar tanpa timeout panjang.
-- Bila font pernah gagal dengan pesan `A delayRender() ... was called but not cleared`, perbaiki akar masalahnya: pindahkan delayRender dari tingkat modul ke useFontsReady() seperti pola di atas, verifikasi file font, dan pastikan tidak ada pemuatan ulang per frame.
+- Bila font pernah gagal dengan pesan `A delayRender() ... was called but not cleared`, perbaiki akar masalahnya: pakai font sistem, atau pakai pola useFontsReady() dengan batas waktu di atas, verifikasi file font benar-benar ada, dan pastikan tidak ada pemuatan ulang per frame.
 
 PETUNJUK EKSPOR:
 Bila membuat ZIP, pastikan ZIP memuat seluruh font lokal di public/fonts/ (jika digunakan), voice-over asli, source, README.md, package.json (dan package-lock.json bila ada). Jangan sertakan node_modules. Desain harus tetap konsisten tanpa bergantung pada internet saat video di-render.
