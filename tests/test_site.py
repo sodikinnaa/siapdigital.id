@@ -808,7 +808,7 @@ PROMPT_JS = "assets/js/prompt-generator.js"
 # SHA-256 template prompt versi situs (turunan ReelForge V5.4); berubah hanya jika template sengaja diganti.
 PROMPT_TEMPLATE_SHA256 = {
     "gpt": "2b3199c455173ae21173664c87136744a63b39a51864b668e2615b396c522720",
-    "claude": "d645fe2115922be6f64bdcbc8cd26baf5713b4d61dbd1a6462e2725da152c475",
+    "claude": "4aa3403341801927e7e1a84b64bf816bddde56297db19a15f9d378760ab5b539",
 }
 
 
@@ -889,7 +889,8 @@ class PromptGeneratorTests(unittest.TestCase):
                        "JANGAN memanggil delayRender() atau loadFont()", "useFontsReady()",
                        "useState(() => delayRender(",
                        "CSS transition/animation", "mask reveal", "stroke-dashoffset", "npx remotion still", "900×1400",
-                       "ATURAN WAJIB STABILITAS FONT"):
+                       "ATURAN WAJIB STABILITAS FONT", "DEFAULT: pakai font sistem saja", "withTimeout(fontsReady, 15000)",
+                       "file font palsu/placeholder"):
             with self.subTest(marker=marker):
                 self.assertIn(marker, claude)
         # Template lama memakai "15-20 detik" sebagai penanda durasi; versi ini memakai [DURASI].
