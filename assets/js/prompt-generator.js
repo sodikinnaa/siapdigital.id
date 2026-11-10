@@ -4,9 +4,9 @@
 // terbawa antara halaman ChatGPT dan Claude. Fungsi murni diekspor untuk pengujian (Node).
 (function () {
   var STORAGE_KEY = 'reelforge-prompt-v1';
-  var FIELDS = ['topic', 'duration', 'description', 'facts', 'terms', 'audience', 'cta', 'style', 'caption', 'structure', 'hook', 'output'];
+  var FIELDS = ['topic', 'duration', 'description', 'facts', 'terms', 'audience', 'cta', 'style', 'animation', 'caption', 'structure', 'hook', 'output'];
   var REQUIRED = ['topic', 'description'];
-  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, facts: 1500, terms: 500, audience: 200, cta: 200, style: 300, caption: 10, structure: 10, hook: 10, output: 10 };
+  var MAX_LENGTH = { topic: 120, duration: 3, description: 1000, facts: 1500, terms: 500, audience: 200, cta: 200, style: 300, animation: 12, caption: 10, structure: 10, hook: 10, output: 10 };
   // Preset caption diadaptasi dari claude-shorts (MIT, Daniel Agrici); posisi disesuaikan dengan safe area Reels.
   var CAPTIONS = {
     bold: {
@@ -41,6 +41,52 @@
     taruhan: 'Taruhan, misalnya "Kesalahan ini bikin … jangan diulangi"; tetap hanya memakai fakta yang diberikan.',
     listicle: 'Listicle, misalnya "3 … yang … (nomor 3 paling …)"; siapkan rujukan ke depan.'
   };
+
+  // Preset gaya animasi. Semua dibuat 2D (React + SVG/CSS); gaya "3D" ditiru dengan shading dan perspektif.
+  var ANIMATIONS = {
+    free: { name: 'Bebas (ikuti gaya visual)', spec: '' },
+    pixel: {
+      name: 'Pixel Art (retro game 16-bit)',
+      spec: 'Pixel art retro 16-bit. Semua bentuk dari kotak di grid 8 px (shape-rendering: crispEdges, tanpa anti-alias dan tanpa gradien), palet terbatas 12–16 warna: ungu tua, biru malam, kuning, merah, hijau. Karakter berupa sprite kotak dengan siklus jalan 4 pose yang berganti tiap 4 frame (tanpa easing halus). Latar seperti level game: lantai ubin, tirai, meja, papan grafik. Tambahkan HUD game (judul misi, nomor level, bar HP/energi, skor) dan efek "+1" yang melayang. Teks layar memakai font monospace tebal.'
+    },
+    chalk: {
+      name: 'Chalkboard (kapur di papan tulis)',
+      spec: 'Papan tulis kapur. Latar hijau tua (#1f3b2d) dengan bingkai kayu cokelat dan rak kapur warna-warni di bawah. Semua gambar berupa garis kapur putih atau kuning pucat yang sedikit tidak rata (jitter kecil yang deterministik per frame), muncul seperti sedang digambar (stroke-dashoffset). Karakter dan benda digambar garis tanpa isi, diberi label tulisan tangan dan panah. Judul ditulis seperti kapur (font tulisan tangan sistem dengan fallback cursive). Ada debu kapur tipis dan bekas hapusan samar.'
+    },
+    glow: {
+      name: 'Glow Sketch (garis emas bercahaya)',
+      spec: 'Glow sketch. Latar hitam pekat. Semua bentuk dari garis tipis emas/amber (#F5B544) dengan efek cahaya (SVG filter feGaussianBlur digabung dengan garis asli). Karakter berupa figur garis (stick figure) yang disorot kerucut lampu dari atas, dengan lingkaran cahaya di lantai. Lingkungan (meja, grafik, jendela) digambar garis tipis redup yang muncul bertahap. Gerak tenang dan sinematik.'
+    },
+    ps2: {
+      name: 'Retro low-poly (era PS2, tiruan 3D)',
+      spec: 'Tiruan 3D low-poly era konsol PS2. Karakter dan benda dibangun dari poligon bersudut dengan flat shading: tiap permukaan 2–3 nada warna (terang, sedang, gelap) sesuai satu arah cahaya. Ruangan bertekstur kasar dengan warna hangat (cokelat, krem), lantai keramik berpola, sedikit noise/dithering agar terasa seperti grafik lama. Kamera bergeser pelan dengan parallax antar lapisan. Jangan memakai engine 3D sungguhan.'
+    },
+    comic: {
+      name: 'Comic Art (panel komik pop)',
+      spec: 'Komik pop. Adegan dibagi menjadi panel berbingkai hitam tebal, warna primer cerah (biru langit, kuning, merah) dengan outline hitam tebal dan titik halftone (SVG pattern). Kotak narasi kuning ("SEMENTARA ITU…"), balon kata putih berekor, efek suara starburst ("BOOM!", "POW!"), dan garis aksi. Panel baru masuk dengan wipe atau slide. Wajah ekspresif dengan close-up di panel terpisah.'
+    },
+    flat: {
+      name: 'Flat Vector (ilustrasi datar modern)',
+      spec: 'Flat vector modern. Bentuk geometris bersih tanpa outline, palet navy malam (#1B2550) dengan aksen biru terang dan oranye. Bayangan panjang flat, lampu sorot dari plafon berupa trapesium transparan, jendela kota malam dengan gedung siluet. Karakter proporsional sederhana (kepala bulat, badan persegi panjang membulat). Gerak halus dengan easing, ikon dan grafik muncul dengan scale-in.'
+    },
+    line: {
+      name: 'Minimal Line (garis putih minimalis)',
+      spec: 'Minimal line. Latar hitam, semua bentuk garis putih tipis dengan satu ketebalan (2–3 px). Karakter stick figure, elemen sangat sedikit, ruang kosong luas. Lantai ditandai baris titik kecil. Garis muncul dengan reveal stroke, gerak pelan dan tenang. Satu warna aksen saja bila perlu, misalnya untuk kata kunci.'
+    },
+    cgi: {
+      name: 'CGI Motion (tiruan sinematik 3D)',
+      spec: 'Tiruan CGI sinematik. Latar gelap kebiruan dengan kabut tipis. Karakter dibuat dari bentuk bergradien volumetrik (gradien radial untuk kesan bulat) dengan rim light cyan di tepi tubuh. Di lantai ada lingkaran hologram cyan yang berputar (elips bercahaya), monitor dan panel bercahaya, partikel cahaya melayang. Latar belakang di-blur untuk kesan depth of field. Kamera dolly pelan (perpaduan scale dan translate). Jangan memakai engine 3D sungguhan.'
+    },
+    brick: {
+      name: 'Mainan Balok (brick toy, tiruan 3D)',
+      spec: 'Tiruan mainan balok plastik. Karakter bertubuh kotak dengan kepala silinder kuning, tangan berbentuk capit, kaki pendek yang bergerak kaku per sendi. Warna primer mengkilap (gradien plus highlight putih tajam untuk kesan plastik). Lantai dan dinding tersusun dari balok dengan tonjolan bulat (stud). Kantor terang: dinding putih, papan grafik biru. Jangan menampilkan logo atau merek dagang mainan apa pun.'
+    },
+    explainer3d: {
+      name: 'Explainer 3D (karakter lembut, tiruan 3D)',
+      spec: 'Tiruan explainer 3D bergaya clay/animasi lembut. Karakter dengan proporsi kartun (kepala agak besar), shading lembut dari gradien radial, highlight halus, dan bayangan kontak oval di lantai. Ruangan terang bernuansa krem dan biru muda dengan jendela, kamera agak close-up. Gerak squash & stretch halus, kepala sedikit mengangguk saat berjalan. Jangan memakai engine 3D sungguhan.'
+    }
+  };
+  var ANIMATION_TECH = 'Catatan teknis gaya animasi: bangun gaya ini dengan React + SVG/CSS di Remotion saja, tanpa three.js/@remotion/three, tanpa gambar dari internet, dan tanpa aset buatan AI. Kesan 3D dipalsukan dengan gradien, bayangan, highlight, dan transform perspective/rotateX/rotateY. Karakter dibangun dari bagian SVG terpisah (kepala, badan, lengan atas/bawah, kaki) dengan sendi yang diputar lewat useCurrentFrame() dan interpolate (siklus jalan sekitar 2 langkah per detik), dan dipakai ulang sebagai satu komponen agar tampilannya konsisten di semua scene. Semua efek harus deterministik per frame (tanpa Math.random tanpa seed). Teks layar dan caption tetap terbaca di atas gaya apa pun.';
 
   var OUTPUTS = {
     both: '- Render video final menjadi MP4 (H.264 + AAC, yuv420p, 1080x1920, 30 FPS) bernama [NAMA MP4] dan berikan sebagai file yang bisa diunduh. Jalankan npm install (atau npm ci bila ada package-lock.json), npx remotion browser ensure, lalu render.\n- Berikan juga ZIP project Remotion lengkap (source + audio Cartesia + aset + dependency manifest) bernama [NAMA ZIP].\n- Bila render MP4 tidak memungkinkan di lingkunganmu, jelaskan alasannya dengan jujur dan tetap berikan ZIP beserta README langkah ekspor.',
@@ -101,6 +147,7 @@
       budget: wordBudget(raw.duration),
       slug: slug(raw.topic),
       style: text(raw.style) || 'modern premium',
+      animation: ANIMATIONS[text(raw.animation)] ? text(raw.animation) : 'free',
       caption: CAPTIONS[text(raw.caption)] ? text(raw.caption) : 'bold',
       structure: STRUCTURES[text(raw.structure)] ? text(raw.structure) : 'explainer',
       hook: HOOKS[text(raw.hook)] ? text(raw.hook) : 'auto',
@@ -126,12 +173,18 @@
   function buildPrompt(kind, template, raw) {
     var v = values(raw);
     var head = 'Topik: ' + v.topic + '\nDeskripsi: ' + v.description + '\nAudiens: ' + v.audience + '\nCTA: ' + v.cta + '\n';
+    var anim = '';
+    if (v.animation !== 'free') {
+      var a = ANIMATIONS[v.animation];
+      anim = '\nGaya animasi: ' + a.name + ' (acuan utama tampilan; gaya visual di atas hanya melengkapi warna dan nuansa)' +
+        '\nDetail gaya animasi: ' + a.spec + (kind === 'claude' ? '\n' + ANIMATION_TECH : '');
+    }
     if (kind === 'gpt') {
       return 'KONFIGURASI VIDEO\n' + head + 'Durasi: ' + v.duration + ' (anggaran voice-over ' + v.budget + ')' +
-        '\nGaya visual: ' + v.style + '\n\n' + fillTemplate(template, v);
+        '\nGaya visual: ' + v.style + anim + '\n\n' + fillTemplate(template, v);
     }
     return 'KONFIGURASI PROJECT (IKUTI TXT & AUDIO TERLAMPIR)\n' + head + 'Target durasi: ' + v.duration +
-      '\nGaya visual: ' + v.style + '\n\n' + fillTemplate(template, v);
+      '\nGaya visual: ' + v.style + anim + '\n\n' + fillTemplate(template, v);
   }
 
   function missingRequired(raw) {
@@ -145,6 +198,7 @@
     FIELDS.forEach(function (k) {
       if (typeof data[k] === 'string') clean[k] = data[k].slice(0, MAX_LENGTH[k]);
     });
+    if (clean.animation && !ANIMATIONS[clean.animation]) delete clean.animation;
     if (clean.caption && !CAPTIONS[clean.caption]) delete clean.caption;
     if (clean.structure && !STRUCTURES[clean.structure]) delete clean.structure;
     if (clean.hook && !HOOKS[clean.hook]) delete clean.hook;
@@ -183,7 +237,9 @@
     CAPTIONS: CAPTIONS,
     STRUCTURES: STRUCTURES,
     HOOKS: HOOKS,
-    OUTPUTS: OUTPUTS
+    OUTPUTS: OUTPUTS,
+    ANIMATIONS: ANIMATIONS,
+    ANIMATION_TECH: ANIMATION_TECH
   };
 
   if (typeof module === 'object' && module.exports) {
@@ -291,7 +347,7 @@
 
   document.getElementById('prompt-reset').addEventListener('click', function () {
     stored = {};
-    FIELDS.forEach(function (k) { if (!field(k)) return; field(k).value = k === 'duration' ? '20' : ({ caption: 'bold', structure: 'explainer', hook: 'auto', output: 'both' }[k] || ''); });
+    FIELDS.forEach(function (k) { if (!field(k)) return; field(k).value = k === 'duration' ? '20' : ({ animation: 'free', caption: 'bold', structure: 'explainer', hook: 'auto', output: 'both' }[k] || ''); });
     forget();
     markInvalid([]);
     render();

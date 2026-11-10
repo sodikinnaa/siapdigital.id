@@ -835,7 +835,7 @@ def py_slug(value):
     return s or "video"
 
 
-def py_build_prompt(kind, template, raw, captions, structures, hooks, outputs):
+def py_build_prompt(kind, template, raw, captions, structures, hooks, outputs, animations=None, anim_tech=""):
     """Implementasi acuan buildPrompt (generator versi situs). captions: preset {kunci: {name, spec}}."""
     g = lambda k: str(raw.get(k, "")).strip()
     sec = py_seconds(g("duration"))
@@ -855,13 +855,20 @@ def py_build_prompt(kind, template, raw, captions, structures, hooks, outputs):
     v["STRUKTUR"] = structures[g("structure") if g("structure") in structures else "explainer"]
     v["JENIS HOOK"] = hooks[g("hook") if g("hook") in hooks else "auto"]
     style = g("style") or "modern premium"
+    animations = animations or {"free": {"name": "", "spec": ""}}
+    anim_key = g("animation") if g("animation") in animations else "free"
+    anim = ""
+    if anim_key != "free":
+        a = animations[anim_key]
+        anim = (f"\nGaya animasi: {a['name']} (acuan utama tampilan; gaya visual di atas hanya melengkapi warna dan nuansa)"
+                f"\nDetail gaya animasi: {a['spec']}" + (f"\n{anim_tech}" if kind == "claude" else ""))
     keys = sorted(v, key=len, reverse=True)
     body = re.sub(r"\[(" + "|".join(map(re.escape, keys)) + r")\]", lambda m: v[m.group(1)], template)
     head = (f"Topik: {v['ISI TOPIK']}\nDeskripsi: {v['ISI DESKRIPSI']}\nAudiens: {v['ISI AUDIENS']}\nCTA: {v['ISI CTA']}\n")
     if kind == "gpt":
         return (f"KONFIGURASI VIDEO\n{head}Durasi: {v['DURASI']} (anggaran voice-over {v['ANGGARAN KATA']})\n"
-                f"Gaya visual: {style}\n\n{body}")
-    return f"KONFIGURASI PROJECT (IKUTI TXT & AUDIO TERLAMPIR)\n{head}Target durasi: {v['DURASI']}\nGaya visual: {style}\n\n{body}"
+                f"Gaya visual: {style}{anim}\n\n{body}")
+    return f"KONFIGURASI PROJECT (IKUTI TXT & AUDIO TERLAMPIR)\n{head}Target durasi: {v['DURASI']}\nGaya visual: {style}{anim}\n\n{body}"
 
 
 class PromptGeneratorTests(unittest.TestCase):
@@ -923,6 +930,9 @@ class PromptGeneratorTests(unittest.TestCase):
                 if kind == "claude":
                     self.assertEqual(options[:3], ["both", "mp4", "zip"])
                     options = options[3:]
+                self.assertEqual(options[:11], ["free", "pixel", "chalk", "glow", "ps2", "comic", "flat", "line",
+                                                "cgi", "brick", "explainer3d"])
+                options = options[11:]
                 self.assertEqual(options, ["explainer", "retensi", "auto", "auto", "openloop", "janji", "negasi",
                                            "taruhan", "listicle", "bold", "bounce", "clean", "auto"])
                 self.assertIn("motion-skills (iart.ai, MIT)", self.html[kind])
@@ -1019,6 +1029,10 @@ class PromptGeneratorTests(unittest.TestCase):
             {"topic": "Hermes Agent", "description": "B", "output": "mp4"},
             {"topic": "Hermes Agent", "description": "B", "output": "zip"},
             {"topic": "Hermes Agent", "description": "B", "output": "[ISI CTA]"},
+            {"topic": "A", "description": "B", "animation": "comic", "style": "Neon"},
+            {"topic": "A", "description": "B", "animation": "explainer3d"},
+            {"topic": "A", "description": "B", "animation": "free"},
+            {"topic": "A", "description": "B", "animation": "three"},
         ]
         templates = {k: prompt_template(rel) for k, rel in PROMPT_PAGES.items()}
         script = (
@@ -1032,6 +1046,8 @@ class PromptGeneratorTests(unittest.TestCase):
             "out.missing = [g.missingRequired({}), g.missingRequired({topic: ' ', description: 'x'})];"
             "out.sanitize = g.sanitize({topic: 5, description: 'y'.repeat(2000), evil: 'x'});"
             "out.captions = g.CAPTIONS; out.structures = g.STRUCTURES; out.hooks = g.HOOKS; out.outputs = g.OUTPUTS;"
+            "out.animations = g.ANIMATIONS; out.animTech = g.ANIMATION_TECH;"
+            "out.badanim = g.sanitize({animation: 'three', topic: 't'});"
             "out.badcap = g.sanitize({caption: 'x', topic: 't'});"
             "console.log(JSON.stringify(out));"
         )
@@ -1042,12 +1058,29 @@ class PromptGeneratorTests(unittest.TestCase):
         for kind in ("gpt", "claude"):
             for i, c in enumerate(cases):
                 with self.subTest(kind=kind, case=i):
-                    self.assertEqual(r[kind][i], py_build_prompt(kind, templates[kind], c, r["captions"], r["structures"], r["hooks"], r["outputs"]))
+                    self.assertEqual(r[kind][i], py_build_prompt(kind, templates[kind], c, r["captions"], r["structures"], r["hooks"], r["outputs"],
+                                                                     r["animations"], r["animTech"]))
         self.assertEqual(sorted(r["captions"]), ["auto", "bold", "bounce", "clean"])
         self.assertIn("#FFD700", r["captions"]["bold"]["spec"])
         self.assertEqual(r["badcap"], {"topic": "t"})
         self.assertEqual(sorted(r["structures"]), ["auto", "explainer", "retensi"])
         self.assertEqual(sorted(r["outputs"]), ["both", "mp4", "zip"])
+        self.assertEqual(list(r["animations"]), ["free", "pixel", "chalk", "glow", "ps2", "comic", "flat",
+                                                 "line", "cgi", "brick", "explainer3d"])
+        self.assertEqual(r["badanim"], {"topic": "t"})
+        # Gaya "3D" wajib ditiru dengan 2D; merek dagang mainan tidak boleh disebut.
+        self.assertIn("tanpa three.js/@remotion/three", r["animTech"])
+        for key in ("ps2", "cgi", "brick", "explainer3d"):
+            self.assertIn("tiruan", r["animations"][key]["name"].lower() + r["animations"][key]["spec"].lower())
+        self.assertNotIn("lego", json.dumps(r["animations"]).lower())
+        comic = r["claude"][cases.index({"topic": "A", "description": "B", "animation": "comic", "style": "Neon"})]
+        self.assertIn("Gaya animasi: Comic Art", comic)
+        self.assertIn("Catatan teknis gaya animasi", comic)
+        comic_gpt = r["gpt"][cases.index({"topic": "A", "description": "B", "animation": "comic", "style": "Neon"})]
+        self.assertIn("Gaya animasi: Comic Art", comic_gpt)
+        self.assertNotIn("Catatan teknis gaya animasi", comic_gpt)
+        free = r["claude"][cases.index({"topic": "A", "description": "B", "animation": "free"})]
+        self.assertNotIn("Gaya animasi:", free)
         out_zip = r["claude"][cases.index({"topic": "Hermes Agent", "description": "B", "output": "zip"})]
         out_mp4 = r["claude"][cases.index({"topic": "Hermes Agent", "description": "B", "output": "mp4"})]
         self.assertIn("remotion_reels_hermes_agent.zip", out_zip)

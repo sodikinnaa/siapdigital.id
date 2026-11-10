@@ -130,6 +130,23 @@
               <button type="button" class="chip-toggle" data-style="Cinematic terminal UI" aria-pressed="false">Cinematic terminal UI</button>
             </div>
           </div>
+          <div class="field">
+            <label for="pf-animation">Gaya animasi</label>
+            <select id="pf-animation" name="animation" aria-describedby="pf-animation-help">
+              <option value="free" selected>Bebas: ikuti gaya visual</option>
+              <option value="pixel">Pixel Art: retro game 16-bit</option>
+              <option value="chalk">Chalkboard: kapur di papan tulis</option>
+              <option value="glow">Glow Sketch: garis emas bercahaya</option>
+              <option value="ps2">Retro low-poly: era PS2 (tiruan 3D)</option>
+              <option value="comic">Comic Art: panel komik pop</option>
+              <option value="flat">Flat Vector: ilustrasi datar modern</option>
+              <option value="line">Minimal Line: garis putih minimalis</option>
+              <option value="cgi">CGI Motion: sinematik (tiruan 3D)</option>
+              <option value="brick">Mainan Balok: brick toy (tiruan 3D)</option>
+              <option value="explainer3d">Explainer 3D: karakter lembut (tiruan 3D)</option>
+            </select>
+            <p class="field-help" id="pf-animation-help">Menentukan tampilan karakter, latar, dan gerak. Gaya “tiruan 3D” dibuat dengan 2D (shading dan perspektif), jadi tetap aman dirender di laptop maupun Colab.</p>
+          </div>
           <div class="field-row">
             <div class="field">
               <label for="pf-structure">Struktur cerita</label>
